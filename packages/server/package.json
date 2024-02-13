@@ -1,10 +1,22 @@
 {
-  "name": "@easy-estimate/server",
-  "version": "1.0.0",
-  "main": "index.js",
+  "name": "@ee/server",
+  "version": "0.1.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.js",
   "license": "MIT",
   "private": true,
+  "scripts": {
+    "start": "nodemon",
+    "build": "tsc --declaration"
+  },
   "dependencies": {
-    "@easy-estimate/shared": "1.0.0"
+    "cors": "2.8.5",
+    "express": "4.18.2",
+    "socket.io": "4.7.4"
+  },
+  "devDependencies": {
+    "nodemon": "3.0.3",
+    "ts-node": "10.9.2",
+    "typescript": "5.3.3"
   }
 }
