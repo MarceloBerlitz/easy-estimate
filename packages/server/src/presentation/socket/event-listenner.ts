@@ -4,6 +4,7 @@ import { ClientEventsEnum } from "@ee/lib";
 
 import { disconnectedHandler } from "../../handlers/disconnected.handler";
 import { createRoomHandler } from "../../handlers/create-room.handler";
+import { joinRoomHandler } from "../../handlers/join-room.handler";
 
 export class EventListenner {
     public static listen(io: Server): void {
@@ -12,6 +13,7 @@ export class EventListenner {
             console.log(`[event] connection (${voterId})`);
             
             socket.on(ClientEventsEnum.CREATE_ROOM, (payload) => createRoomHandler(socket, voterId, payload));
+            socket.on(ClientEventsEnum.JOIN_ROOM, (payload) => joinRoomHandler(socket, voterId, payload))
 
             socket.on('disconnect', () => disconnectedHandler(voterId));
         });

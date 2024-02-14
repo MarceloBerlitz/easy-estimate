@@ -1,29 +1,32 @@
-import { ServerEventsEnum, VoterRolesEnum } from "@ee/lib";
+import { ServerEventsEnum } from "@ee/lib";
 
 import { rooms } from "../rooms";
 import { socket } from "..";
-import { Server } from "socket.io";
 
-export const disconnectedHandler = (id: string) => {
-    let voterIndex: number;
-    const roomIndex = rooms.findIndex(room => { 
-        voterIndex = room.voters.findIndex(voter => voter.id === id);
-        return (voterIndex >= 0); 
-    });
+export const disconnectedHandler = (voterId: string) => {
+  let voterIndex: number;
+  const roomIndex = rooms.findIndex((room) => {
+    voterIndex = room.voters.findIndex((voter) => voter.id === voterId);
+    return voterIndex >= 0;
+  });
 
-    const room = rooms[roomIndex];
-    const voter = room.voters[voterIndex];
-    delete voter.currentVote;
+  if (roomIndex < 0) {
+    socket.to(voterId).emit(ServerEventsEnum.ERROR, "room not found");
+  }
 
-    if (VoterRolesEnum.GUEST === voter.role) {
-        room.voters.splice(voterIndex, 1);
-    }
+  const room = rooms[roomIndex];
+  const leavingVoter = room.voters[voterIndex];
 
-    if (VoterRolesEnum.HOST === voter.role) {
-        rooms.splice(roomIndex, 1);
-    }
+  delete leavingVoter.currentVote;
 
-    room.voters.forEach(vtr => {
-        socket.to(vtr.id).emit(ServerEventsEnum.VOTER_DISCONNECTED, voter);
-    });
-}
+  room.voters.splice(voterIndex, 1);
+
+  if (room.voters.length < 1) {
+    rooms.splice(roomIndex, 1);
+    return;
+  }
+
+  room.voters.forEach((voter) => {
+    socket.to(voter.id).emit(ServerEventsEnum.VOTER_DISCONNECTED, leavingVoter);
+  });
+};
