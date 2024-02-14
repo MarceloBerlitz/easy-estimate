@@ -14,5 +14,5 @@ export type ComputedVotesType = {
     votes: {
         voter: VoterType,
         storyPoints: FibonacciStoryPointsEnum
-    }
+    }[]
 }
