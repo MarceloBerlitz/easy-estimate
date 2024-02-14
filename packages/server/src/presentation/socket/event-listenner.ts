@@ -13,7 +13,8 @@ export class EventListenner {
             console.log(`[event] connection (${voterId})`);
             
             socket.on(ClientEventsEnum.CREATE_ROOM, (payload) => createRoomHandler(socket, voterId, payload));
-            socket.on(ClientEventsEnum.JOIN_ROOM, (payload) => joinRoomHandler(socket, voterId, payload))
+            socket.on(ClientEventsEnum.JOIN_ROOM, (payload) => joinRoomHandler(socket, voterId, payload));
+            socket.on(ClientEventsEnum.VOTE, (payload) => voteHandler(socket, voterId, payload));
 
             socket.on('disconnect', () => disconnectedHandler(voterId));
         });

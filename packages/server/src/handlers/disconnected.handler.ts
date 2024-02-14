@@ -17,8 +17,6 @@ export const disconnectedHandler = (voterId: string) => {
   const room = rooms[roomIndex];
   const leavingVoter = room.voters[voterIndex];
 
-  delete leavingVoter.currentVote;
-
   room.voters.splice(voterIndex, 1);
 
   if (room.voters.length < 1) {
