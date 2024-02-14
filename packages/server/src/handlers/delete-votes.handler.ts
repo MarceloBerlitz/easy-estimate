@@ -7,8 +7,13 @@ type Payload = {
   roomId: string;
 };
 
-export const deleteVotesHandler = (socket: Socket, payload: Payload) => {
+export const deleteVotesHandler = (socket: Socket, voterId: string, payload: Payload) => {
   const room = rooms.find((room) => room.id === payload.roomId);
+
+  if (!room) {
+    socket.to(voterId).emit(ServerEventsEnum.ERROR, "room not found");
+    return;
+  }
 
   room.votes = [];
   delete room.computedVotes;

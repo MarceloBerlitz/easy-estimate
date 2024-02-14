@@ -25,8 +25,13 @@ const sumParameterVote = (
   };
 };
 
-export const revealHandler = (socket: Socket, payload: Payload) => {
+export const revealHandler = (socket: Socket, voterId: string, payload: Payload) => {
   const room = rooms.find((room) => room.id === payload.roomId);
+
+  if (!room) {
+    socket.to(voterId).emit(ServerEventsEnum.ERROR, "room not found");
+    return;
+  }
 
   const computedVotes: ComputedVotesType = room.votes.reduce((acc, cur) => {
     return {

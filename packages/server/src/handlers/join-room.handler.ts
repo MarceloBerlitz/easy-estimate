@@ -20,6 +20,7 @@ export const joinRoomHandler = (
 
   if (!room) {
     socket.to(voterId).emit(ServerEventsEnum.ERROR, "room not found");
+    return;
   }
 
   room.voters.push(newVoter);

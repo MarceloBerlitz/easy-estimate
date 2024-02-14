@@ -11,7 +11,7 @@ export const disconnectedHandler = (voterId: string) => {
   });
 
   if (roomIndex < 0) {
-    socket.to(voterId).emit(ServerEventsEnum.ERROR, "room not found");
+    return;
   }
 
   const room = rooms[roomIndex];
