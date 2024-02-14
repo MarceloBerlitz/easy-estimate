@@ -13,6 +13,12 @@ export const createRoomHandler = (
   voterId: string,
   payload: Payload
 ) => {
+
+  if (!payload.name) {
+    socket.to(voterId).emit(ServerEventsEnum.ERROR, "name is required");
+    return;
+  }
+
   const voter = VoterFactory.create(voterId, payload.name);
   const room = RoomFactory.create(voter);
 

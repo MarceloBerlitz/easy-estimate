@@ -7,7 +7,7 @@ import { EventListenner } from "./presentation/socket/event-listenner";
 
 const app = express();
 const server = http.createServer(app);
-const socket = new Server(server);
+const socket = new Server(server, { cors: { origin: "*" } });
 EventListenner.listen(socket);
 const port = process.env.PORT || 3333;
 
