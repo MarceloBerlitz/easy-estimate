@@ -12,7 +12,7 @@ const parametersToFibonacciMap: { [key: number]: FibonacciStoryPointsEnum } = {
 };
 
 export class VoteMapper {
-  public static mapFrom(vote: VoteType): FibonacciStoryPointsEnum {
+  public static mapVoteToStoryPoints(vote: VoteType): FibonacciStoryPointsEnum {
     const voteParametersValues = [vote.complexity, vote.effort, vote.risk];
     const parametersSum = voteParametersValues.reduce(
       (acc, cur) => acc + cur,

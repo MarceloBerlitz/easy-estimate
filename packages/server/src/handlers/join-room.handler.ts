@@ -25,6 +25,8 @@ export const joinRoomHandler = (
   room.voters.push(newVoter);
 
   room.voters.forEach((voter) => {
-    socket.to(voter.id).emit(ServerEventsEnum.VOTER_JOINED, voter);
+    socket
+      .to(voter.id)
+      .emit(ServerEventsEnum.VOTER_JOINED, { voters: room.voters, newVoter });
   });
 };

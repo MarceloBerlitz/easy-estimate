@@ -5,6 +5,7 @@ export class RoomFactory {
     return {
       id: crypto.randomUUID(),
       voters: [voter],
+      votes: [],
       areVotesVisible: false,
     };
   }

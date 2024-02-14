@@ -1,14 +1,20 @@
 import { Socket } from "socket.io";
 
-import { ServerEventsEnum, VoteMapper, VoteType, VoterType } from "@ee/lib";
+import {
+  ServerEventsEnum,
+
+  VoteOptionEnum,
+} from "@ee/lib";
 
 import { rooms } from "../rooms";
-import { ComputedVotesType } from "@ee/lib/dist/types/computed-votes.type";
-import { ComputedVotesFactory } from "../factories/computed-votes.factory";
 
 type Payload = {
   roomId: string;
-  vote: VoteType;
+  vote: {
+    complexity: VoteOptionEnum;
+    effort: VoteOptionEnum;
+    risk: VoteOptionEnum;
+  };
 };
 
 export const voteHandler = (
@@ -20,6 +26,7 @@ export const voteHandler = (
 
   if (!room) {
     socket.to(voterId).emit(ServerEventsEnum.ERROR, "room not found");
+    return;
   }
 
   const currentVoteIndex = room.votes.findIndex(
@@ -30,21 +37,27 @@ export const voteHandler = (
     room.votes.splice(currentVoteIndex, 1);
   }
 
-  room.votes.push(payload.vote);
+  const voter = room.voters.find((voter) => voter.id === voterId);
 
-  room.computedVotes = room.votes.reduce((acc, cur) => {
-    return {
-      votes: acc.votes.concat([
-        {
-          voter: cur.voter,
-          storyPoints: VoteMapper.mapFrom(cur),
-        },
-      ]),
-    //   complexity: {}
-    };
-  }, ComputedVotesFactory.create());
+  room.votes.push({ ...payload.vote, voter });
+
+  const votersThatVoted = room.votes.map((vote) => ({ voter: vote.voter }));
+
+  //   room.computedVotes = room.votes.reduce((acc, cur) => {
+  //     return {
+  //       votes: acc.votes.concat([
+  //         {
+  //           voter: cur.voter,
+  //           storyPoints: VoteMapper.mapVoteToStoryPoints(cur),
+  //         },
+  //       ]),
+  //     //   complexity: {}
+  //     };
+  //   }, ComputedVotesFactory.create());
 
   room.voters.forEach((voter) => {
-    socket.to(voter.id).emit(ServerEventsEnum.VOTE_MADE);
+    socket.to(voter.id).emit(ServerEventsEnum.VOTE_MADE, {
+      votersThatVoted,
+    });
   });
 };
