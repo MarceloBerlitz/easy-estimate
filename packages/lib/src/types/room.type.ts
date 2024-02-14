@@ -6,6 +6,6 @@ export type RoomType = {
     id: string,
     voters: VoterType[],
     votes: VoteType[],
-    computedVotes: ComputedVotesType,
     areVotesVisible: boolean,
+    computedVotes?: ComputedVotesType,
 }

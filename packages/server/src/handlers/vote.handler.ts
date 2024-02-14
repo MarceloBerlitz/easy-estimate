@@ -43,18 +43,6 @@ export const voteHandler = (
 
   const votersThatVoted = room.votes.map((vote) => ({ voter: vote.voter }));
 
-  //   room.computedVotes = room.votes.reduce((acc, cur) => {
-  //     return {
-  //       votes: acc.votes.concat([
-  //         {
-  //           voter: cur.voter,
-  //           storyPoints: VoteMapper.mapVoteToStoryPoints(cur),
-  //         },
-  //       ]),
-  //     //   complexity: {}
-  //     };
-  //   }, ComputedVotesFactory.create());
-
   room.voters.forEach((voter) => {
     socket.to(voter.id).emit(ServerEventsEnum.VOTE_MADE, {
       votersThatVoted,

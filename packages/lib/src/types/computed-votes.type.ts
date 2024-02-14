@@ -1,10 +1,10 @@
-import { FibonacciStoryPointsEnum } from "../enums";
+import { FibonacciStoryPointsEnum, VoteOptionEnum } from "../enums";
 import { VoterType } from "./voter.type";
 
 export type ComputedVotesParametersType = {
-    small: number;
-    medium: number;
-    large: number;
+    [VoteOptionEnum.SMALL]: number;
+    [VoteOptionEnum.MEDIUM]: number;
+    [VoteOptionEnum.LARGE]: number;
 }
 
 export type ComputedVotesType = {

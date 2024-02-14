@@ -1,23 +1,19 @@
-import { ComputedVotesType } from "@ee/lib";
+import { ComputedVotesType, VoteOptionEnum } from "@ee/lib";
+
+const createParameter = () => {
+  return {
+    [VoteOptionEnum.SMALL]: 0,
+    [VoteOptionEnum.MEDIUM]: 0,
+    [VoteOptionEnum.LARGE]: 0,
+  };
+};
 
 export class ComputedVotesFactory {
   public static create(): ComputedVotesType {
     return {
-      complexity: {
-        small: 0,
-        medium: 0,
-        large: 0,
-      },
-      effort: {
-        small: 0,
-        medium: 0,
-        large: 0,
-      },
-      risk: {
-        small: 0,
-        medium: 0,
-        large: 0,
-      },
+      complexity: createParameter(),
+      effort: createParameter(),
+      risk: createParameter(),
       votes: [],
     };
   }

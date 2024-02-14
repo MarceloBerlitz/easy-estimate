@@ -23,8 +23,8 @@ export class EventListenner {
       socket.on(ClientEventsEnum.VOTE, (payload) =>
         voteHandler(socket, voterId, payload)
       );
-      socket.on(ClientEventsEnum.REVEAL, () =>
-        revealHandler(socket, voterId)
+      socket.on(ClientEventsEnum.REVEAL, (payload) =>
+        revealHandler(socket, payload)
       );
 
       socket.on("disconnect", () => disconnectedHandler(voterId));
