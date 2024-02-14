@@ -7,6 +7,7 @@ import { createRoomHandler } from "../../handlers/create-room.handler";
 import { joinRoomHandler } from "../../handlers/join-room.handler";
 import { voteHandler } from "../../handlers/vote.handler";
 import { revealHandler } from "../../handlers/reveal.handler";
+import { deleteVotesHandler } from "../../handlers/delete-votes.handler";
 
 export class EventListenner {
   public static listen(io: Server): void {
@@ -25,6 +26,9 @@ export class EventListenner {
       );
       socket.on(ClientEventsEnum.REVEAL, (payload) =>
         revealHandler(socket, payload)
+      );
+      socket.on(ClientEventsEnum.DELETE_VOTES, (payload) =>
+        deleteVotesHandler(socket, payload)
       );
 
       socket.on("disconnect", () => disconnectedHandler(voterId));
