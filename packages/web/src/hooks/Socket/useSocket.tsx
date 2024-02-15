@@ -1,7 +1,16 @@
-import { Socket } from "socket.io-client";
+import React, {
+  ReactNode,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 
-import { socket } from "../../socket";
-import React, { ReactNode, useContext } from "react";
+import { Socket, io } from "socket.io-client";
+import { useRoom } from "../Room/useRoom";
+import { RoomType, ServerEventsEnum } from "@ee/lib";
+import { useNavigate } from "react-router-dom";
+import { RoutesEnum } from "../../enums/routes.enum";
 
 const SocketContext = React.createContext<{
   socket?: Socket;
@@ -9,11 +18,45 @@ const SocketContext = React.createContext<{
 }>({});
 
 export const SocketProvider = ({ children }: { children: ReactNode }) => {
+  const { setRoom } = useRoom();
+  const navigate = useNavigate();
+  const [isConnected, setIsConnected] = useState(false);
+
+  const socket = useMemo(
+    () =>
+      io(
+        process.env.NODE_ENV === "development" ? "http://localhost:3333" : "",
+        {
+          autoConnect: false,
+        }
+      ),
+    []
+  );
+
+  useEffect(() => {
+    socket.on("connect", () => {
+      setIsConnected(true);
+      const voterId = socket.id;
+      console.log(`Voter connected on Client with id: ${voterId}`);
+    });
+
+    socket.on(ServerEventsEnum.ROOM_CREATED, ({ room }: { room: RoomType }) => {
+      setRoom(room);
+      navigate(RoutesEnum.ROOM.replace(":roomId", room.id));
+    });
+
+    socket.on("disconnect", () => {
+      setIsConnected(false);
+      console.log(`Voter disconnected`);
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <SocketContext.Provider
       value={{
         socket,
-        isConnected: socket.connected,
+        isConnected,
       }}
     >
       {children}
