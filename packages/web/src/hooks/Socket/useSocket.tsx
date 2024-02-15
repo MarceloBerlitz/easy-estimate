@@ -66,8 +66,8 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
       }
     );
 
-    socket.on(ServerEventsEnum.VOTER_JOINED, ({ voters }): void => {
-      setRoom((prev) => ({ ...(prev as RoomType), voters }));
+    socket.on(ServerEventsEnum.VOTER_JOINED, ({ voters, computedVotes }): void => {
+      setRoom((prev) => ({ ...(prev as RoomType), voters, computedVotes }));
     });
 
     socket.on(ServerEventsEnum.POINTS_REVEALED, ({computedVotes}) => {

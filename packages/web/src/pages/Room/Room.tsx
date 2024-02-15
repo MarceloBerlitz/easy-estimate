@@ -10,7 +10,7 @@ import { VoteOptionSelector } from "./partials/VoteOptionSelector/VoteOptionSele
 import { PointsPreview } from "./partials/PointsPreview/PointsPreview";
 
 export const Room = () => {
-  const { room, voter, setVoter } = useRoom();
+  const { room, voter, setVoter, setRoom } = useRoom();
   const { socket, isConnected } = useSocket();
   const navigate = useNavigate();
   const { roomId: roomIdParam } = useParams();
@@ -32,7 +32,9 @@ export const Room = () => {
         name = prompt("Insert display name");
       } while (!name);
       socket.connect();
-      setVoter({ id: socket.id!, name });
+      const voter = { id: socket.id!, name };
+      setVoter(voter);
+      setRoom({ id: roomIdParam!, voters: [], votes: [] });
       socket.emit(ClientEventsEnum.JOIN_ROOM, { name, roomId: roomIdParam });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
