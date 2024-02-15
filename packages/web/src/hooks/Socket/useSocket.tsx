@@ -72,7 +72,6 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
         voters: VoterType[];
         computedVotes?: ComputedVotesType;
       }) => {
-        console.log({ computedVotes });
         setRoom((prev) => ({ ...(prev as RoomType), voters, computedVotes }));
       }
     );
@@ -100,6 +99,28 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
         voters: prev!.voters.map((voter) => ({ ...voter, hasVoted: false })),
       }));
     });
+
+    socket.on(
+      ServerEventsEnum.VOTER_DISCONNECTED,
+      ({
+        leavingVoter,
+        voters,
+        computedVotes
+      }: {
+        leavingVoter: VoterType;
+        voters: VoterType[];
+        computedVotes?: ComputedVotesType;
+      }) => {
+        setRoom((prev) => ({
+          ...(prev as RoomType),
+          votes: prev!.votes.filter(
+            (vote) => vote.voter.id !== leavingVoter.id
+          ),
+          voters,
+          computedVotes,
+        }));
+      }
+    );
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
