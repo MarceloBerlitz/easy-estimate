@@ -33,7 +33,7 @@ export const createRoomHandler = (
 
   io.join(room.id);
 
-  io.emit(ServerEventsEnum.ROOM_CREATED, { room });
+  io.emit(ServerEventsEnum.ROOM_CREATED, { room, voter });
 
   console.log(
     `[event sent] <${ServerEventsEnum.ROOM_CREATED}> clientId: ${voterId}`

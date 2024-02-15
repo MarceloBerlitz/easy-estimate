@@ -51,6 +51,6 @@ export const voteHandler = (
   });
 
   console.log(
-    `[event received] <${ServerEventsEnum.VOTE_MADE}> roomId: ${room.id}`
+    `[event sent] <${ServerEventsEnum.VOTE_MADE}> roomId: ${room.id}`
   );
 };

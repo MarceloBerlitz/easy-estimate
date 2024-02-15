@@ -1,23 +1,28 @@
 import React, { ReactNode, useContext, useState } from "react";
 
-import { RoomType } from "@ee/lib";
+import { RoomType, VoterType } from "@ee/lib";
 
-type SetRoomType = (room: RoomType) => void;
+// type SetRoomType = (room: RoomType) => void;
 
 type RoomContextType = {
   room?: RoomType;
-  setRoom: SetRoomType;
+  voter?: VoterType;
+  setRoom: React.Dispatch<React.SetStateAction<RoomType | undefined>>;
+  setVoter: React.Dispatch<React.SetStateAction<VoterType | undefined>>;
 };
 
 const RoomContext = React.createContext<Partial<RoomContextType>>({});
 
 export const RoomProvider = ({ children }: { children: ReactNode }) => {
-  const [roomState, setRoomState] = useState();
+  const [roomState, setRoomState] = useState<RoomType | undefined>();
+  const [voterState, setVoterState] = useState<VoterType | undefined>();
   return (
     <RoomContext.Provider
       value={{
         room: roomState,
-        setRoom: setRoomState as unknown as SetRoomType,
+        setRoom: setRoomState,
+        voter: voterState,
+        setVoter: setVoterState,
       }}
     >
       {children}
@@ -27,8 +32,13 @@ export const RoomProvider = ({ children }: { children: ReactNode }) => {
 
 export const useRoom = (): RoomContextType => {
   const context = useContext(RoomContext);
-  if (!context.setRoom) {
+  if (!context.setRoom || !context.setVoter) {
     throw new Error("useRoom hook must be within a RoomProvider");
   }
-  return { room: context.room, setRoom: context.setRoom! };
+  return {
+    room: context.room,
+    voter: context.voter,
+    setRoom: context.setRoom,
+    setVoter: context.setVoter,
+  };
 };
