@@ -41,6 +41,10 @@ export const Room = () => {
     socket.emit(ClientEventsEnum.REVEAL, { roomId: room!.id });
   }, [socket, room]);
 
+  const hideHandler = useCallback(() => {
+    socket.emit(ClientEventsEnum.HIDE, { roomId: room!.id });
+  }, [socket, room]);
+
   useEffect(() => {
     if (!isConnected) {
       navigate(RoutesEnum.HOME);
@@ -86,7 +90,12 @@ export const Room = () => {
         vote
       </button>{" "}
       <br />
-      <button onClick={revealHandler}>reveal</button> <br />
+      {!room?.computedVotes ? (
+        <button onClick={revealHandler}>reveal</button>
+      ) : (
+        <button onClick={hideHandler}>hide</button>
+      )}{" "}
+      <br />
       <h2>voters</h2>
       <div>
         {room?.voters.map((voter) => {

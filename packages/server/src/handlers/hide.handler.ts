@@ -20,6 +20,8 @@ export const hideHandler = (io: Socket, voterId: string, payload: Payload) => {
     return;
   }
 
+  delete room.computedVotes;
+
   socket.to(room.id).emit(ServerEventsEnum.POINTS_HIDDEN);
 
   console.log(

@@ -74,6 +74,10 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
       setRoom((prev) => ({ ...(prev as RoomType), computedVotes }));
     })
 
+    socket.on(ServerEventsEnum.POINTS_HIDDEN, () => {
+      setRoom((prev) => ({ ...(prev as RoomType), computedVotes: undefined }))
+    })
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
