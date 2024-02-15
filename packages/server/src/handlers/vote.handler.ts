@@ -30,6 +30,8 @@ export const voteHandler = (
     return;
   }
 
+  delete room.computedVotes;
+
   const currentVoteIndex = room.votes.findIndex(
     (vote) => vote.voter.id === voterId
   );

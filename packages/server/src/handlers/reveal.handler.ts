@@ -43,21 +43,27 @@ export const revealHandler = (
     return;
   }
 
-  const computedVotes: ComputedVotesType = room.votes.reduce((acc, cur) => {
-    return {
-      votes: acc.votes.concat([
-        {
-          voter: cur.voter,
-          storyPoints: VoteMapper.mapVoteToStoryPoints(cur),
-        },
-      ]),
-      complexity: sumParameterVote(acc.complexity, cur.complexity),
-      effort: sumParameterVote(acc.effort, cur.effort),
-      risk: sumParameterVote(acc.risk, cur.risk),
-    };
-  }, ComputedVotesFactory.create());
+  if (!room.computedVotes) {
+    room.computedVotes = room.votes.reduce((acc, cur) => {
+      return {
+        votes: acc.votes.concat([
+          {
+            voter: cur.voter,
+            storyPoints: VoteMapper.mapVoteToStoryPoints(cur),
+          },
+        ]),
+        complexity: sumParameterVote(acc.complexity, cur.complexity),
+        effort: sumParameterVote(acc.effort, cur.effort),
+        risk: sumParameterVote(acc.risk, cur.risk),
+      };
+    }, ComputedVotesFactory.create());
+  }
 
-  socket.to(room.id).emit(ServerEventsEnum.POINTS_REVEALED, { computedVotes });
+  socket
+    .to(room.id)
+    .emit(ServerEventsEnum.POINTS_REVEALED, {
+      computedVotes: room.computedVotes,
+    });
 
   console.log(
     `[event sent] <${ServerEventsEnum.POINTS_REVEALED}> roomId: ${room.id}`
