@@ -27,6 +27,9 @@ export class EventListenner {
       socket.on(ClientEventsEnum.REVEAL, (payload) =>
         revealHandler(socket, voterId, payload)
       );
+      socket.on(ClientEventsEnum.HIDE, (payload) => {
+        
+      })
       socket.on(ClientEventsEnum.DELETE_VOTES, (payload) =>
         deleteVotesHandler(socket, voterId, payload)
       );
