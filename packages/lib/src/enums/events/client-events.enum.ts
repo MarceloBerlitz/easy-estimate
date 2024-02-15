@@ -3,5 +3,6 @@ export enum ClientEventsEnum {
   JOIN_ROOM = "join-room",
   VOTE = "vote",
   REVEAL = "reveal",
+  HIDE = "hide",
   DELETE_VOTES = "delete-votes",
 }

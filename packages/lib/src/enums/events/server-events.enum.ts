@@ -4,6 +4,7 @@ export enum ServerEventsEnum {
   VOTER_DISCONNECTED = "voter-disconnected",
   VOTE_MADE = "vote-made",
   POINTS_REVEALED = "points-revealed",
+  POINTS_HIDDEN = "points-hidden",
   VOTES_DELETED = "votes-deleted",
   ERROR = "error",
 }
