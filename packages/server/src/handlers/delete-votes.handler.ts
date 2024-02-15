@@ -25,7 +25,10 @@ export const deleteVotesHandler = (
   }
 
   room.votes = [];
-  delete room.computedVotes;
+  room.voters.forEach(voter => {
+    voter.hasVoted = false;
+  })
+  delete room.computedVotes;  
 
   socket.to(room.id).emit(ServerEventsEnum.VOTES_DELETED);
 

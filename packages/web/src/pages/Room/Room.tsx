@@ -82,8 +82,34 @@ export const Room = () => {
         areAllSelected={areAllSelected}
       />{" "}
       <br />
-      <button disabled={!areAllSelected} onClick={voteHandler}>vote</button> <br />
-      <button onClick={revealHandler}>reveal</button>
+      <button disabled={!areAllSelected} onClick={voteHandler}>
+        vote
+      </button>{" "}
+      <br />
+      <button onClick={revealHandler}>reveal</button> <br />
+      <h2>voters</h2>
+      <div>
+        {room?.voters.map((voter) => {
+          if (room.computedVotes) {
+            return (
+              <span key={voter.id}>
+                {voter.name} - vote:{" "}
+                {
+                  room.computedVotes.votes.find(
+                    (vote) => vote.voter.id === voter.id
+                  )?.storyPoints
+                }{" "}
+                <br />
+              </span>
+            );
+          }
+          return (
+            <span key={voter.id}>
+              {voter.name} - votou: {voter.hasVoted ? "yes" : "no"} <br />
+            </span>
+          );
+        })}
+      </div>
     </div>
   );
 };

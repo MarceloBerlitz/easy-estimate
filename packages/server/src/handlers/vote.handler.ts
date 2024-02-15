@@ -4,6 +4,7 @@ import { ClientEventsEnum, ServerEventsEnum, VoteOptionEnum } from "@ee/lib";
 
 import { rooms } from "../rooms";
 import { socket } from "..";
+import { ComputedVotesMapper } from "../mappers/computed-votes.mapper";
 
 type Payload = {
   roomId: string;
@@ -14,11 +15,7 @@ type Payload = {
   };
 };
 
-export const voteHandler = (
-  io: Socket,
-  voterId: string,
-  payload: Payload
-) => {
+export const voteHandler = (io: Socket, voterId: string, payload: Payload) => {
   console.log(
     `[event received] <${ClientEventsEnum.VOTE}> clientId: ${voterId}`
   );
@@ -30,8 +27,6 @@ export const voteHandler = (
     return;
   }
 
-  delete room.computedVotes;
-
   const currentVoteIndex = room.votes.findIndex(
     (vote) => vote.voter.id === voterId
   );
@@ -41,13 +36,17 @@ export const voteHandler = (
   }
 
   const voter = room.voters.find((voter) => voter.id === voterId);
-
   room.votes.push({ ...payload.vote, voter });
 
-  const votersThatVoted = room.votes.map((vote) => vote.voter);
+  voter.hasVoted = true;
+
+  if (room.computedVotes) {
+    room.computedVotes = ComputedVotesMapper.mapFromVotes(room.votes);
+  }
 
   socket.to(room.id).emit(ServerEventsEnum.VOTE_MADE, {
-    votersThatVoted,
+    voters: room.voters,
+    ...(room.computedVotes ? { computedVotes: room.computedVotes } : {}),
   });
 
   console.log(

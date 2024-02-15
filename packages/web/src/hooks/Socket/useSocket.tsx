@@ -8,7 +8,7 @@ import React, {
 
 import { Socket, io } from "socket.io-client";
 import { useRoom } from "../Room/useRoom";
-import { RoomType, ServerEventsEnum, VoterType } from "@ee/lib";
+import { ComputedVotesType, RoomType, ServerEventsEnum, VoterType } from "@ee/lib";
 import { useNavigate } from "react-router-dom";
 import { RoutesEnum } from "../../enums/routes.enum";
 
@@ -47,16 +47,32 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
 
     socket.on(ServerEventsEnum.ERROR, (payload) => {
       alert(JSON.stringify(payload));
-    })
+    });
 
     socket.on(
       ServerEventsEnum.ROOM_CREATED,
-      ({ room, voter }: { room: RoomType, voter: VoterType }) => {
+      ({ room, voter }: { room: RoomType; voter: VoterType }) => {
         setRoom(room);
         setVoter(voter);
         navigate(RoutesEnum.ROOM.replace(":roomId", room.id));
       }
     );
+
+    socket.on(
+      ServerEventsEnum.VOTE_MADE,
+      ({ voters, computedVotes }: { voters: VoterType[], computedVotes?: ComputedVotesType }) => {
+        console.log({computedVotes})
+        setRoom((prev) => ({ ...(prev as RoomType), voters, computedVotes }));
+      }
+    );
+
+    socket.on(ServerEventsEnum.VOTER_JOINED, ({ voters }): void => {
+      setRoom((prev) => ({ ...(prev as RoomType), voters }));
+    });
+
+    socket.on(ServerEventsEnum.POINTS_REVEALED, ({computedVotes}) => {
+      setRoom((prev) => ({ ...(prev as RoomType), computedVotes }));
+    })
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

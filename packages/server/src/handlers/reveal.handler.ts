@@ -2,29 +2,16 @@ import { Socket } from "socket.io";
 
 import {
   ClientEventsEnum,
-  ComputedVotesParametersType,
-  ComputedVotesType,
   ServerEventsEnum,
-  VoteMapper,
-  VoteOptionEnum,
 } from "@ee/lib";
 
 import { rooms } from "../rooms";
 import { ComputedVotesFactory } from "../factories/computed-votes.factory";
 import { socket } from "..";
+import { ComputedVotesMapper } from "../mappers/computed-votes.mapper";
 
 type Payload = {
   roomId: string;
-};
-
-const sumParameterVote = (
-  parameter: ComputedVotesParametersType,
-  parameterKey: VoteOptionEnum
-): ComputedVotesParametersType => {
-  return {
-    ...parameter,
-    [parameterKey]: parameter[parameterKey] + 1,
-  };
 };
 
 export const revealHandler = (
@@ -44,19 +31,7 @@ export const revealHandler = (
   }
 
   if (!room.computedVotes) {
-    room.computedVotes = room.votes.reduce((acc, cur) => {
-      return {
-        votes: acc.votes.concat([
-          {
-            voter: cur.voter,
-            storyPoints: VoteMapper.mapVoteToStoryPoints(cur),
-          },
-        ]),
-        complexity: sumParameterVote(acc.complexity, cur.complexity),
-        effort: sumParameterVote(acc.effort, cur.effort),
-        risk: sumParameterVote(acc.risk, cur.risk),
-      };
-    }, ComputedVotesFactory.create());
+    room.computedVotes = ComputedVotesMapper.mapFromVotes(room.votes);
   }
 
   socket
