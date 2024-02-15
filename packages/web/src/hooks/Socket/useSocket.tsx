@@ -8,7 +8,12 @@ import React, {
 
 import { Socket, io } from "socket.io-client";
 import { useRoom } from "../Room/useRoom";
-import { ComputedVotesType, RoomType, ServerEventsEnum, VoterType } from "@ee/lib";
+import {
+  ComputedVotesType,
+  RoomType,
+  ServerEventsEnum,
+  VoterType,
+} from "@ee/lib";
 import { useNavigate } from "react-router-dom";
 import { RoutesEnum } from "../../enums/routes.enum";
 
@@ -60,23 +65,41 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
 
     socket.on(
       ServerEventsEnum.VOTE_MADE,
-      ({ voters, computedVotes }: { voters: VoterType[], computedVotes?: ComputedVotesType }) => {
-        console.log({computedVotes})
+      ({
+        voters,
+        computedVotes,
+      }: {
+        voters: VoterType[];
+        computedVotes?: ComputedVotesType;
+      }) => {
+        console.log({ computedVotes });
         setRoom((prev) => ({ ...(prev as RoomType), voters, computedVotes }));
       }
     );
 
-    socket.on(ServerEventsEnum.VOTER_JOINED, ({ voters, computedVotes }): void => {
-      setRoom((prev) => ({ ...(prev as RoomType), voters, computedVotes }));
+    socket.on(
+      ServerEventsEnum.VOTER_JOINED,
+      ({ voters, computedVotes }): void => {
+        setRoom((prev) => ({ ...(prev as RoomType), voters, computedVotes }));
+      }
+    );
+
+    socket.on(ServerEventsEnum.POINTS_REVEALED, ({ computedVotes }) => {
+      setRoom((prev) => ({ ...(prev as RoomType), computedVotes }));
     });
 
-    socket.on(ServerEventsEnum.POINTS_REVEALED, ({computedVotes}) => {
-      setRoom((prev) => ({ ...(prev as RoomType), computedVotes }));
-    })
-
     socket.on(ServerEventsEnum.POINTS_HIDDEN, () => {
-      setRoom((prev) => ({ ...(prev as RoomType), computedVotes: undefined }))
-    })
+      setRoom((prev) => ({ ...(prev as RoomType), computedVotes: undefined }));
+    });
+
+    socket.on(ServerEventsEnum.VOTES_DELETED, () => {
+      setRoom((prev) => ({
+        ...(prev as RoomType),
+        votes: [],
+        computedVotes: undefined,
+        voters: prev!.voters.map((voter) => ({ ...voter, hasVoted: false })),
+      }));
+    });
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

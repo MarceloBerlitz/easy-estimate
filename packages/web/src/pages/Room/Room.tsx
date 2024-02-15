@@ -60,6 +60,10 @@ export const Room = () => {
     socket.emit(ClientEventsEnum.HIDE, { roomId: room!.id });
   }, [socket, room]);
 
+  const deleteVotesHandler = useCallback(() => {
+    socket.emit(ClientEventsEnum.DELETE_VOTES, { roomId: room!.id });
+  }, [socket, room]);
+
   return !room ? null : (
     <div>
       <header>
@@ -104,6 +108,7 @@ export const Room = () => {
         <button onClick={hideHandler}>hide</button>
       )}{" "}
       <br />
+      <button onClick={deleteVotesHandler}>delete votes</button>
       <h2>voters</h2>
       <div>
         {room?.voters.map((voter) => {
