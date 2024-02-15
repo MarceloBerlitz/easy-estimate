@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import { ClientEventsEnum, VoteType } from "@ee/lib";
 
@@ -10,13 +10,14 @@ import { VoteOptionSelector } from "./partials/VoteOptionSelector/VoteOptionSele
 import { PointsPreview } from "./partials/PointsPreview/PointsPreview";
 
 export const Room = () => {
-  const { room, voter } = useRoom();
+  const { room, voter, setVoter } = useRoom();
   const { socket, isConnected } = useSocket();
   const navigate = useNavigate();
+  const { roomId: roomIdParam } = useParams();
   const [localVote, setLocalVote] = useState<Partial<VoteType>>({
     voter: {
-      id: voter!.id,
-      name: voter!.name,
+      id: voter?.id ?? "",
+      name: voter?.name ?? "",
     },
   });
 
@@ -24,14 +25,30 @@ export const Room = () => {
     return !!localVote.complexity && !!localVote.effort && !!localVote.risk;
   }, [localVote]);
 
+  useEffect(() => {
+    if (!room) {
+      let name;
+      do {
+        name = prompt("Insert display name");
+      } while (!name);
+      socket.connect();
+      setVoter({ id: socket.id!, name });
+      socket.emit(ClientEventsEnum.JOIN_ROOM, { name, roomId: roomIdParam });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    console.log("running twice")
+  }, [])
+
   const leaveHandler = useCallback(() => {
     if (isConnected) {
       socket.disconnect();
-    } else {
-      navigate(RoutesEnum.HOME);
     }
+    navigate(RoutesEnum.HOME);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [socket]);
+  }, [socket, isConnected]);
 
   const voteHandler = useCallback(() => {
     socket.emit(ClientEventsEnum.VOTE, { roomId: room!.id, vote: localVote });
@@ -45,14 +62,7 @@ export const Room = () => {
     socket.emit(ClientEventsEnum.HIDE, { roomId: room!.id });
   }, [socket, room]);
 
-  useEffect(() => {
-    if (!isConnected) {
-      navigate(RoutesEnum.HOME);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isConnected, navigate]);
-
-  return (
+  return !room ? null : (
     <div>
       <header>
         <button onClick={leaveHandler}>leave</button>

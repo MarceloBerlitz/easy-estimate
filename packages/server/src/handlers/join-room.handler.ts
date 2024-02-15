@@ -34,7 +34,7 @@ export const joinRoomHandler = (
 
   socket
     .to(room.id)
-    .emit(ServerEventsEnum.VOTER_JOINED, { voters: room.voters, newVoter });
+    .emit(ServerEventsEnum.VOTER_JOINED, { voters: room.voters, computedVotes: room.computedVotes });
 
   console.log(
     `[event sent] <${ServerEventsEnum.VOTER_JOINED}> roomId: ${room.id}`

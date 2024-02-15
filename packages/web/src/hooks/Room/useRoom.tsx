@@ -2,8 +2,6 @@ import React, { ReactNode, useContext, useState } from "react";
 
 import { RoomType, VoterType } from "@ee/lib";
 
-// type SetRoomType = (room: RoomType) => void;
-
 type RoomContextType = {
   room?: RoomType;
   voter?: VoterType;
