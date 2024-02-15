@@ -38,10 +38,6 @@ export const Room = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEffect(() => {
-    console.log("running twice")
-  }, [])
-
   const leaveHandler = useCallback(() => {
     if (isConnected) {
       socket.disconnect();
