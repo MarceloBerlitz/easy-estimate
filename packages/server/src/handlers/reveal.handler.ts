@@ -1,6 +1,7 @@
 import { Socket } from "socket.io";
 
 import {
+  ClientEventsEnum,
   ComputedVotesParametersType,
   ComputedVotesType,
   ServerEventsEnum,
@@ -25,11 +26,19 @@ const sumParameterVote = (
   };
 };
 
-export const revealHandler = (socket: Socket, voterId: string, payload: Payload) => {
+export const revealHandler = (
+  socket: Socket,
+  voterId: string,
+  payload: Payload
+) => {
+  console.log(
+    `[event received] <${ClientEventsEnum.REVEAL}> clientId: ${voterId}`
+  );
+
   const room = rooms.find((room) => room.id === payload.roomId);
 
   if (!room) {
-    socket.to(voterId).emit(ServerEventsEnum.ERROR, "room not found");
+    socket.emit(ServerEventsEnum.ERROR, "room not found");
     return;
   }
 
@@ -47,9 +56,9 @@ export const revealHandler = (socket: Socket, voterId: string, payload: Payload)
     };
   }, ComputedVotesFactory.create());
 
-  room.voters.forEach((voter) => {
-    socket
-      .to(voter.id)
-      .emit(ServerEventsEnum.POINTS_REVEALED, { computedVotes });
-  });
+  socket.to(room.id).emit(ServerEventsEnum.POINTS_REVEALED, { computedVotes });
+
+  console.log(
+    `[event sent] <${ServerEventsEnum.POINTS_REVEALED}> roomId: ${room.id}`
+  );
 };

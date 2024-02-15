@@ -1,9 +1,12 @@
+import { Socket } from "socket.io";
+
 import { ServerEventsEnum } from "@ee/lib";
 
 import { rooms } from "../rooms";
-import { socket } from "..";
 
-export const disconnectedHandler = (voterId: string) => {
+export const disconnectedHandler = (socket: Socket, voterId: string) => {
+  console.log(`[event received] <disconnect> clientId: ${voterId}`);
+
   let voterIndex: number;
   const roomIndex = rooms.findIndex((room) => {
     voterIndex = room.voters.findIndex((voter) => voter.id === voterId);
@@ -24,7 +27,11 @@ export const disconnectedHandler = (voterId: string) => {
     return;
   }
 
-  room.voters.forEach((voter) => {
-    socket.to(voter.id).emit(ServerEventsEnum.VOTER_DISCONNECTED, leavingVoter);
-  });
+  socket
+    .to(room.id)
+    .emit(ServerEventsEnum.VOTER_DISCONNECTED, { leavingVoter });
+
+  console.log(
+    `[event sent] <${ServerEventsEnum.VOTER_DISCONNECTED}> roomId: ${room.id}`
+  );
 };

@@ -13,7 +13,7 @@ export class EventListenner {
   public static listen(io: Server): void {
     io.on("connection", (socket: Socket) => {
       const voterId = socket.id;
-      console.log(`[event] connection (${voterId})`);
+      console.log(`[event received] <connection> clientId: ${voterId}`);
 
       socket.on(ClientEventsEnum.CREATE_ROOM, (payload) =>
         createRoomHandler(socket, voterId, payload)
@@ -30,8 +30,7 @@ export class EventListenner {
       socket.on(ClientEventsEnum.DELETE_VOTES, (payload) =>
         deleteVotesHandler(socket, voterId, payload)
       );
-
-      socket.on("disconnect", () => disconnectedHandler(voterId));
+      socket.on("disconnect", () => disconnectedHandler(socket, voterId));
     });
   }
 }

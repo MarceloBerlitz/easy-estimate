@@ -1,3 +1,5 @@
+import crypto from "crypto";
+
 import { RoomType, VoterType } from "@ee/lib";
 
 export class RoomFactory {

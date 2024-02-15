@@ -1,12 +1,12 @@
 import { Socket } from "socket.io";
 
-import { ServerEventsEnum } from "@ee/lib";
+import { ClientEventsEnum, ServerEventsEnum } from "@ee/lib";
 
 import { rooms } from "../rooms";
 import { VoterFactory } from "../factories/voter.factory";
 
 type Payload = {
-  voterName: string;
+  name: string;
   roomId: string;
 };
 
@@ -15,19 +15,27 @@ export const joinRoomHandler = (
   voterId: string,
   payload: Payload
 ) => {
-  const newVoter = VoterFactory.create(voterId, payload.voterName);
+  console.log(
+    `[event received] <${ClientEventsEnum.JOIN_ROOM}> clientId: ${voterId}`
+  );
+
+  const newVoter = VoterFactory.create(voterId, payload.name);
   const room = rooms.find((room) => room.id === payload.roomId);
 
   if (!room) {
-    socket.to(voterId).emit(ServerEventsEnum.ERROR, "room not found");
+    socket.emit(ServerEventsEnum.ERROR, "room not found");
     return;
   }
 
   room.voters.push(newVoter);
 
-  room.voters.forEach((voter) => {
-    socket
-      .to(voter.id)
-      .emit(ServerEventsEnum.VOTER_JOINED, { voters: room.voters, newVoter });
-  });
+  socket.join(room.id);
+
+  socket
+    .to(room.id)
+    .emit(ServerEventsEnum.VOTER_JOINED, { voters: room.voters, newVoter });
+
+  console.log(
+    `[event sent] <${ServerEventsEnum.VOTER_JOINED}> roomId: ${room.id}`
+  );
 };
