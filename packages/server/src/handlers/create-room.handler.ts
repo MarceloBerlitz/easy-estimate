@@ -9,7 +9,7 @@ import { rooms } from "../rooms";
 type Payload = { name: string };
 
 export const createRoomHandler = (
-  socket: Socket,
+  io: Socket,
   voterId: string,
   payload: Payload
 ) => {
@@ -18,7 +18,7 @@ export const createRoomHandler = (
   );
 
   if (!payload.name) {
-    socket.emit(ServerEventsEnum.ERROR, "name is required");
+    io.emit(ServerEventsEnum.ERROR, "name is required");
 
     console.log(
       `[event sent] <${ServerEventsEnum.ERROR}> "name is required"`
@@ -31,9 +31,9 @@ export const createRoomHandler = (
 
   rooms.push(room);
 
-  socket.join(room.id);
+  io.join(room.id);
 
-  socket.emit(ServerEventsEnum.ROOM_CREATED, { room });
+  io.emit(ServerEventsEnum.ROOM_CREATED, { room });
 
   console.log(
     `[event sent] <${ServerEventsEnum.ROOM_CREATED}> clientId: ${voterId}`

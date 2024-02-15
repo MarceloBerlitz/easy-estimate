@@ -3,6 +3,7 @@ import { Socket } from "socket.io";
 import { ClientEventsEnum, ServerEventsEnum, VoteOptionEnum } from "@ee/lib";
 
 import { rooms } from "../rooms";
+import { socket } from "..";
 
 type Payload = {
   roomId: string;
@@ -14,7 +15,7 @@ type Payload = {
 };
 
 export const voteHandler = (
-  socket: Socket,
+  io: Socket,
   voterId: string,
   payload: Payload
 ) => {
@@ -25,7 +26,7 @@ export const voteHandler = (
   const room = rooms.find((room) => room.id === payload.roomId);
 
   if (!room) {
-    socket.emit(ServerEventsEnum.ERROR, "room not found");
+    io.emit(ServerEventsEnum.ERROR, "room not found");
     return;
   }
 
@@ -41,7 +42,7 @@ export const voteHandler = (
 
   room.votes.push({ ...payload.vote, voter });
 
-  const votersThatVoted = room.votes.map((vote) => ({ voter: vote.voter }));
+  const votersThatVoted = room.votes.map((vote) => vote.voter);
 
   socket.to(room.id).emit(ServerEventsEnum.VOTE_MADE, {
     votersThatVoted,

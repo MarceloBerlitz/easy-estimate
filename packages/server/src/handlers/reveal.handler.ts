@@ -11,6 +11,7 @@ import {
 
 import { rooms } from "../rooms";
 import { ComputedVotesFactory } from "../factories/computed-votes.factory";
+import { socket } from "..";
 
 type Payload = {
   roomId: string;
@@ -27,7 +28,7 @@ const sumParameterVote = (
 };
 
 export const revealHandler = (
-  socket: Socket,
+  io: Socket,
   voterId: string,
   payload: Payload
 ) => {
@@ -38,7 +39,7 @@ export const revealHandler = (
   const room = rooms.find((room) => room.id === payload.roomId);
 
   if (!room) {
-    socket.emit(ServerEventsEnum.ERROR, "room not found");
+    io.emit(ServerEventsEnum.ERROR, "room not found");
     return;
   }
 

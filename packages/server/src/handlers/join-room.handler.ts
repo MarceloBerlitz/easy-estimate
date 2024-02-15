@@ -4,6 +4,7 @@ import { ClientEventsEnum, ServerEventsEnum } from "@ee/lib";
 
 import { rooms } from "../rooms";
 import { VoterFactory } from "../factories/voter.factory";
+import { socket } from "..";
 
 type Payload = {
   name: string;
@@ -11,7 +12,7 @@ type Payload = {
 };
 
 export const joinRoomHandler = (
-  socket: Socket,
+  io: Socket,
   voterId: string,
   payload: Payload
 ) => {
@@ -23,13 +24,13 @@ export const joinRoomHandler = (
   const room = rooms.find((room) => room.id === payload.roomId);
 
   if (!room) {
-    socket.emit(ServerEventsEnum.ERROR, "room not found");
+    io.emit(ServerEventsEnum.ERROR, "room not found");
     return;
   }
 
   room.voters.push(newVoter);
 
-  socket.join(room.id);
+  io.join(room.id);
 
   socket
     .to(room.id)

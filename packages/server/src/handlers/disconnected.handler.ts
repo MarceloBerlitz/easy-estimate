@@ -3,8 +3,9 @@ import { Socket } from "socket.io";
 import { ServerEventsEnum } from "@ee/lib";
 
 import { rooms } from "../rooms";
+import { socket } from "..";
 
-export const disconnectedHandler = (socket: Socket, voterId: string) => {
+export const disconnectedHandler = (voterId: string) => {
   console.log(`[event received] <disconnect> clientId: ${voterId}`);
 
   let voterIndex: number;

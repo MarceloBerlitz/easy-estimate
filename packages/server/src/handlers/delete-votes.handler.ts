@@ -2,13 +2,14 @@ import { Socket } from "socket.io";
 
 import { rooms } from "../rooms";
 import { ClientEventsEnum, ServerEventsEnum } from "@ee/lib";
+import { socket } from "..";
 
 type Payload = {
   roomId: string;
 };
 
 export const deleteVotesHandler = (
-  socket: Socket,
+  io: Socket,
   voterId: string,
   payload: Payload
 ) => {
@@ -19,7 +20,7 @@ export const deleteVotesHandler = (
   const room = rooms.find((room) => room.id === payload.roomId);
 
   if (!room) {
-    socket.emit(ServerEventsEnum.ERROR, "room not found");
+    io.emit(ServerEventsEnum.ERROR, "room not found");
     return;
   }
 
