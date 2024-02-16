@@ -1,8 +1,5 @@
 version: 2.1
 
-orbs:
-  node: circleci/node@5.2
-
 executors:
   my-executor:
     docker:
@@ -14,8 +11,9 @@ jobs:
     executor: my-executor
     steps:
       - checkout
-      - node/install-packages:
-          pkg-manager: yarn
+      - run:
+          command: npm i -g yarn
+          name: Install yarn
       - run:
           command: yarn test
           name: Run tests
