@@ -2,38 +2,29 @@ import { VoteOptionEnum, VoteParametersEnum } from "@ee/lib";
 
 type Props = {
   parameter: VoteParametersEnum;
+  checked: VoteOptionEnum;
   onChange: (value: VoteOptionEnum) => void;
 };
 
-export const VoteOptionSelector = ({ parameter, onChange }: Props) => {
+export const VoteOptionSelector = ({ parameter, checked, onChange }: Props) => {
   return (
     <div>
-      <input
-        type="radio"
-        id="s"
-        name={parameter}
-        value={VoteOptionEnum.SMALL}
-        onClick={(e: any) => onChange(e.target.value)}
-      />
-      <label>S</label>
-      <br />
-      <input
-        type="radio"
-        id="m"
-        name={parameter}
-        value={VoteOptionEnum.MEDIUM}
-        onClick={(e: any) => onChange(e.target.value)}
-      />
-       <label>M</label>
-      <br />
-      <input
-        type="radio"
-        id="l"
-        name={parameter}
-        value={VoteOptionEnum.LARGE}
-        onClick={(e: any) => onChange(e.target.value)}
-      />
-       <label>L</label>
+      {Object.values(VoteOptionEnum).map((option) => {
+        return (
+          <>
+            <input
+              type="radio"
+              id={option}
+              name={parameter}
+              value={option}
+              checked={checked === option}
+              onClick={() => onChange(option)}
+            />
+            <label>{option}</label>
+            <br />
+          </>
+        );
+      })}
     </div>
   );
 };

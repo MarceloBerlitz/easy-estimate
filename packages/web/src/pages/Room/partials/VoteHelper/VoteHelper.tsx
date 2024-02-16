@@ -24,6 +24,7 @@ export const VoteHelper: React.FC<Props> = ({ currentVote, onVoteChange, allPara
             <h2>{parameter}</h2>
             <VoteOptionSelector
               parameter={parameter}
+              checked={currentVote[parameter]!}
               onChange={(val: VoteOptionEnum) =>
                 onVoteChange({ ...currentVote, [parameter]: val })
               }
