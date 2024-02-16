@@ -1,11 +1,14 @@
 version: 2.1
 
-orbs:
-  node: circleci/node@5.2
+executors:
+  my-executor:
+    docker:
+      - image: node:18-alpine
+    working_directory: /tmp
 
 jobs:
-  build: # this can be any name you choose
-    executor: node/default # use the default executor defined within the orb
+  build:
+    executor: my-executor
     steps:
       - checkout
       - node/install-packages:
@@ -17,5 +20,14 @@ jobs:
           command: yarn build
           name: Build app
       - persist_to_workspace:
-          root: ~/project
+          root: easy-estimate
           paths: .
+  deploy:
+    executor: my-executor
+    steps:
+      - attach_workspace:
+        at: /tmp/easy-estimate
+      - run:
+          name: Deploy app
+          command: |
+            scp -r ./packages/server/dist/ ${DEPLOY_USER}@${DEPLOY_HOST}:${DEPLOY_DIR}/.
