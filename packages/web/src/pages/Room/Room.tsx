@@ -87,6 +87,7 @@ export const Room = () => {
   return !room ? null : (
     <div>
       <header>
+        <h1>{voter?.name}</h1>
         <button onClick={leaveHandler}>leave</button>
       </header>
       <br />
