@@ -5,16 +5,18 @@ import React, {
   useMemo,
   useState,
 } from "react";
+import { useNavigate } from "react-router-dom";
 
 import { Socket, io } from "socket.io-client";
-import { useRoom } from "../Room/useRoom";
+
 import {
   ComputedVotesType,
   RoomType,
   ServerEventsEnum,
   VoterType,
 } from "@ee/lib";
-import { useNavigate } from "react-router-dom";
+
+import { useRoom } from "../Room/useRoom";
 import { RoutesEnum } from "../../enums/routes.enum";
 
 const SocketContext = React.createContext<{
