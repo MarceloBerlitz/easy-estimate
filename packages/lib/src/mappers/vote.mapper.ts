@@ -1,4 +1,8 @@
-import { FibonacciStoryPointsEnum, VoteOptionEnum } from "../enums";
+import {
+  FibonacciStoryPointsEnum,
+  VOTE_PARAMETERS_OPTIONS,
+  VoteOptionEnum,
+} from "../enums";
 import { VoteType } from "../types";
 
 const parametersSumToFibonacciMap: { [key: number]: FibonacciStoryPointsEnum } =
@@ -20,11 +24,11 @@ const voteOptionToValueMap = {
 
 export class VoteMapper {
   public static mapVoteToStoryPoints(vote: VoteType): FibonacciStoryPointsEnum {
-    const voteParametersValues = [vote.complexity, vote.effort, vote.risk];
-    const parametersSum = voteParametersValues.reduce(
-      (acc, cur) => acc + voteOptionToValueMap[cur],
+    const parametersSum = VOTE_PARAMETERS_OPTIONS.reduce(
+      (sum, param) => sum + voteOptionToValueMap[vote[param]],
       0
     );
+
     return parametersSumToFibonacciMap[parametersSum];
   }
 }
