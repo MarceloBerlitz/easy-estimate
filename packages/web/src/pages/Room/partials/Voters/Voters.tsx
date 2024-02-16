@@ -17,7 +17,7 @@ export const Voters: React.FC = () => {
                 {
                   room.computedVotes.votes.find(
                     (vote) => vote.voter.id === voter.id
-                  )?.storyPoints
+                  )?.storyPoints ?? "no"
                 }{" "}
                 <br />
               </span>
