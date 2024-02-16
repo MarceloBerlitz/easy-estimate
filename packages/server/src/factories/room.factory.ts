@@ -1,10 +1,13 @@
+import crypto from "crypto";
+
 import { RoomType, VoterType } from "@ee/lib";
 
 export class RoomFactory {
-    public static create(voter: VoterType): RoomType {
-        return {
-            voters: [voter],
-            areVotesVisible: false
-        }
-    }
+  public static create(voter: VoterType): RoomType {
+    return {
+      id: crypto.randomUUID(),
+      voters: [voter],
+      votes: []
+    };
+  }
 }

@@ -7,8 +7,8 @@ import { EventListenner } from "./presentation/socket/event-listenner";
 
 const app = express();
 const server = http.createServer(app);
-const io = new Server(server);
-EventListenner.listen(io);
+const socket = new Server(server, { cors: { origin: "*" } });
+EventListenner.listen(socket);
 const port = process.env.PORT || 3333;
 
 app.use(
@@ -24,4 +24,4 @@ server.listen(port, () => {
   console.log("Listening on port " + port);
 });
 
-export { io };
+export { socket };
