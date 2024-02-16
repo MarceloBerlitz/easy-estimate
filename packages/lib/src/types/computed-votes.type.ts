@@ -1,18 +1,20 @@
-import { FibonacciStoryPointsEnum, VoteOptionEnum } from "../enums";
+import {
+  FibonacciStoryPointsEnum,
+  VoteOptionEnum,
+  VoteParametersEnum,
+} from "../enums";
 import { VoterType } from "./voter.type";
 
-export type ComputedVotesParametersType = {
-    [VoteOptionEnum.SMALL]: number;
-    [VoteOptionEnum.MEDIUM]: number;
-    [VoteOptionEnum.LARGE]: number;
-}
+export type ComputedVotesParameterType = Record<VoteOptionEnum, number>;
 
-export type ComputedVotesType = {
-    complexity: ComputedVotesParametersType,
-    effort: ComputedVotesParametersType,
-    risk: ComputedVotesParametersType,
-    votes: {
-        voter: VoterType,
-        storyPoints: FibonacciStoryPointsEnum
-    }[]
-}
+export type ComputedVotesParametersType = Record<
+  VoteParametersEnum,
+  ComputedVotesParameterType
+>;
+
+export type ComputedVotesType = ComputedVotesParametersType & {
+  votes: {
+    voter: VoterType;
+    storyPoints: FibonacciStoryPointsEnum;
+  }[];
+};

@@ -1,4 +1,4 @@
-import { VoteOptionEnum, VoteParametersEnum } from "@ee/lib";
+import { VOTE_OPTIONS, VoteOptionEnum, VoteParametersEnum } from "@ee/lib";
 
 type Props = {
   parameter: VoteParametersEnum;
@@ -9,7 +9,7 @@ type Props = {
 export const VoteOptionSelector = ({ parameter, checked, onChange }: Props) => {
   return (
     <div>
-      {Object.values(VoteOptionEnum).map((option) => {
+      {VOTE_OPTIONS.map((option) => {
         return (
           <>
             <input

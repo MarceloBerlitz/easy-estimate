@@ -3,3 +3,5 @@ export enum VoteOptionEnum {
   MEDIUM = "medium",
   LARGE = "large",
 }
+
+export const VOTE_OPTIONS = Object.values(VoteOptionEnum);

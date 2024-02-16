@@ -1,7 +1,12 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
-import { ClientEventsEnum, ServerEventsEnum, VoteType } from "@ee/lib";
+import {
+  ClientEventsEnum,
+  ServerEventsEnum,
+  VOTE_PARAMETERS_OPTIONS,
+  VoteType,
+} from "@ee/lib";
 
 import { useRoom } from "../../hooks/Room/useRoom";
 import { useSocket } from "../../hooks/Socket/useSocket";
@@ -47,9 +52,7 @@ export const Room = () => {
   }, []);
 
   const allParametersSelected = useMemo(() => {
-    return (
-      !!currentVote.complexity && !!currentVote.effort && !!currentVote.risk
-    );
+    return VOTE_PARAMETERS_OPTIONS.every((param) => !!currentVote[param]);
   }, [currentVote]);
 
   const hasVotes = useMemo(() => {

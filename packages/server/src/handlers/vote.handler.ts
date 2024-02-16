@@ -1,6 +1,6 @@
 import { Socket } from "socket.io";
 
-import { ClientEventsEnum, ServerEventsEnum, VoteOptionEnum } from "@ee/lib";
+import { ClientEventsEnum, ServerEventsEnum, VoteOptionEnum, VoteParametersType } from "@ee/lib";
 
 import { rooms } from "../rooms";
 import { socket } from "..";
@@ -8,11 +8,7 @@ import { ComputedVotesMapper } from "../mappers/computed-votes.mapper";
 
 type Payload = {
   roomId: string;
-  vote: {
-    complexity: VoteOptionEnum;
-    effort: VoteOptionEnum;
-    risk: VoteOptionEnum;
-  };
+  vote: VoteParametersType;
 };
 
 export const voteHandler = (io: Socket, voterId: string, payload: Payload) => {

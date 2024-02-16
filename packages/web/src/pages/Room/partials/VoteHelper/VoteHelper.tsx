@@ -2,8 +2,8 @@ import React from "react";
 
 import {
   VoteType,
-  VoteParametersEnum,
   VoteOptionEnum,
+  VOTE_PARAMETERS_OPTIONS,
 } from "@ee/lib";
 
 import { VoteOptionSelector } from "../VoteOptionSelector/VoteOptionSelector";
@@ -15,10 +15,14 @@ type Props = {
   allParametersSelected: boolean;
 };
 
-export const VoteHelper: React.FC<Props> = ({ currentVote, onVoteChange, allParametersSelected }) => {
+export const VoteHelper: React.FC<Props> = ({
+  currentVote,
+  onVoteChange,
+  allParametersSelected,
+}) => {
   return (
     <div>
-      {Object.values(VoteParametersEnum).map((parameter) => {
+      {VOTE_PARAMETERS_OPTIONS.map((parameter) => {
         return (
           <div>
             <h2>{parameter}</h2>
