@@ -5,8 +5,18 @@
   "private": true,
   "scripts": {
     "start": "yarn workspace @ee/server start & yarn workspace @ee/web start",
-    "build": "yarn workspaces run build",
-    "build:lib": "yarn workspace @ee/lib build",
+    "prebuild": "yarn clean",
+    "build": "yarn lib:build && yarn web:build && yarn server:build",
+    "postbuild": "yarn moveweb",
+    "clean": "yarn lib:clean & yarn web:clean & yarn server:clean",
+    "lib:build": "yarn workspace @ee/lib build",
+    "lib:clean": "yarn workspace @ee/lib clean",
+    "web:build": "yarn workspace @ee/web build",
+    "web:clean": "yarn workspace @ee/web clean",
+    "server:build": "yarn workspace @ee/server build",
+    "server:clean": "yarn workspace @ee/server clean",
+    "premoveweb": "mkdir -p ./packages/server/dist/public/",
+    "moveweb": "mv ./packages/web/build/* ./packages/server/dist/public/.",
     "test": "echo 'not implemented'"
   },
   "workspaces": {

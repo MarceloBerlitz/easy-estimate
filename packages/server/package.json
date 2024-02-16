@@ -7,7 +7,8 @@
   "private": true,
   "scripts": {
     "start": "nodemon",
-    "build": "tsc --declaration"
+    "build": "tsc --declaration",
+    "clean": "rm -rf ./dist & rm -rf ./public"
   },
   "dependencies": {
     "@ee/lib": "0.1.0",
