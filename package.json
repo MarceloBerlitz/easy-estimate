@@ -6,7 +6,8 @@
   "scripts": {
     "start": "yarn workspace @ee/server start & yarn workspace @ee/web start",
     "build": "yarn workspaces run build",
-    "build:lib": "yarn workspace @ee/lib build"
+    "build:lib": "yarn workspace @ee/lib build",
+    "test": "echo 'not implemented'"
   },
   "workspaces": {
     "packages": [
