@@ -8,22 +8,20 @@ import { useSocket } from "../../hooks/Socket/useSocket";
 import { RoutesEnum } from "../../enums/routes.enum";
 import { VoteOptionSelector } from "./partials/VoteOptionSelector/VoteOptionSelector";
 import { PointsPreview } from "./partials/PointsPreview/PointsPreview";
+import { VoteHelper } from "./partials/VoteHelper/VoteHelper";
 
 export const Room = () => {
   const { room, voter, setVoter, setRoom } = useRoom();
   const { socket, isConnected } = useSocket();
   const navigate = useNavigate();
   const { roomId: roomIdParam } = useParams();
-  const [localVote, setLocalVote] = useState<Partial<VoteType>>({
+
+  const [currentVote, setCurrentVote] = useState<Partial<VoteType>>({
     voter: {
       id: voter?.id ?? "",
       name: voter?.name ?? "",
     },
   });
-
-  const areAllSelected = useMemo(() => {
-    return !!localVote.complexity && !!localVote.effort && !!localVote.risk;
-  }, [localVote]);
 
   useEffect(() => {
     if (!room) {
@@ -40,6 +38,16 @@ export const Room = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const allParametersSelected = useMemo(() => {
+    return (
+      !!currentVote.complexity && !!currentVote.effort && !!currentVote.risk
+    );
+  }, [currentVote]);
+
+  const voteChangeHandler = useCallback((vote: Partial<VoteType>) => {
+    setCurrentVote(vote);
+  }, []);
+
   const leaveHandler = useCallback(() => {
     if (isConnected) {
       socket.disconnect();
@@ -49,8 +57,8 @@ export const Room = () => {
   }, [socket, isConnected]);
 
   const voteHandler = useCallback(() => {
-    socket.emit(ClientEventsEnum.VOTE, { roomId: room!.id, vote: localVote });
-  }, [localVote, socket, room]);
+    socket.emit(ClientEventsEnum.VOTE, { roomId: room!.id, vote: currentVote });
+  }, [currentVote, socket, room]);
 
   const revealHandler = useCallback(() => {
     socket.emit(ClientEventsEnum.REVEAL, { roomId: room!.id });
@@ -70,37 +78,16 @@ export const Room = () => {
         <button onClick={leaveHandler}>leave</button>
       </header>
       <div>{JSON.stringify(room)}</div>
-      <div>
-        <h2>Complexity</h2>
-        <VoteOptionSelector
-          parameter="complexity"
-          onChange={(val) =>
-            setLocalVote((prev) => ({ ...prev, complexity: val }))
-          }
-        />
-      </div>
-      <div>
-        <h2>Effort</h2>
-        <VoteOptionSelector
-          parameter="effort"
-          onChange={(val) => setLocalVote((prev) => ({ ...prev, effort: val }))}
-        />
-      </div>
-      <div>
-        <h2>Risk</h2>
-        <VoteOptionSelector
-          parameter="risk"
-          onChange={(val) => setLocalVote((prev) => ({ ...prev, risk: val }))}
-        />
-      </div>
-      <PointsPreview
-        vote={localVote as VoteType}
-        areAllSelected={areAllSelected}
-      />{" "}
       <br />
-      <button disabled={!areAllSelected} onClick={voteHandler}>
+      <VoteHelper
+        currentVote={currentVote}
+        onVoteChange={voteChangeHandler}
+        allParametersSelected={allParametersSelected}
+      />
+      <br />
+      <button disabled={!allParametersSelected} onClick={voteHandler}>
         vote
-      </button>{" "}
+      </button>
       <br />
       {!room?.computedVotes ? (
         <button onClick={revealHandler}>reveal</button>

@@ -1,9 +1,6 @@
-import { VoteOptionEnum } from "../enums/vote-option.enum"
-import { VoterType } from "./voter.type"
+import { VoteParametersType } from "./vote-parameters.type";
+import { VoterType } from "./voter.type";
 
-export type VoteType = {
-    complexity: VoteOptionEnum,
-    effort: VoteOptionEnum,
-    risk: VoteOptionEnum,
-    voter: VoterType
-}
+export type VoteType = VoteParametersType & {
+  voter: VoterType;
+};

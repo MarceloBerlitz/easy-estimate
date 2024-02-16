@@ -1,14 +1,13 @@
-import { VoteOptionEnum } from "@ee/lib";
+import { VoteOptionEnum, VoteParametersEnum } from "@ee/lib";
 
 type Props = {
-  parameter: "complexity" | "effort" | "risk";
+  parameter: VoteParametersEnum;
   onChange: (value: VoteOptionEnum) => void;
 };
 
 export const VoteOptionSelector = ({ parameter, onChange }: Props) => {
   return (
     <div>
-       {" "}
       <input
         type="radio"
         id="s"
@@ -16,8 +15,8 @@ export const VoteOptionSelector = ({ parameter, onChange }: Props) => {
         value={VoteOptionEnum.SMALL}
         onClick={(e: any) => onChange(e.target.value)}
       />
-        <label>S</label>
-      <br /> {" "}
+      <label>S</label>
+      <br />
       <input
         type="radio"
         id="m"
@@ -25,8 +24,8 @@ export const VoteOptionSelector = ({ parameter, onChange }: Props) => {
         value={VoteOptionEnum.MEDIUM}
         onClick={(e: any) => onChange(e.target.value)}
       />
-        <label>M</label>
-      <br /> {" "}
+       <label>M</label>
+      <br />
       <input
         type="radio"
         id="l"
@@ -34,7 +33,7 @@ export const VoteOptionSelector = ({ parameter, onChange }: Props) => {
         value={VoteOptionEnum.LARGE}
         onClick={(e: any) => onChange(e.target.value)}
       />
-        <label>L</label>
+       <label>L</label>
     </div>
   );
 };
