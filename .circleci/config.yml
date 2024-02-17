@@ -18,9 +18,6 @@ jobs:
           command: npm i typescript -g
           name: Install tsc
       - run:
-          command: npm i react-scripts -g
-          name: Install react-scripts
-      - run:
           command: yarn build
           name: Build app
       - persist_to_workspace:
