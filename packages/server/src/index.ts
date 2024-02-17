@@ -1,7 +1,6 @@
 import express from "express";
 import cors from "cors";
 import http from "http";
-import path from "path";
 import { Server } from "socket.io";
 
 import { EventListenner } from "./presentation/socket/event-listenner";
@@ -19,7 +18,11 @@ app.use(
   })
 );
 
-app.use(express.static(path.join(__dirname, "public")));
+const baseDir = `${__dirname}/public/`;
+
+app.use(express.static(baseDir));
+
+app.get("*", (_, res) => res.sendFile("index.html", { root: baseDir }));
 
 server.listen(port, () => {
   console.log("Listening on port " + port);
