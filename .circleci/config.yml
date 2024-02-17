@@ -31,7 +31,7 @@ jobs:
     executor: my-executor
     steps:
       - attach_workspace:
-        at: ~/tmp
+          at: ~/tmp
       - run:
           name: Deploy app
           command: |
