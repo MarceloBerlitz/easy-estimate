@@ -20,6 +20,9 @@ jobs:
       - run:
           command: yarn build
           name: Build app
+      - run:
+          command: ls -a
+          name: Current dir
       - persist_to_workspace:
           root: easy-estimate
           paths: .
