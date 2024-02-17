@@ -27,30 +27,30 @@ jobs:
           root: ~/tmp
           paths:
             - ./*
-  deploy:
-    executor: my-executor
-    steps:
-      - attach_workspace:
-          at: ~/tmp
-      - run:
-          command: apt update
-      - run:
-          name: Install openssh-client
-          command: |
-            apt install openssh-client -y
-      - run:
-          name: Deploy app
-          command: |
-            scp -r ./packages/server/dist/* $DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_DIR/.
+  # deploy:
+  #   executor: my-executor
+  #   steps:
+  #     - attach_workspace:
+  #         at: ~/tmp
+  #     - run:
+  #         command: apt update
+  #     - run:
+  #         name: Install openssh-client
+  #         command: |
+  #           apt install openssh-client -y
+  #     - run:
+  #         name: Deploy app
+  #         command: |
+  #           scp -r ./packages/server/dist/* $DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_DIR/.
 
-workflows:
-  version: 2.1
-  build-and-deploy:
-    jobs:
-      - build
-      - deploy:
-          requires:
-            - build
-          # filters:
-          #   branches:
-          #     only: master
+# workflows:
+#   version: 2.1
+#   build-and-deploy:
+#     jobs:
+#       - build
+#       - deploy:
+#           requires:
+#             - build
+#           # filters:
+#           #   branches:
+#           #     only: master
