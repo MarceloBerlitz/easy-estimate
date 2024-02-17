@@ -33,9 +33,11 @@ jobs:
       - attach_workspace:
           at: ~/tmp
       - run:
-          name: Install openssh
+          command: apt update
+      - run:
+          name: Install openssh-client
           command: |
-            apk add openssh
+            apt install openssh-client
       - run:
           name: Deploy app
           command: |
