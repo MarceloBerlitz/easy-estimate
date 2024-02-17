@@ -24,7 +24,7 @@ jobs:
           command: ls -a
           name: Current dir
       - persist_to_workspace:
-          root: easy-estimate
+          root: /project/easy-estimate
           paths: .
   deploy:
     executor: my-executor
