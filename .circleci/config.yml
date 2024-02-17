@@ -36,6 +36,9 @@ jobs:
           name: Install openssh-client
           command: |
             apk add openssh
+      - run: cat /etc/resolv.conf
+      - run: echo -e "search ec2.internal\nnameserver 8.8.8.8\noptions ndots:0" > /etc/resolv.conf
+      - run: cat /etc/resolv.conf
       - run:
           name: Deploy app
           command: |
