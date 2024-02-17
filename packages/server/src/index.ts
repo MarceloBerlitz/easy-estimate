@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import http from "http";
+import path from "path";
 import { Server } from "socket.io";
 
 import { EventListenner } from "./presentation/socket/event-listenner";
@@ -18,7 +19,7 @@ app.use(
   })
 );
 
-app.use(express.static("public"));
+app.use(express.static(path.join(__dirname, "public")));
 
 server.listen(port, () => {
   console.log("Listening on port " + port);
