@@ -12,11 +12,11 @@ jobs:
     steps:
       - checkout
       - run:
+          command: yarn
+          name: Install packages
+      - run:
           command: yarn test
           name: Run tests
-      - run:
-          command: npm i typescript -g
-          name: Install tsc
       - run:
           command: yarn build
           name: Build app
