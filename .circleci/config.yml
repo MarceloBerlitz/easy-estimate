@@ -41,7 +41,7 @@ jobs:
       - run:
           name: Deploy app
           command: |
-            scp -r ./packages/server/dist/ ${DEPLOY_USER}:${DEPLOY_PWD}@${DEPLOY_HOST}:${DEPLOY_DIR}/.
+            scp -r ./packages/server/dist/ $DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_DIR/.
 
 workflows:
   version: 2.1
