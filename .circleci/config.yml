@@ -15,6 +15,9 @@ jobs:
           command: yarn test
           name: Run tests
       - run:
+          command: npm i typescript -g
+          name: Install tsc
+      - run:
           command: yarn build
           name: Build app
       - persist_to_workspace:
