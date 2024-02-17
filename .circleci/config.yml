@@ -4,7 +4,7 @@ executors:
   my-executor:
     docker:
       - image: node:18-alpine
-    working_directory: /tmp
+    working_directory: /project
 
 jobs:
   build:
@@ -27,7 +27,7 @@ jobs:
     executor: my-executor
     steps:
       - attach_workspace:
-        at: /tmp/easy-estimate
+        at: /project/easy-estimate
       - run:
           name: Deploy app
           command: |
