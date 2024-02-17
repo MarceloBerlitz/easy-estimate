@@ -37,7 +37,7 @@ jobs:
       - run:
           name: Install openssh-client
           command: |
-            apt install openssh-client
+            apt install openssh-client -y
       - run:
           name: Deploy app
           command: |
