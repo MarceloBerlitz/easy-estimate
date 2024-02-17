@@ -15,7 +15,7 @@ jobs:
           command: yarn test
           name: Run tests
       - run:
-          command: yarn i typescript -g
+          command: npm i typescript -g
           name: Install tsc
       - run:
           command: yarn build
