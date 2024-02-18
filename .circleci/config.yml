@@ -12,45 +12,37 @@ jobs:
     steps:
       - checkout
       - run:
-          command: yarn
           name: Install packages
+          command: yarn
       - run:
-          command: yarn test
           name: Run tests
+          command: yarn test
       - run:
-          command: yarn build
           name: Build app
+          command: yarn build
       - run:
-          command: ls -a
           name: Current dir
-      - persist_to_workspace:
-          root: ~/tmp
-          paths:
-            - ./*
-  # deploy:
-  #   executor: my-executor
-  #   steps:
-  #     - attach_workspace:
-  #         at: ~/tmp
-  #     - run:
-  #         command: apt update
-  #     - run:
-  #         name: Install openssh-client
-  #         command: |
-  #           apt install openssh-client -y
-  #     - run:
-  #         name: Deploy app
-  #         command: |
-  #           scp -r ./packages/server/dist/* $DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_DIR/.
+          command: ls -a
+  deploy:
+    executor: my-executor
+    steps:
+      - run:
+          command: apt update
+      - run:
+          name: Install curl
+          command: apt install curl -y
+      - run:
+          name: Deploy webhook
+          command: curl $DEPLOY_WEBHOOK
 
-# workflows:
-#   version: 2.1
-#   build-and-deploy:
-#     jobs:
-#       - build
-#       - deploy:
-#           requires:
-#             - build
-#           # filters:
-#           #   branches:
-#           #     only: master
+workflows:
+  version: 2.1
+  build-and-deploy:
+    jobs:
+      - build
+      - deploy:
+          requires:
+            - build
+          filters:
+            branches:
+              only: master
