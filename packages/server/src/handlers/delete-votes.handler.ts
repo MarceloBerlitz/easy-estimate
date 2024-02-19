@@ -1,7 +1,7 @@
 import { Socket } from "socket.io";
 
 import { rooms } from "../rooms";
-import { ClientEventsEnum, ServerEventsEnum } from "@ee/lib";
+import { ClientEventsEnum, ServerEventsEnum, VoterType } from "@ee/lib";
 import { socket } from "..";
 
 type Payload = {
@@ -25,7 +25,7 @@ export const deleteVotesHandler = (
   }
 
   room.votes = [];
-  room.voters.forEach(voter => {
+  room.voters.forEach((voter: VoterType) => {
     voter.hasVoted = false;
   })
   delete room.computedVotes;  

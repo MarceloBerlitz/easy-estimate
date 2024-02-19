@@ -6,7 +6,6 @@ import {
 } from "@ee/lib";
 
 import { rooms } from "../rooms";
-import { ComputedVotesFactory } from "../factories/computed-votes.factory";
 import { socket } from "..";
 import { ComputedVotesMapper } from "../mappers/computed-votes.mapper";
 

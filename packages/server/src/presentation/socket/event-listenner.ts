@@ -16,22 +16,22 @@ export class EventListenner {
       const voterId = socket.id;
       console.log(`[event received] <connection> clientId: ${voterId}`);
 
-      socket.on(ClientEventsEnum.CREATE_ROOM, (payload) =>
+      socket.on(ClientEventsEnum.CREATE_ROOM, (payload: any) =>
         createRoomHandler(socket, voterId, payload)
       );
-      socket.on(ClientEventsEnum.JOIN_ROOM, (payload) =>
+      socket.on(ClientEventsEnum.JOIN_ROOM, (payload: any) =>
         joinRoomHandler(socket, voterId, payload)
       );
-      socket.on(ClientEventsEnum.VOTE, (payload) =>
+      socket.on(ClientEventsEnum.VOTE, (payload: any) =>
         voteHandler(socket, voterId, payload)
       );
-      socket.on(ClientEventsEnum.REVEAL, (payload) =>
+      socket.on(ClientEventsEnum.REVEAL, (payload: any) =>
         revealHandler(socket, voterId, payload)
       );
-      socket.on(ClientEventsEnum.HIDE, (payload) =>
+      socket.on(ClientEventsEnum.HIDE, (payload: any) =>
         hideHandler(socket, voterId, payload)
       );
-      socket.on(ClientEventsEnum.DELETE_VOTES, (payload) =>
+      socket.on(ClientEventsEnum.DELETE_VOTES, (payload: any) =>
         deleteVotesHandler(socket, voterId, payload)
       );
       socket.on("disconnect", () => disconnectedHandler(voterId));

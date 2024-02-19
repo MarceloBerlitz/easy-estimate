@@ -1,15 +1,15 @@
-import { ServerEventsEnum } from "@ee/lib";
+import { ServerEventsEnum, VoteType, VoterType } from "@ee/lib";
 
 import { rooms } from "../rooms";
-import { socket } from "..";
 import { ComputedVotesMapper } from "../mappers/computed-votes.mapper";
+import { socket } from "..";
 
 export const disconnectedHandler = (voterId: string) => {
   console.log(`[event received] <disconnect> clientId: ${voterId}`);
 
   let voterIndex: number;
   const roomIndex = rooms.findIndex((room) => {
-    voterIndex = room.voters.findIndex((voter) => voter.id === voterId);
+    voterIndex = room.voters.findIndex((voter: VoterType) => voter.id === voterId);
     return voterIndex >= 0;
   });
 
@@ -21,7 +21,7 @@ export const disconnectedHandler = (voterId: string) => {
   const leavingVoter = room.voters[voterIndex];
 
   room.voters.splice(voterIndex, 1);
-  room.votes = room.votes.filter((vote) => vote.voter.id !== voterId);
+  room.votes = room.votes.filter((vote: VoteType) => vote.voter.id !== voterId);
   if (room.computedVotes) {
     room.computedVotes = ComputedVotesMapper.mapFromVotes(room.votes);
   }
