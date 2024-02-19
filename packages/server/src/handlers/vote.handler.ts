@@ -1,6 +1,6 @@
 import { Socket } from "socket.io";
 
-import { ClientEventsEnum, ServerEventsEnum, VoteOptionEnum, VoteParametersType } from "@ee/lib";
+import { ClientEventsEnum, ServerEventsEnum, VoteParametersType, VoteType, VoterType } from "@ee/lib";
 
 import { rooms } from "../rooms";
 import { socket } from "..";
@@ -24,14 +24,14 @@ export const voteHandler = (io: Socket, voterId: string, payload: Payload) => {
   }
 
   const currentVoteIndex = room.votes.findIndex(
-    (vote) => vote.voter.id === voterId
+    (vote: VoteType) => vote.voter.id === voterId
   );
 
   if (currentVoteIndex >= 0) {
     room.votes.splice(currentVoteIndex, 1);
   }
 
-  const voter = room.voters.find((voter) => voter.id === voterId);
+  const voter = room.voters.find((voter: VoterType) => voter.id === voterId);
   room.votes.push({ ...payload.vote, voter });
 
   voter.hasVoted = true;

@@ -5,6 +5,7 @@
   "private": true,
   "scripts": {
     "start": "yarn server:start & yarn web:start",
+    "start:prod": "node ./packages/server/dist/index.js",
     "prebuild": "yarn clean",
     "build": "yarn lib:build && yarn web:build && yarn server:build",
     "postbuild": "yarn moveweb",
