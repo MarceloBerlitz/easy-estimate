@@ -8,6 +8,8 @@ import { useSocket } from '../../hooks/Socket/useSocket';
 import { RoutesEnum } from '../../enums/routes.enum';
 import { VoteHelper } from './partials/VoteHelper/VoteHelper';
 import { Voters } from './partials/Voters/Voters';
+import { DisplayNameInput } from './partials/DisplayNameInput/DisplayNameInput';
+import { CenteredWrapper } from '../../components/CenteredWrapper';
 
 export const Room = () => {
   const { room, voter, setVoter, setRoom } = useRoom();
@@ -28,22 +30,17 @@ export const Room = () => {
   const [currentVote, setCurrentVote] = useState<Partial<VoteType>>(emptyVote);
 
   useEffect(() => {
-    if (!room) {
-      let name;
-      do {
-        name = prompt('Insert display name');
-      } while (!name);
-      socket.connect();
-      const voter = { id: socket.id!, name };
-      setVoter(voter);
-      setRoom({ id: roomIdParam!, voters: [], votes: [] });
-      socket.emit(ClientEventsEnum.JOIN_ROOM, { name, roomId: roomIdParam });
-    }
-
     socket.on(ServerEventsEnum.VOTES_DELETED, () => {
       setCurrentVote(emptyVote);
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const onJoinHandler = useCallback((name: string) => {
+    socket.connect();
+    const voter = { id: socket.id!, name };
+    setVoter(voter);
+    setRoom({ id: roomIdParam!, voters: [], votes: [] });
+    socket.emit(ClientEventsEnum.JOIN_ROOM, { name, roomId: roomIdParam });
   }, []);
 
   const allParametersSelected = useMemo(() => {
@@ -82,7 +79,11 @@ export const Room = () => {
     socket.emit(ClientEventsEnum.DELETE_VOTES, { roomId: room!.id });
   }, [socket, room]);
 
-  return !room ? null : (
+  return !room ? (
+    <CenteredWrapper>
+      <DisplayNameInput onJoin={onJoinHandler} />
+    </CenteredWrapper>
+  ) : (
     <div>
       <header>
         <h1>{voter?.name}</h1>

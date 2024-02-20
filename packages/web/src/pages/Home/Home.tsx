@@ -6,7 +6,7 @@ import { useSocket } from '../../hooks/Socket/useSocket';
 import { useRoom } from '../../hooks/Room/useRoom';
 import { CustomInput } from '../../components/CustomInput';
 import { CustomButton } from '../../components/CustomButton';
-import { HomeWrapper } from './styles';
+import { CenteredWrapper } from '../../components/CenteredWrapper';
 
 export const Home = () => {
   const { getSavedName } = useRoom();
@@ -25,7 +25,7 @@ export const Home = () => {
   }, [socket, isConnected, nameState]);
 
   return (
-    <HomeWrapper>
+    <CenteredWrapper>
       <h1>Easy Estimate</h1>
       <span>
         <CustomInput
@@ -43,6 +43,6 @@ export const Home = () => {
           Create a session
         </CustomButton>
       </span>
-    </HomeWrapper>
+    </CenteredWrapper>
   );
 };

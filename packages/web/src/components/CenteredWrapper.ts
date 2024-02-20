@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export const HomeWrapper = styled.div`
+export const CenteredWrapper = styled.div`
   width: 100%;
   box-sizing: border-box;
   display: flex;
