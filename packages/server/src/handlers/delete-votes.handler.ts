@@ -1,38 +1,30 @@
-import { Socket } from "socket.io";
+import { Socket } from 'socket.io';
 
-import { rooms } from "../rooms";
-import { ClientEventsEnum, ServerEventsEnum, VoterType } from "@ee/lib";
-import { socket } from "..";
+import { rooms } from '../rooms';
+import { ClientEventsEnum, ServerEventsEnum, VoterType } from '@ee/lib';
+import { socket } from '..';
 
-type Payload = {
+export type DeleteVotesPayload = {
   roomId: string;
 };
 
-export const deleteVotesHandler = (
-  io: Socket,
-  voterId: string,
-  payload: Payload
-) => {
-  console.log(
-    `[event received] <${ClientEventsEnum.DELETE_VOTES}> clientId: ${voterId}`
-  );
+export const deleteVotesHandler = (io: Socket, voterId: string, payload: DeleteVotesPayload) => {
+  console.log(`[event received] <${ClientEventsEnum.DELETE_VOTES}> clientId: ${voterId}`);
 
   const room = rooms.find((room) => room.id === payload.roomId);
 
   if (!room) {
-    io.emit(ServerEventsEnum.ERROR, "room not found");
+    io.emit(ServerEventsEnum.ERROR, 'room not found');
     return;
   }
 
   room.votes = [];
   room.voters.forEach((voter: VoterType) => {
     voter.hasVoted = false;
-  })
-  delete room.computedVotes;  
+  });
+  delete room.computedVotes;
 
   socket.to(room.id).emit(ServerEventsEnum.VOTES_DELETED);
 
-  console.log(
-    `[event sent] <${ServerEventsEnum.VOTES_DELETED}> roomId: ${room.id}`
-  );
+  console.log(`[event sent] <${ServerEventsEnum.VOTES_DELETED}> roomId: ${room.id}`);
 };

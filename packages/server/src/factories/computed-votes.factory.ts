@@ -3,7 +3,7 @@ import {
   ComputedVotesType,
   VOTE_OPTIONS,
   VOTE_PARAMETERS_OPTIONS,
-} from "@ee/lib";
+} from '@ee/lib';
 
 const createParameter = () => {
   return VOTE_OPTIONS.reduce((acc, cur) => ({ ...acc, [cur]: 0 }), {});

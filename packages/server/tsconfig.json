@@ -1,18 +1,14 @@
 {
-    "compilerOptions": {
-        "module": "CommonJS",
-        "noImplicitAny": true,
-        "target": "es2017",
-        "removeComments": true,
-        "preserveConstEnums": true,
-        "esModuleInterop": true,
-        "outDir": "./dist",
-        "sourceMap": true
-    },
-    "include": [
-        "src"
-    ],
-    "exclude": [
-        "**/*.spec.ts"
-    ]
+  "compilerOptions": {
+    "module": "CommonJS",
+    "noImplicitAny": true,
+    "target": "es2017",
+    "removeComments": true,
+    "preserveConstEnums": true,
+    "esModuleInterop": true,
+    "outDir": "./dist",
+    "sourceMap": true
+  },
+  "include": ["src"],
+  "exclude": ["**/*.spec.ts"]
 }

@@ -1,8 +1,8 @@
-import { ServerEventsEnum, VoteType, VoterType } from "@ee/lib";
+import { ServerEventsEnum, VoteType, VoterType } from '@ee/lib';
 
-import { rooms } from "../rooms";
-import { ComputedVotesMapper } from "../mappers/computed-votes.mapper";
-import { socket } from "..";
+import { rooms } from '../rooms';
+import { ComputedVotesMapper } from '../mappers/computed-votes.mapper';
+import { socket } from '..';
 
 export const disconnectedHandler = (voterId: string) => {
   console.log(`[event received] <disconnect> clientId: ${voterId}`);

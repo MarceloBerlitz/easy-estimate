@@ -1,4 +1,4 @@
-import { VoteMapper, VoteType } from "@ee/lib";
+import { VoteMapper, VoteType } from '@ee/lib';
 
 type Props = {
   vote: VoteType;

@@ -1,23 +1,12 @@
-import React, {
-  ReactNode,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
-import { useNavigate } from "react-router-dom";
+import React, { ReactNode, useContext, useEffect, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-import { Socket, io } from "socket.io-client";
+import { Socket, io } from 'socket.io-client';
 
-import {
-  ComputedVotesType,
-  RoomType,
-  ServerEventsEnum,
-  VoterType,
-} from "@ee/lib";
+import { ComputedVotesType, RoomType, ServerEventsEnum, VoterType } from '@ee/lib';
 
-import { useRoom } from "../Room/useRoom";
-import { RoutesEnum } from "../../enums/routes.enum";
+import { useRoom } from '../Room/useRoom';
+import { RoutesEnum } from '../../enums/routes.enum';
 
 const SocketContext = React.createContext<{
   socket?: Socket;
@@ -31,23 +20,20 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
 
   const socket = useMemo(
     () =>
-      io(
-        process.env.NODE_ENV === "development" ? "http://localhost:3333" : "",
-        {
-          autoConnect: false,
-        }
-      ),
+      io(process.env.NODE_ENV === 'development' ? 'http://localhost:3333' : '', {
+        autoConnect: false,
+      }),
     []
   );
 
   useEffect(() => {
-    socket.on("connect", () => {
+    socket.on('connect', () => {
       setIsConnected(true);
       const voterId = socket.id;
       console.log(`Voter connected on Client with id: ${voterId}`);
     });
 
-    socket.on("disconnect", () => {
+    socket.on('disconnect', () => {
       setIsConnected(false);
       console.log(`Voter disconnected`);
     });
@@ -61,29 +47,20 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
       ({ room, voter }: { room: RoomType; voter: VoterType }) => {
         setRoom(room);
         setVoter(voter);
-        navigate(RoutesEnum.ROOM.replace(":roomId", room.id));
+        navigate(RoutesEnum.ROOM.replace(':roomId', room.id));
       }
     );
 
     socket.on(
       ServerEventsEnum.VOTE_MADE,
-      ({
-        voters,
-        computedVotes,
-      }: {
-        voters: VoterType[];
-        computedVotes?: ComputedVotesType;
-      }) => {
+      ({ voters, computedVotes }: { voters: VoterType[]; computedVotes?: ComputedVotesType }) => {
         setRoom((prev) => ({ ...(prev as RoomType), voters, computedVotes }));
       }
     );
 
-    socket.on(
-      ServerEventsEnum.VOTER_JOINED,
-      ({ voters, computedVotes }): void => {
-        setRoom((prev) => ({ ...(prev as RoomType), voters, computedVotes }));
-      }
-    );
+    socket.on(ServerEventsEnum.VOTER_JOINED, ({ voters, computedVotes }): void => {
+      setRoom((prev) => ({ ...(prev as RoomType), voters, computedVotes }));
+    });
 
     socket.on(ServerEventsEnum.POINTS_REVEALED, ({ computedVotes }) => {
       setRoom((prev) => ({ ...(prev as RoomType), computedVotes }));
@@ -107,7 +84,7 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
       ({
         leavingVoter,
         voters,
-        computedVotes
+        computedVotes,
       }: {
         leavingVoter: VoterType;
         voters: VoterType[];
@@ -115,9 +92,7 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
       }) => {
         setRoom((prev) => ({
           ...(prev as RoomType),
-          votes: prev!.votes.filter(
-            (vote) => vote.voter.id !== leavingVoter.id
-          ),
+          votes: prev!.votes.filter((vote) => vote.voter.id !== leavingVoter.id),
           voters,
           computedVotes,
         }));
@@ -142,7 +117,7 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
 export const useSocket = (): { socket: Socket; isConnected?: boolean } => {
   const { socket, isConnected } = useContext(SocketContext);
   if (!socket) {
-    throw new Error("useSocket hook must be within a SocketProvider");
+    throw new Error('useSocket hook must be within a SocketProvider');
   }
   return { socket, isConnected };
 };

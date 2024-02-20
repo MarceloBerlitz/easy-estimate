@@ -1,13 +1,9 @@
-import React from "react";
+import React from 'react';
 
-import {
-  VoteType,
-  VoteOptionEnum,
-  VOTE_PARAMETERS_OPTIONS,
-} from "@ee/lib";
+import { VoteType, VoteOptionEnum, VOTE_PARAMETERS_OPTIONS } from '@ee/lib';
 
-import { VoteOptionSelector } from "../VoteOptionSelector/VoteOptionSelector";
-import { PointsPreview } from "../PointsPreview/PointsPreview";
+import { VoteOptionSelector } from '../VoteOptionSelector/VoteOptionSelector';
+import { PointsPreview } from '../PointsPreview/PointsPreview';
 
 type Props = {
   currentVote: Partial<VoteType>;
@@ -29,17 +25,12 @@ export const VoteHelper: React.FC<Props> = ({
             <VoteOptionSelector
               parameter={parameter}
               checked={currentVote[parameter]!}
-              onChange={(val: VoteOptionEnum) =>
-                onVoteChange({ ...currentVote, [parameter]: val })
-              }
+              onChange={(val: VoteOptionEnum) => onVoteChange({ ...currentVote, [parameter]: val })}
             />
           </div>
         );
       })}
-      <PointsPreview
-        vote={currentVote as VoteType}
-        areAllSelected={allParametersSelected}
-      />
+      <PointsPreview vote={currentVote as VoteType} areAllSelected={allParametersSelected} />
     </div>
   );
 };

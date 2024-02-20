@@ -1,30 +1,24 @@
-import { Socket } from "socket.io";
+import { Socket } from 'socket.io';
 
-import { ClientEventsEnum, ServerEventsEnum } from "@ee/lib";
+import { ClientEventsEnum, ServerEventsEnum } from '@ee/lib';
 
-import { rooms } from "../rooms";
-import { VoterFactory } from "../factories/voter.factory";
-import { socket } from "..";
+import { rooms } from '../rooms';
+import { VoterFactory } from '../factories/voter.factory';
+import { socket } from '..';
 
-type Payload = {
+export type JoinRoomPayload = {
   name: string;
   roomId: string;
 };
 
-export const joinRoomHandler = (
-  io: Socket,
-  voterId: string,
-  payload: Payload
-) => {
-  console.log(
-    `[event received] <${ClientEventsEnum.JOIN_ROOM}> clientId: ${voterId}`
-  );
+export const joinRoomHandler = (io: Socket, voterId: string, payload: JoinRoomPayload) => {
+  console.log(`[event received] <${ClientEventsEnum.JOIN_ROOM}> clientId: ${voterId}`);
 
   const newVoter = VoterFactory.create(voterId, payload.name);
   const room = rooms.find((room) => room.id === payload.roomId);
 
   if (!room) {
-    io.emit(ServerEventsEnum.ERROR, "room not found");
+    io.emit(ServerEventsEnum.ERROR, 'room not found');
     return;
   }
 
@@ -34,9 +28,10 @@ export const joinRoomHandler = (
 
   socket
     .to(room.id)
-    .emit(ServerEventsEnum.VOTER_JOINED, { voters: room.voters, computedVotes: room.computedVotes });
+    .emit(ServerEventsEnum.VOTER_JOINED, {
+      voters: room.voters,
+      computedVotes: room.computedVotes,
+    });
 
-  console.log(
-    `[event sent] <${ServerEventsEnum.VOTER_JOINED}> roomId: ${room.id}`
-  );
+  console.log(`[event sent] <${ServerEventsEnum.VOTER_JOINED}> roomId: ${room.id}`);
 };

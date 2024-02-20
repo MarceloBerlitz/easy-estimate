@@ -1,20 +1,15 @@
-import {
-  FibonacciStoryPointsEnum,
-  VOTE_PARAMETERS_OPTIONS,
-  VoteOptionEnum,
-} from "../enums";
-import { VoteType } from "../types";
+import { FibonacciStoryPointsEnum, VOTE_PARAMETERS_OPTIONS, VoteOptionEnum } from '../enums';
+import { VoteType } from '../types';
 
-const parametersSumToFibonacciMap: { [key: number]: FibonacciStoryPointsEnum } =
-  {
-    [3]: FibonacciStoryPointsEnum.ONE,
-    [4]: FibonacciStoryPointsEnum.TWO,
-    [5]: FibonacciStoryPointsEnum.THREE,
-    [6]: FibonacciStoryPointsEnum.FIVE,
-    [7]: FibonacciStoryPointsEnum.EIGHT,
-    [8]: FibonacciStoryPointsEnum.THIRTEEN,
-    [9]: FibonacciStoryPointsEnum.TWENTYONE,
-  };
+const parametersSumToFibonacciMap: { [key: number]: FibonacciStoryPointsEnum } = {
+  [3]: FibonacciStoryPointsEnum.ONE,
+  [4]: FibonacciStoryPointsEnum.TWO,
+  [5]: FibonacciStoryPointsEnum.THREE,
+  [6]: FibonacciStoryPointsEnum.FIVE,
+  [7]: FibonacciStoryPointsEnum.EIGHT,
+  [8]: FibonacciStoryPointsEnum.THIRTEEN,
+  [9]: FibonacciStoryPointsEnum.TWENTYONE,
+};
 
 const voteOptionToValueMap = {
   [VoteOptionEnum.SMALL]: 1,

@@ -1,4 +1,4 @@
 export enum RoutesEnum {
-  HOME = "/",
-  ROOM = "/room/:roomId",
+  HOME = '/',
+  ROOM = '/room/:roomId',
 }

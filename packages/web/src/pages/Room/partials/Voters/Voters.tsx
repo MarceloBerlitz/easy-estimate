@@ -1,6 +1,6 @@
-import React from "react";
+import React from 'react';
 
-import { useRoom } from "../../../../hooks/Room/useRoom";
+import { useRoom } from '../../../../hooks/Room/useRoom';
 
 export const Voters: React.FC = () => {
   const { room } = useRoom();
@@ -13,19 +13,16 @@ export const Voters: React.FC = () => {
           if (room.computedVotes) {
             return (
               <span key={voter.id}>
-                {voter.name} - vote:{" "}
-                {
-                  room.computedVotes.votes.find(
-                    (vote) => vote.voter.id === voter.id
-                  )?.storyPoints ?? "no"
-                }{" "}
+                {voter.name} - vote:{' '}
+                {room.computedVotes.votes.find((vote) => vote.voter.id === voter.id)?.storyPoints ??
+                  'no'}{' '}
                 <br />
               </span>
             );
           }
           return (
             <span key={voter.id}>
-              {voter.name} - votou: {voter.hasVoted ? "yes" : "no"} <br />
+              {voter.name} - votou: {voter.hasVoted ? 'yes' : 'no'} <br />
             </span>
           );
         })}

@@ -20,11 +20,15 @@
     "server:clean": "yarn workspace @ee/server clean",
     "premoveweb": "mkdir -p ./packages/server/dist/public/",
     "moveweb": "mv ./packages/web/build/* ./packages/server/dist/public/.",
-    "test": "echo 'not implemented'"
+    "test": "echo 'not implemented'",
+    "prettier": "prettier . --write"
   },
   "workspaces": {
     "packages": [
       "packages/*"
     ]
+  },
+  "devDependencies": {
+    "prettier": "^3.2.5"
   }
 }
