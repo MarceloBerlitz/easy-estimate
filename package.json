@@ -21,7 +21,7 @@
     "premoveweb": "mkdir -p ./packages/server/dist/public/",
     "moveweb": "mv ./packages/web/build/* ./packages/server/dist/public/.",
     "test": "echo 'not implemented'",
-    "prettier": "prettier . --write"
+    "prettier:fix": "prettier . --write"
   },
   "workspaces": {
     "packages": [
