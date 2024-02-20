@@ -1,31 +1,33 @@
-import { Socket } from "socket.io";
+import { Socket } from 'socket.io';
 
-import { ClientEventsEnum, ServerEventsEnum, VoteParametersType, VoteType, VoterType } from "@ee/lib";
+import {
+  ClientEventsEnum,
+  ServerEventsEnum,
+  VoteParametersType,
+  VoteType,
+  VoterType,
+} from '@ee/lib';
 
-import { rooms } from "../rooms";
-import { socket } from "..";
-import { ComputedVotesMapper } from "../mappers/computed-votes.mapper";
+import { rooms } from '../rooms';
+import { socket } from '..';
+import { ComputedVotesMapper } from '../mappers/computed-votes.mapper';
 
-type Payload = {
+export type VotePayload = {
   roomId: string;
   vote: VoteParametersType;
 };
 
-export const voteHandler = (io: Socket, voterId: string, payload: Payload) => {
-  console.log(
-    `[event received] <${ClientEventsEnum.VOTE}> clientId: ${voterId}`
-  );
+export const voteHandler = (io: Socket, voterId: string, payload: VotePayload) => {
+  console.log(`[event received] <${ClientEventsEnum.VOTE}> clientId: ${voterId}`);
 
   const room = rooms.find((room) => room.id === payload.roomId);
 
   if (!room) {
-    io.emit(ServerEventsEnum.ERROR, "room not found");
+    io.emit(ServerEventsEnum.ERROR, 'room not found');
     return;
   }
 
-  const currentVoteIndex = room.votes.findIndex(
-    (vote: VoteType) => vote.voter.id === voterId
-  );
+  const currentVoteIndex = room.votes.findIndex((vote: VoteType) => vote.voter.id === voterId);
 
   if (currentVoteIndex >= 0) {
     room.votes.splice(currentVoteIndex, 1);
@@ -45,7 +47,5 @@ export const voteHandler = (io: Socket, voterId: string, payload: Payload) => {
     ...(room.computedVotes ? { computedVotes: room.computedVotes } : {}),
   });
 
-  console.log(
-    `[event sent] <${ServerEventsEnum.VOTE_MADE}> roomId: ${room.id}`
-  );
+  console.log(`[event sent] <${ServerEventsEnum.VOTE_MADE}> roomId: ${room.id}`);
 };

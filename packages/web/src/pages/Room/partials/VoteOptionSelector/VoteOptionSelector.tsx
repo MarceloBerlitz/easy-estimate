@@ -1,4 +1,4 @@
-import { VOTE_OPTIONS, VoteOptionEnum, VoteParametersEnum } from "@ee/lib";
+import { VOTE_OPTIONS, VoteOptionEnum, VoteParametersEnum } from '@ee/lib';
 
 type Props = {
   parameter: VoteParametersEnum;

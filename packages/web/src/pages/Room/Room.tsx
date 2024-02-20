@@ -1,18 +1,13 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 
-import {
-  ClientEventsEnum,
-  ServerEventsEnum,
-  VOTE_PARAMETERS_OPTIONS,
-  VoteType,
-} from "@ee/lib";
+import { ClientEventsEnum, ServerEventsEnum, VOTE_PARAMETERS_OPTIONS, VoteType } from '@ee/lib';
 
-import { useRoom } from "../../hooks/Room/useRoom";
-import { useSocket } from "../../hooks/Socket/useSocket";
-import { RoutesEnum } from "../../enums/routes.enum";
-import { VoteHelper } from "./partials/VoteHelper/VoteHelper";
-import { Voters } from "./partials/Voters/Voters";
+import { useRoom } from '../../hooks/Room/useRoom';
+import { useSocket } from '../../hooks/Socket/useSocket';
+import { RoutesEnum } from '../../enums/routes.enum';
+import { VoteHelper } from './partials/VoteHelper/VoteHelper';
+import { Voters } from './partials/Voters/Voters';
 
 export const Room = () => {
   const { room, voter, setVoter, setRoom } = useRoom();
@@ -23,8 +18,8 @@ export const Room = () => {
   const emptyVote: Partial<VoteType> = useMemo(
     () => ({
       voter: {
-        id: voter?.id ?? "",
-        name: voter?.name ?? "",
+        id: voter?.id ?? '',
+        name: voter?.name ?? '',
       },
     }),
     [voter]
@@ -36,7 +31,7 @@ export const Room = () => {
     if (!room) {
       let name;
       do {
-        name = prompt("Insert display name");
+        name = prompt('Insert display name');
       } while (!name);
       socket.connect();
       const voter = { id: socket.id!, name };
@@ -110,7 +105,7 @@ export const Room = () => {
         </button>
       ) : (
         <button onClick={hideHandler}>hide</button>
-      )}{" "}
+      )}{' '}
       <br />
       <button onClick={deleteVotesHandler}>clear votes</button>
       <Voters />

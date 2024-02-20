@@ -1,13 +1,13 @@
-import React from "react";
-import { Navigate, Route, Routes } from "react-router-dom";
+import React from 'react';
+import { Navigate, Route, Routes } from 'react-router-dom';
 
-import { Container } from "../../components/Container/Container";
-import { RoutesEnum } from "../../enums/routes.enum";
+import { Container } from '../../components/Container/Container';
+import { RoutesEnum } from '../../enums/routes.enum';
 
-import { Home } from "../Home/Home";
-import { Room } from "../Room/Room";
-import { SocketProvider } from "../../hooks/Socket/useSocket";
-import { RoomProvider } from "../../hooks/Room/useRoom";
+import { Home } from '../Home/Home';
+import { Room } from '../Room/Room';
+import { SocketProvider } from '../../hooks/Socket/useSocket';
+import { RoomProvider } from '../../hooks/Room/useRoom';
 
 const App: React.FC = () => {
   return (

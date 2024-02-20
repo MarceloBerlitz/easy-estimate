@@ -1,4 +1,4 @@
-import { RoomType } from "@ee/lib"
+import { RoomType } from '@ee/lib';
 
 const rooms: RoomType[] = [];
 

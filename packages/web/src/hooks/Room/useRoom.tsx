@@ -1,6 +1,6 @@
-import React, { ReactNode, useContext, useState } from "react";
+import React, { ReactNode, useContext, useState } from 'react';
 
-import { RoomType, VoterType } from "@ee/lib";
+import { RoomType, VoterType } from '@ee/lib';
 
 type RoomContextType = {
   room?: RoomType;
@@ -31,7 +31,7 @@ export const RoomProvider = ({ children }: { children: ReactNode }) => {
 export const useRoom = (): RoomContextType => {
   const context = useContext(RoomContext);
   if (!context.setRoom || !context.setVoter) {
-    throw new Error("useRoom hook must be within a RoomProvider");
+    throw new Error('useRoom hook must be within a RoomProvider');
   }
   return {
     room: context.room,
