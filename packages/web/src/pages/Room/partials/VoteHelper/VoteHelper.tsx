@@ -20,7 +20,7 @@ export const VoteHelper: React.FC<Props> = ({
     <div>
       {VOTE_PARAMETERS_OPTIONS.map((parameter) => {
         return (
-          <div>
+          <div key={parameter}>
             <h2>{parameter}</h2>
             <VoteOptionSelector
               parameter={parameter}
