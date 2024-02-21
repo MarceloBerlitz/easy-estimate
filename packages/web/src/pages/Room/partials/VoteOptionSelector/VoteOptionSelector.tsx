@@ -17,8 +17,8 @@ export const VoteOptionSelector = ({ parameter, checked, onChange }: Props) => {
               id={option}
               name={parameter}
               value={option}
-              defaultChecked={checked === option}
-              onClick={() => onChange(option)}
+              checked={checked === option}
+              onChange={(e) => onChange(e.target.value as VoteOptionEnum)}
             />
             <label>{option}</label>
             <br />
