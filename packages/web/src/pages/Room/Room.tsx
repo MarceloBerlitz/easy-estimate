@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
 import { ClientEventsEnum, ServerEventsEnum, VOTE_PARAMETERS_OPTIONS, VoteType } from '@ee/lib';
 
@@ -11,7 +11,9 @@ import { Voters } from './partials/Voters/Voters';
 import { DisplayNameInput } from './partials/DisplayNameInput/DisplayNameInput';
 import { CenteredWrapper } from '../../components/CenteredWrapper';
 import { ButtonsGroup } from '../../components/ButtonsGroup';
-import { Button } from 'antd';
+import { Avatar, Button, Space } from 'antd';
+import { CustomHeader } from './styles';
+import { CopyOutlined } from '@ant-design/icons';
 
 export const Room = () => {
   const { room, voter, setVoter, setRoom } = useRoom();
@@ -89,10 +91,24 @@ export const Room = () => {
     </CenteredWrapper>
   ) : (
     <div>
-      <header>
-        <h1>{voter?.name}</h1>
-        <Button onClick={leaveHandler}>leave</Button>
-      </header>
+      <CustomHeader>
+        <Space>
+          <Avatar style={{ backgroundColor: '#1c6ed2', verticalAlign: 'middle' }} size="large">
+            {voter?.name.substring(0, 1)}{' '}
+          </Avatar>
+          <h2>{voter?.name}</h2>
+        </Space>
+        <Button onClick={leaveHandler} danger>
+          leave
+        </Button>
+      </CustomHeader>
+      <p>
+        Room ID: {roomIdParam}{' '}
+        <Button size="small" onClick={() => navigator.clipboard.writeText(window.location.href)}>
+          Copy link
+          <CopyOutlined />
+        </Button>
+      </p>
       <br />
       <VoteHelper
         currentVote={currentVote}
@@ -111,7 +127,9 @@ export const Room = () => {
         ) : (
           <Button onClick={hideHandler}>hide</Button>
         )}
-        <Button onClick={deleteVotesHandler}>clear votes</Button>
+        <Button onClick={deleteVotesHandler} danger type="primary">
+          clear votes
+        </Button>
       </ButtonsGroup>
 
       <Voters />

@@ -9,17 +9,14 @@ type Props = {
 
 export const VoteOptionSelector = ({ parameter, checked, onChange }: Props) => {
   return (
-    <Radio.Group defaultValue="a" buttonStyle="solid">
+    <Radio.Group
+      buttonStyle="solid"
+      value={checked}
+      onChange={(e) => onChange(e.target.value as VoteOptionEnum)}
+    >
       {VOTE_OPTIONS.map((option) => {
         return (
-          <Radio.Button
-            id={option}
-            key={`${parameter}-${option}`}
-            name={parameter}
-            value={option}
-            checked={checked === option}
-            onChange={(e) => onChange(e.target.value as VoteOptionEnum)}
-          >
+          <Radio.Button id={option} key={`${parameter}-${option}`} name={parameter} value={option}>
             {option}
           </Radio.Button>
         );
