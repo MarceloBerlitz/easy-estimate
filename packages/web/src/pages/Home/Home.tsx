@@ -1,11 +1,12 @@
 import { useCallback, useState } from 'react';
 
+import { Button, Input, Space } from 'antd';
+import { ArrowRightOutlined } from '@ant-design/icons';
+
 import { ClientEventsEnum } from '@ee/lib';
 
 import { useSocket } from '../../hooks/Socket/useSocket';
 import { useRoom } from '../../hooks/Room/useRoom';
-import { CustomInput } from '../../components/CustomInput';
-import { CustomButton } from '../../components/CustomButton';
 import { CenteredWrapper } from '../../components/CenteredWrapper';
 
 export const Home = () => {
@@ -28,20 +29,22 @@ export const Home = () => {
     <CenteredWrapper>
       <h1>Easy Estimate</h1>
       <span>
-        <CustomInput
-          placeholder="Insert your display name"
-          value={nameState}
-          onChange={(e) => setNameState(e.currentTarget.value)}
-          autoFocus
-          onKeyDown={(e) => {
-            if (e.key === 'Enter') createRoomHandler();
-          }}
-          size="big"
-        />
-
-        <CustomButton type="button" disabled={!nameState} onClick={createRoomHandler} size="big">
-          Create a session
-        </CustomButton>
+        <Space.Compact style={{ width: '100%' }}>
+          <Input
+            placeholder="Insert your display name"
+            value={nameState}
+            onChange={(e) => setNameState(e.currentTarget.value)}
+            autoFocus
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') createRoomHandler();
+            }}
+            size="large"
+          />
+          <Button type="primary" disabled={!nameState} onClick={createRoomHandler} size="large">
+            Create session
+            <ArrowRightOutlined />
+          </Button>
+        </Space.Compact>
       </span>
     </CenteredWrapper>
   );

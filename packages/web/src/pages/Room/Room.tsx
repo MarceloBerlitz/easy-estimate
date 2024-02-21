@@ -7,11 +7,21 @@ import { useRoom } from '../../hooks/Room/useRoom';
 import { useSocket } from '../../hooks/Socket/useSocket';
 import { RoutesEnum } from '../../enums/routes.enum';
 import { VoteHelper } from './partials/VoteHelper/VoteHelper';
-import { Voters } from './partials/Voters/Voters';
+import { Results } from './partials/Results/Results';
 import { DisplayNameInput } from './partials/DisplayNameInput/DisplayNameInput';
 import { CenteredWrapper } from '../../components/CenteredWrapper';
-import { CustomButton } from '../../components/CustomButton';
 import { ButtonsGroup } from '../../components/ButtonsGroup';
+import { Avatar, Button, Space } from 'antd';
+import { CustomHeader } from './styles';
+import {
+  CopyOutlined,
+  DeleteOutlined,
+  EyeInvisibleOutlined,
+  EyeOutlined,
+  LogoutOutlined,
+  SaveOutlined,
+} from '@ant-design/icons';
+import { ParamsCharts } from './partials/ParamsCharts/ParamsCharts';
 
 export const Room = () => {
   const { room, voter, setVoter, setRoom } = useRoom();
@@ -89,12 +99,25 @@ export const Room = () => {
     </CenteredWrapper>
   ) : (
     <div>
-      <header>
-        <h1>{voter?.name}</h1>
-        <CustomButton type="button" onClick={leaveHandler}>
+      <CustomHeader>
+        <Space>
+          <Avatar style={{ backgroundColor: '#1c6ed2', verticalAlign: 'middle' }} size="large">
+            {voter?.name.substring(0, 1)}{' '}
+          </Avatar>
+          <h2>{voter?.name}</h2>
+        </Space>
+        <Button onClick={leaveHandler} danger>
           leave
-        </CustomButton>
-      </header>
+          <LogoutOutlined />
+        </Button>
+      </CustomHeader>
+      <p>
+        Room ID: {roomIdParam}{' '}
+        <Button size="small" onClick={() => navigator.clipboard.writeText(window.location.href)}>
+          Copy link
+          <CopyOutlined />
+        </Button>
+      </p>
       <br />
       <VoteHelper
         currentVote={currentVote}
@@ -103,27 +126,38 @@ export const Room = () => {
       />
       <br />
       <ButtonsGroup>
-        <CustomButton type="button" disabled={!allParametersSelected} onClick={voteHandler}>
+        <Button
+          disabled={!allParametersSelected}
+          onClick={voteHandler}
+          type="primary"
+          icon={<SaveOutlined />}
+        >
           vote
-        </CustomButton>
+        </Button>
         {!room?.computedVotes ? (
-          <CustomButton type="button" disabled={!hasVotes} onClick={revealHandler}>
+          <Button
+            disabled={!hasVotes}
+            onClick={revealHandler}
+            type="primary"
+            icon={<EyeOutlined />}
+          >
             reveal
-          </CustomButton>
+          </Button>
         ) : (
-          <CustomButton type="button" onClick={hideHandler}>
+          <Button onClick={hideHandler} icon={<EyeInvisibleOutlined />}>
             hide
-          </CustomButton>
+          </Button>
         )}
-        <CustomButton type="button" onClick={deleteVotesHandler}>
+        <Button onClick={deleteVotesHandler} danger type="primary" icon={<DeleteOutlined />}>
           clear votes
-        </CustomButton>
+        </Button>
       </ButtonsGroup>
 
-      <Voters />
+      <Results />
       <br />
-      <h3>DEBUG</h3>
-      <div>{JSON.stringify(room)}</div>
+      <ParamsCharts computedVotes={room.computedVotes} />
+      {/* <h3>DEBUG</h3>
+      <div style={{ maxWidth: 600 }}>{JSON.stringify(room)}</div> */}
     </div>
   );
 };
