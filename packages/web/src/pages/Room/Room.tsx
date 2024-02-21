@@ -156,8 +156,8 @@ export const Room = () => {
       <Results />
       <br />
       <ParamsCharts computedVotes={room.computedVotes} />
-      <h3>DEBUG</h3>
-      <div style={{ maxWidth: 600 }}>{JSON.stringify(room)}</div>
+      {/* <h3>DEBUG</h3>
+      <div style={{ maxWidth: 600 }}>{JSON.stringify(room)}</div> */}
     </div>
   );
 };
