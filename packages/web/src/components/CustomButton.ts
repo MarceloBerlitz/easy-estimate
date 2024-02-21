@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 export const CustomButton = styled.button<{ size?: 'small' | 'big' }>`
-  padding: ${({ size }) => (size === 'big' ? '0.6rem' : '0.3rem')};
+  padding: ${({ size }) => (size === 'big' ? '0.6rem' : '0.3rem 0.5rem')};
   height: ${({ size }) => (size === 'big' ? '3rem' : '2rem')};
 
   border-radius: 0;
@@ -18,5 +18,11 @@ export const CustomButton = styled.button<{ size?: 'small' | 'big' }>`
 
   &:active {
     background-color: #5f66c2;
+  }
+
+  &:disabled {
+    background-color: #eee;
+    color: #ccc;
+    border: 1px solid #ccc;
   }
 `;
