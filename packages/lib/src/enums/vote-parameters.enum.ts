@@ -7,7 +7,7 @@ export enum VoteParametersEnum {
 export const VOTE_PARAMETERS_OPTIONS = Object.values(VoteParametersEnum);
 
 export const VOTE_PARAMETERS_TOOLTIPS = {
-  [VoteParametersEnum.COMPLEXITY]: 'Definition of complexity',
-  [VoteParametersEnum.EFFORT]: 'Definition of effort',
-  [VoteParametersEnum.RISK]: 'Definition of risk',
+  [VoteParametersEnum.COMPLEXITY]: 'Dificuldade, interação com outros times, manutenibilidade.',
+  [VoteParametersEnum.EFFORT]: 'Volume de trabalho, número de componentes envolvidos.',
+  [VoteParametersEnum.RISK]: 'Dúvidas, incertezas técnicas ou de negócio.',
 };
