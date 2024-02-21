@@ -1,10 +1,18 @@
 import React from 'react';
 
-import { VoteType, VoteOptionEnum, VOTE_PARAMETERS_OPTIONS } from '@ee/lib';
+import { Tooltip } from 'antd';
+import { InfoCircleOutlined } from '@ant-design/icons';
+
+import {
+  VoteType,
+  VoteOptionEnum,
+  VOTE_PARAMETERS_OPTIONS,
+  VOTE_PARAMETERS_TOOLTIPS,
+} from '@ee/lib';
 
 import { VoteOptionSelector } from '../VoteOptionSelector/VoteOptionSelector';
 import { PointsPreview } from '../PointsPreview/PointsPreview';
-import { ParameterWrapper, VotesHelperWrapper } from './styles';
+import { ParameterTitleWrapper, ParameterWrapper, VotesHelperWrapper } from './styles';
 
 type Props = {
   currentVote: Partial<VoteType>;
@@ -23,7 +31,12 @@ export const VoteHelper: React.FC<Props> = ({
         {VOTE_PARAMETERS_OPTIONS.map((parameter) => {
           return (
             <ParameterWrapper key={parameter}>
-              <h2>{parameter}</h2>
+              <ParameterTitleWrapper>
+                <h2>{parameter}</h2>
+                <Tooltip title={VOTE_PARAMETERS_TOOLTIPS[parameter]}>
+                  <InfoCircleOutlined style={{ marginTop: '0.5rem' }} />
+                </Tooltip>
+              </ParameterTitleWrapper>
               <VoteOptionSelector
                 parameter={parameter}
                 checked={currentVote[parameter]!}
