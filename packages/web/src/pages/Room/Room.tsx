@@ -10,8 +10,8 @@ import { VoteHelper } from './partials/VoteHelper/VoteHelper';
 import { Voters } from './partials/Voters/Voters';
 import { DisplayNameInput } from './partials/DisplayNameInput/DisplayNameInput';
 import { CenteredWrapper } from '../../components/CenteredWrapper';
-import { CustomButton } from '../../components/CustomButton';
 import { ButtonsGroup } from '../../components/ButtonsGroup';
+import { Button } from 'antd';
 
 export const Room = () => {
   const { room, voter, setVoter, setRoom } = useRoom();
@@ -91,9 +91,7 @@ export const Room = () => {
     <div>
       <header>
         <h1>{voter?.name}</h1>
-        <CustomButton type="button" onClick={leaveHandler}>
-          leave
-        </CustomButton>
+        <Button onClick={leaveHandler}>leave</Button>
       </header>
       <br />
       <VoteHelper
@@ -103,21 +101,17 @@ export const Room = () => {
       />
       <br />
       <ButtonsGroup>
-        <CustomButton type="button" disabled={!allParametersSelected} onClick={voteHandler}>
+        <Button disabled={!allParametersSelected} onClick={voteHandler}>
           vote
-        </CustomButton>
+        </Button>
         {!room?.computedVotes ? (
-          <CustomButton type="button" disabled={!hasVotes} onClick={revealHandler}>
+          <Button disabled={!hasVotes} onClick={revealHandler}>
             reveal
-          </CustomButton>
+          </Button>
         ) : (
-          <CustomButton type="button" onClick={hideHandler}>
-            hide
-          </CustomButton>
+          <Button onClick={hideHandler}>hide</Button>
         )}
-        <CustomButton type="button" onClick={deleteVotesHandler}>
-          clear votes
-        </CustomButton>
+        <Button onClick={deleteVotesHandler}>clear votes</Button>
       </ButtonsGroup>
 
       <Voters />
