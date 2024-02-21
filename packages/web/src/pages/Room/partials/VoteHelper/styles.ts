@@ -3,7 +3,7 @@ import styled from 'styled-components';
 export const VotesHelperWrapper = styled.div`
   display: flex;
   flex-direction: row;
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     flex-direction: column;
   }
   gap: 1rem;
