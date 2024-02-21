@@ -1,10 +1,17 @@
 import React from 'react';
-import { ResultCardWrapper } from './styles';
+import { BottomDot, ResultCardContentWrapper, ResultCardWrapper, TopDot } from './styles';
 
 type Props = {
   children: React.ReactNode;
+  visible: boolean;
 };
 
-export const ResultCard: React.FC<Props> = ({ children }) => {
-  return <ResultCardWrapper>{children}</ResultCardWrapper>;
+export const ResultCard: React.FC<Props> = ({ children, visible }) => {
+  return (
+    <ResultCardWrapper>
+      <TopDot visible={visible} />
+      <ResultCardContentWrapper>{children}</ResultCardContentWrapper>
+      <BottomDot visible={visible} />
+    </ResultCardWrapper>
+  );
 };
