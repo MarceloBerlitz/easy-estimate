@@ -1,11 +1,12 @@
 import React, { useMemo } from 'react';
 
+import { CheckCircleOutlined } from '@ant-design/icons';
 import { Table } from 'antd';
 
-import { useRoom } from '../../../../hooks/Room/useRoom';
-import { ResultCard } from './ResultCard/ResultCard';
 import { VoterType } from '@ee/lib';
-import { CheckCircleOutlined } from '@ant-design/icons';
+
+import { useRoom } from '../../../../hooks/Room/useRoom';
+import { ResultCard } from '../../../../components/ResultCard/ResultCard';
 
 const columns = [
   { title: 'Name', dataIndex: 'name', key: 'name' },
