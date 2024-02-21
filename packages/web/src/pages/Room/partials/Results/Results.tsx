@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 
-import { CheckCircleOutlined } from '@ant-design/icons';
+import { CheckOutlined } from '@ant-design/icons';
 import { Table } from 'antd';
 
 import { VoterType } from '@ee/lib';
@@ -15,7 +15,7 @@ const columns = [
     dataIndex: 'storyPoints',
     key: 'storyPoints',
     render: (points: React.ReactNode, other: VoterType) => (
-      <ResultCard>{other.hasVoted ? points : '-'}</ResultCard>
+      <ResultCard visible={typeof points === 'number'}>{other.hasVoted ? points : '-'}</ResultCard>
     ),
   },
 ];
@@ -30,7 +30,7 @@ export const Results: React.FC = () => {
       name: voter.name,
       hasVoted: voter.hasVoted,
       storyPoints: room?.computedVotes?.votes.find((vote) => vote.voter.id === voter.id)
-        ?.storyPoints ?? <CheckCircleOutlined />,
+        ?.storyPoints ?? <CheckOutlined />,
     }));
   }, [room?.voters, room?.computedVotes]);
 

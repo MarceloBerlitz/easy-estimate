@@ -15,11 +15,10 @@ export const PointsPreview = ({ vote, areAllSelected }: Props) => {
       {!areAllSelected ? (
         <strong>Select all parameters to see your estimative</strong>
       ) : (
-        <strong>
-          <Space>
-            Your estimative: <ResultCard>{VoteMapper.mapVoteToStoryPoints(vote)}</ResultCard>
-          </Space>
-        </strong>
+        <Space size={8}>
+          <strong>Your estimative:</strong>
+          <ResultCard visible={!!vote}>{VoteMapper.mapVoteToStoryPoints(vote)}</ResultCard>
+        </Space>
       )}
     </PointsPreviewWrapper>
   );
