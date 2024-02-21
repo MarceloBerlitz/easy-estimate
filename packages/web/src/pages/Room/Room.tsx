@@ -7,13 +7,20 @@ import { useRoom } from '../../hooks/Room/useRoom';
 import { useSocket } from '../../hooks/Socket/useSocket';
 import { RoutesEnum } from '../../enums/routes.enum';
 import { VoteHelper } from './partials/VoteHelper/VoteHelper';
-import { Voters } from './partials/Voters/Voters';
+import { Results } from './partials/Results/Results';
 import { DisplayNameInput } from './partials/DisplayNameInput/DisplayNameInput';
 import { CenteredWrapper } from '../../components/CenteredWrapper';
 import { ButtonsGroup } from '../../components/ButtonsGroup';
 import { Avatar, Button, Space } from 'antd';
 import { CustomHeader } from './styles';
-import { CopyOutlined } from '@ant-design/icons';
+import {
+  CopyOutlined,
+  DeleteOutlined,
+  EyeInvisibleOutlined,
+  EyeOutlined,
+  LogoutOutlined,
+  SaveOutlined,
+} from '@ant-design/icons';
 
 export const Room = () => {
   const { room, voter, setVoter, setRoom } = useRoom();
@@ -100,6 +107,7 @@ export const Room = () => {
         </Space>
         <Button onClick={leaveHandler} danger>
           leave
+          <LogoutOutlined />
         </Button>
       </CustomHeader>
       <p>
@@ -117,25 +125,37 @@ export const Room = () => {
       />
       <br />
       <ButtonsGroup>
-        <Button disabled={!allParametersSelected} onClick={voteHandler}>
+        <Button
+          disabled={!allParametersSelected}
+          onClick={voteHandler}
+          type="primary"
+          icon={<SaveOutlined />}
+        >
           vote
         </Button>
         {!room?.computedVotes ? (
-          <Button disabled={!hasVotes} onClick={revealHandler}>
+          <Button
+            disabled={!hasVotes}
+            onClick={revealHandler}
+            type="primary"
+            icon={<EyeOutlined />}
+          >
             reveal
           </Button>
         ) : (
-          <Button onClick={hideHandler}>hide</Button>
+          <Button onClick={hideHandler} icon={<EyeInvisibleOutlined />}>
+            hide
+          </Button>
         )}
-        <Button onClick={deleteVotesHandler} danger type="primary">
+        <Button onClick={deleteVotesHandler} danger type="primary" icon={<DeleteOutlined />}>
           clear votes
         </Button>
       </ButtonsGroup>
 
-      <Voters />
+      <Results />
       <br />
       <h3>DEBUG</h3>
-      <div>{JSON.stringify(room)}</div>
+      <div style={{ maxWidth: 600 }}>{JSON.stringify(room)}</div>
     </div>
   );
 };
