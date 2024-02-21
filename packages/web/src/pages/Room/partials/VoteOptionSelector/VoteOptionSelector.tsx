@@ -1,4 +1,4 @@
-import { VOTE_OPTIONS, VoteOptionEnum, VoteParametersEnum } from '@ee/lib';
+import { VOTE_OPTIONS, VOTE_OPTIONS_LABELS, VoteOptionEnum, VoteParametersEnum } from '@ee/lib';
 import { Radio } from 'antd';
 
 type Props = {
@@ -17,7 +17,7 @@ export const VoteOptionSelector = ({ parameter, checked, onChange }: Props) => {
       {VOTE_OPTIONS.map((option) => {
         return (
           <Radio.Button id={option} key={`${parameter}-${option}`} name={parameter} value={option}>
-            {option}
+            {VOTE_OPTIONS_LABELS[option]}
           </Radio.Button>
         );
       })}
