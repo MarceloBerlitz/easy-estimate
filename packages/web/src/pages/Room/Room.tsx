@@ -21,6 +21,7 @@ import {
   LogoutOutlined,
   SaveOutlined,
 } from '@ant-design/icons';
+import { ParamsCharts } from './partials/ParamsCharts/ParamsCharts';
 
 export const Room = () => {
   const { room, voter, setVoter, setRoom } = useRoom();
@@ -154,6 +155,7 @@ export const Room = () => {
 
       <Results />
       <br />
+      <ParamsCharts computedVotes={room.computedVotes} />
       <h3>DEBUG</h3>
       <div style={{ maxWidth: 600 }}>{JSON.stringify(room)}</div>
     </div>
