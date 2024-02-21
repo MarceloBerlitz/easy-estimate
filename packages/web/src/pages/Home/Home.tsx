@@ -3,12 +3,21 @@ import { useCallback, useState } from 'react';
 import { ClientEventsEnum } from '@ee/lib';
 
 import { useSocket } from '../../hooks/Socket/useSocket';
+import { useRoom } from '../../hooks/Room/useRoom';
+import { CustomInput } from '../../components/CustomInput';
+import { CustomButton } from '../../components/CustomButton';
+import { CenteredWrapper } from '../../components/CenteredWrapper';
 
 export const Home = () => {
-  const [nameState, setNameState] = useState('');
+  const { getSavedName } = useRoom();
+  const [nameState, setNameState] = useState(getSavedName());
   const { socket, isConnected } = useSocket();
 
   const createRoomHandler = useCallback(() => {
+    if (!nameState) {
+      return;
+    }
+
     if (!isConnected) {
       socket.connect();
     }
@@ -16,12 +25,24 @@ export const Home = () => {
   }, [socket, isConnected, nameState]);
 
   return (
-    <div>
-      <label>
-        display name
-        <input value={nameState} onChange={(e) => setNameState(e.currentTarget.value)} />
-      </label>
-      <button onClick={createRoomHandler}>create room</button>
-    </div>
+    <CenteredWrapper>
+      <h1>Easy Estimate</h1>
+      <span>
+        <CustomInput
+          placeholder="Insert your display name"
+          value={nameState}
+          onChange={(e) => setNameState(e.currentTarget.value)}
+          autoFocus
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') createRoomHandler();
+          }}
+          size="big"
+        />
+
+        <CustomButton type="button" disabled={!nameState} onClick={createRoomHandler} size="big">
+          Create a session
+        </CustomButton>
+      </span>
+    </CenteredWrapper>
   );
 };

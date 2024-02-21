@@ -1,4 +1,5 @@
 import { VoteMapper, VoteType } from '@ee/lib';
+import { PointsPreviewWrapper } from './styles';
 
 type Props = {
   vote: VoteType;
@@ -6,9 +7,13 @@ type Props = {
 };
 
 export const PointsPreview = ({ vote, areAllSelected }: Props) => {
-  if (!areAllSelected) {
-    return <>Select all parameters</>;
-  }
-
-  return <strong>{VoteMapper.mapVoteToStoryPoints(vote)}</strong>;
+  return (
+    <PointsPreviewWrapper>
+      {!areAllSelected ? (
+        <strong>Select all parameters to see your estimative</strong>
+      ) : (
+        <strong>Your estimative: {VoteMapper.mapVoteToStoryPoints(vote)}</strong>
+      )}
+    </PointsPreviewWrapper>
+  );
 };

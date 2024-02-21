@@ -4,6 +4,7 @@ import { VoteType, VoteOptionEnum, VOTE_PARAMETERS_OPTIONS } from '@ee/lib';
 
 import { VoteOptionSelector } from '../VoteOptionSelector/VoteOptionSelector';
 import { PointsPreview } from '../PointsPreview/PointsPreview';
+import { ParameterWrapper, VotesHelperWrapper } from './styles';
 
 type Props = {
   currentVote: Partial<VoteType>;
@@ -17,20 +18,24 @@ export const VoteHelper: React.FC<Props> = ({
   allParametersSelected,
 }) => {
   return (
-    <div>
-      {VOTE_PARAMETERS_OPTIONS.map((parameter) => {
-        return (
-          <div>
-            <h2>{parameter}</h2>
-            <VoteOptionSelector
-              parameter={parameter}
-              checked={currentVote[parameter]!}
-              onChange={(val: VoteOptionEnum) => onVoteChange({ ...currentVote, [parameter]: val })}
-            />
-          </div>
-        );
-      })}
+    <>
+      <VotesHelperWrapper>
+        {VOTE_PARAMETERS_OPTIONS.map((parameter) => {
+          return (
+            <ParameterWrapper key={parameter}>
+              <h2>{parameter}</h2>
+              <VoteOptionSelector
+                parameter={parameter}
+                checked={currentVote[parameter]!}
+                onChange={(val: VoteOptionEnum) =>
+                  onVoteChange({ ...currentVote, [parameter]: val })
+                }
+              />
+            </ParameterWrapper>
+          );
+        })}
+      </VotesHelperWrapper>
       <PointsPreview vote={currentVote as VoteType} areAllSelected={allParametersSelected} />
-    </div>
+    </>
   );
 };

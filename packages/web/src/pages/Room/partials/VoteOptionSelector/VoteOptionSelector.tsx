@@ -11,18 +11,18 @@ export const VoteOptionSelector = ({ parameter, checked, onChange }: Props) => {
     <div>
       {VOTE_OPTIONS.map((option) => {
         return (
-          <>
+          <div key={`${parameter}-${option}`}>
             <input
               type="radio"
               id={option}
               name={parameter}
               value={option}
-              checked={checked === option}
+              defaultChecked={checked === option}
               onClick={() => onChange(option)}
             />
             <label>{option}</label>
             <br />
-          </>
+          </div>
         );
       })}
     </div>
