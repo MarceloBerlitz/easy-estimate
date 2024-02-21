@@ -34,7 +34,7 @@ export const VoteHelper: React.FC<Props> = ({
               <ParameterTitleWrapper>
                 <h2>{parameter}</h2>
                 <Tooltip title={VOTE_PARAMETERS_TOOLTIPS[parameter]}>
-                  <InfoCircleOutlined style={{ marginTop: '0.5rem' }} />
+                  <InfoCircleOutlined />
                 </Tooltip>
               </ParameterTitleWrapper>
               <VoteOptionSelector
