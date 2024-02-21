@@ -35,6 +35,7 @@ export const Room = () => {
     socket.on(ServerEventsEnum.VOTES_DELETED, () => {
       setCurrentVote(emptyVote);
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const onJoinHandler = useCallback((name: string) => {
@@ -43,6 +44,7 @@ export const Room = () => {
     setVoter(voter);
     setRoom({ id: roomIdParam!, voters: [], votes: [] });
     socket.emit(ClientEventsEnum.JOIN_ROOM, { name, roomId: roomIdParam });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const allParametersSelected = useMemo(() => {
