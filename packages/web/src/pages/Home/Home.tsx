@@ -1,11 +1,13 @@
 import { useCallback, useState } from 'react';
 
+import { Button, Input, Space } from 'antd';
+import { ArrowRightOutlined } from '@ant-design/icons';
+
 import { ClientEventsEnum } from '@ee/lib';
 
 import { useSocket } from '../../hooks/Socket/useSocket';
 import { useRoom } from '../../hooks/Room/useRoom';
 import { CenteredWrapper } from '../../components/CenteredWrapper';
-import { Button, Input, Space } from 'antd';
 
 export const Home = () => {
   const { getSavedName } = useRoom();
@@ -39,7 +41,8 @@ export const Home = () => {
             size="large"
           />
           <Button type="primary" disabled={!nameState} onClick={createRoomHandler} size="large">
-            Submit
+            Create session
+            <ArrowRightOutlined />
           </Button>
         </Space.Compact>
       </span>

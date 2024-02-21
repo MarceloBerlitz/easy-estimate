@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 
 import { useRoom } from '../../../../hooks/Room/useRoom';
 import { Button, Input, Space } from 'antd';
+import { ArrowRightOutlined } from '@ant-design/icons';
 
 type Props = {
   onJoin: (name: string) => void;
@@ -32,7 +33,8 @@ export const DisplayNameInput: React.FC<Props> = ({ onJoin }) => {
             onClick={() => onJoin(nameState)}
             size="large"
           >
-            Submit
+            Join session
+            <ArrowRightOutlined />
           </Button>
         </Space.Compact>
       </span>
