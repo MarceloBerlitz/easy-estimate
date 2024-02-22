@@ -3,7 +3,7 @@ import styled from 'styled-components';
 export const ResultCardWrapper = styled.div`
   width: 25px;
   height: 35px;
-  border: 1px solid grey;
+  box-shadow: 1px 1px 3px grey;
   border-radius: 5px;
   display: flex;
   flex-direction: column;
