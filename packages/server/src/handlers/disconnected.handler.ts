@@ -6,6 +6,8 @@ import { socket } from '..';
 
 export const disconnectedHandler = (voterId: string) => {
   console.log(`[event received] <disconnect> clientId: ${voterId}`);
+  console.log(`[rooms]: ${socket.sockets.adapter.rooms.size}`);
+  console.log(`[clients connected]: ${socket.sockets.sockets.size}`);
 
   let voterIndex: number;
   const roomIndex = rooms.findIndex((room) => {
