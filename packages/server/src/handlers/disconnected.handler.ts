@@ -2,12 +2,11 @@ import { ServerEventsEnum, VoteType, VoterType } from '@ee/lib';
 
 import { rooms } from '../rooms';
 import { ComputedVotesMapper } from '../mappers/computed-votes.mapper';
-import { socket } from '..';
+import { io } from '..';
 
 export const disconnectedHandler = (voterId: string) => {
   console.log(`[event received] <disconnect> clientId: ${voterId}`);
-  console.log(`[rooms]: ${socket.sockets.adapter.rooms.size}`);
-  console.log(`[clients connected]: ${socket.sockets.sockets.size}`);
+  console.log(`[clients connected]: ${io.sockets.sockets.size}`);
 
   let voterIndex: number;
   const roomIndex = rooms.findIndex((room) => {
@@ -30,10 +29,11 @@ export const disconnectedHandler = (voterId: string) => {
 
   if (room.voters.length < 1) {
     rooms.splice(roomIndex, 1);
+    console.log(`[total rooms]: ${rooms.length}`);
     return;
   }
 
-  socket.to(room.id).emit(ServerEventsEnum.VOTER_DISCONNECTED, {
+  io.to(room.id).emit(ServerEventsEnum.VOTER_DISCONNECTED, {
     leavingVoter,
     voters: room.voters,
     computedVotes: room.computedVotes,
