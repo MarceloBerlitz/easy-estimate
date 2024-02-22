@@ -9,7 +9,7 @@ import {
 } from '@ee/lib';
 
 import { rooms } from '../rooms';
-import { socket } from '..';
+import { io } from '..';
 import { ComputedVotesMapper } from '../mappers/computed-votes.mapper';
 
 export type VotePayload = {
@@ -17,13 +17,13 @@ export type VotePayload = {
   vote: VoteParametersType;
 };
 
-export const voteHandler = (io: Socket, voterId: string, payload: VotePayload) => {
+export const voteHandler = (socket: Socket, voterId: string, payload: VotePayload) => {
   console.log(`[event received] <${ClientEventsEnum.VOTE}> clientId: ${voterId}`);
 
   const room = rooms.find((room) => room.id === payload.roomId);
 
   if (!room) {
-    io.emit(ServerEventsEnum.ERROR, 'room not found');
+    socket.emit(ServerEventsEnum.ERROR, 'room not found');
     return;
   }
 
@@ -42,7 +42,7 @@ export const voteHandler = (io: Socket, voterId: string, payload: VotePayload) =
     room.computedVotes = ComputedVotesMapper.mapFromVotes(room.votes);
   }
 
-  socket.to(room.id).emit(ServerEventsEnum.VOTE_MADE, {
+  io.to(room.id).emit(ServerEventsEnum.VOTE_MADE, {
     voters: room.voters,
     ...(room.computedVotes ? { computedVotes: room.computedVotes } : {}),
   });

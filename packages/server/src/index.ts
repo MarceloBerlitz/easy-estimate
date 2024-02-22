@@ -9,10 +9,10 @@ const LOCAL_WEB_URL = 'http://localhost:3000';
 
 const app = express();
 const server = http.createServer(app);
-const socket = new Server(server, {
+const io = new Server(server, {
   cors: { origin: EnvironmentHelper.isLocal() ? LOCAL_WEB_URL : null },
 });
-EventListenner.listen(socket);
+EventListenner.listen(io);
 
 const port = process.env.PORT || 3333;
 
@@ -26,4 +26,4 @@ server.listen(port, () => {
   console.log('Listening on port ' + port);
 });
 
-export { socket };
+export { io };
