@@ -6,7 +6,6 @@ import { io } from '..';
 
 export const disconnectedHandler = (voterId: string) => {
   console.log(`[event received] <disconnect> clientId: ${voterId}`);
-  console.log(`[rooms]: ${io.sockets.adapter.rooms.size}`);
   console.log(`[clients connected]: ${io.sockets.sockets.size}`);
 
   let voterIndex: number;
@@ -30,6 +29,7 @@ export const disconnectedHandler = (voterId: string) => {
 
   if (room.voters.length < 1) {
     rooms.splice(roomIndex, 1);
+    console.log(`[total rooms]: ${rooms.length}`);
     return;
   }
 

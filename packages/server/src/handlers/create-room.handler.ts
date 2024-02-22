@@ -27,5 +27,6 @@ export const createRoomHandler = (socket: Socket, voterId: string, payload: Crea
 
   socket.emit(ServerEventsEnum.ROOM_CREATED, { room, voter });
 
+  console.log(`[total rooms]: ${rooms.length}`);
   console.log(`[event sent] <${ServerEventsEnum.ROOM_CREATED}> clientId: ${voterId}`);
 };

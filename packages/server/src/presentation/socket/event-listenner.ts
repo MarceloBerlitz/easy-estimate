@@ -15,7 +15,6 @@ export class EventListenner {
     io.on('connection', (socket: Socket) => {
       const voterId = socket.id;
       console.log(`[event received] <connection> clientId: ${voterId}`);
-      console.log(`[rooms]: ${io.sockets.adapter.rooms.size}`);
       console.log(`[clients connected]: ${io.sockets.sockets.size}`);
 
       socket.on(ClientEventsEnum.CREATE_ROOM, (payload: CreateRoomPayload) =>
