@@ -29,13 +29,23 @@ export const voteHandler = (socket: Socket, voterId: string, payload: VotePayloa
     return;
   }
 
+  const voter = room.voters.find((voter: VoterType) => voter.id === voterId);
+
+  if (!voter) {
+    socket.emit(ServerEventsEnum.ERROR, 'room not found');
+    LoggerHelper.serverEvent(
+      ServerEventsEnum.ERROR,
+      `room not found: ${payload.roomId} - clientId: ${voterId}`
+    );
+    return;
+  }
+
   const currentVoteIndex = room.votes.findIndex((vote: VoteType) => vote.voter.id === voterId);
 
   if (currentVoteIndex >= 0) {
     room.votes.splice(currentVoteIndex, 1);
   }
 
-  const voter = room.voters.find((voter: VoterType) => voter.id === voterId);
   room.votes.push({ ...payload.vote, voter });
 
   voter.hasVoted = true;
