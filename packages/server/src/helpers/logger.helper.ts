@@ -42,7 +42,7 @@ export class LoggerHelper {
     event: ClientEventsEnum | 'connection' | 'disconnect',
     message: string
   ): void {
-    this.logger.info({
+    this.logger.debug({
       message,
       labels: {
         event,
@@ -53,7 +53,7 @@ export class LoggerHelper {
   }
 
   public static serverEvent(event: ServerEventsEnum, message: string): void {
-    this.logger.info({
+    this.logger.debug({
       message,
       labels: {
         event,
