@@ -13,17 +13,21 @@ export type HidePayload = {
 export const hideHandler = (socket: Socket, voterId: string, payload: HidePayload) => {
   LoggerHelper.clientEvent(ClientEventsEnum.HIDE, `clientId: ${voterId}`);
 
-  const room = rooms.find((room) => room.id === payload.roomId);
+  try {
+    const room = rooms.find((room) => room.id === payload.roomId);
 
-  if (!room) {
-    socket.emit(ServerEventsEnum.ERROR, 'room not found');
-    LoggerHelper.serverEvent(ServerEventsEnum.ERROR, `room not found: ${payload.roomId}`);
-    return;
+    if (!room) {
+      socket.emit(ServerEventsEnum.ERROR, 'room not found');
+      LoggerHelper.serverEvent(ServerEventsEnum.ERROR, `room not found: ${payload.roomId}`);
+      return;
+    }
+
+    delete room.computedVotes;
+
+    io.to(room.id).emit(ServerEventsEnum.POINTS_HIDDEN);
+
+    LoggerHelper.serverEvent(ServerEventsEnum.POINTS_HIDDEN, `roomId: ${room.id}`);
+  } catch (error) {
+    LoggerHelper.unexpectedError(error);
   }
-
-  delete room.computedVotes;
-
-  io.to(room.id).emit(ServerEventsEnum.POINTS_HIDDEN);
-
-  LoggerHelper.serverEvent(ServerEventsEnum.POINTS_HIDDEN, `roomId: ${room.id}`);
 };

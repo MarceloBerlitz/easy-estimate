@@ -16,22 +16,26 @@ export const deleteVotesHandler = (
 ) => {
   LoggerHelper.clientEvent(ClientEventsEnum.DELETE_VOTES, `clientId: ${voterId}`);
 
-  const room = rooms.find((room) => room.id === payload.roomId);
+  try {
+    const room = rooms.find((room) => room.id === payload.roomId);
 
-  if (!room) {
-    socket.emit(ServerEventsEnum.ERROR, 'room not found');
-    LoggerHelper.serverEvent(ServerEventsEnum.ERROR, `room not found: ${payload.roomId}`);
-    return;
+    if (!room) {
+      socket.emit(ServerEventsEnum.ERROR, 'room not found');
+      LoggerHelper.serverEvent(ServerEventsEnum.ERROR, `room not found: ${payload.roomId}`);
+      return;
+    }
+
+    room.votes = [];
+    room.voters.forEach((voter: VoterType) => {
+      voter.hasVoted = false;
+    });
+
+    delete room.computedVotes;
+
+    io.to(room.id).emit(ServerEventsEnum.VOTES_DELETED);
+
+    LoggerHelper.serverEvent(ServerEventsEnum.VOTES_DELETED, `roomId: ${room.id}`);
+  } catch (error) {
+    LoggerHelper.unexpectedError(error);
   }
-
-  room.votes = [];
-  room.voters.forEach((voter: VoterType) => {
-    voter.hasVoted = false;
-  });
-
-  delete room.computedVotes;
-
-  io.to(room.id).emit(ServerEventsEnum.VOTES_DELETED);
-
-  LoggerHelper.serverEvent(ServerEventsEnum.VOTES_DELETED, `roomId: ${room.id}`);
 };

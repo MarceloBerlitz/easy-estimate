@@ -73,6 +73,14 @@ export class LoggerHelper {
     });
   }
 
+  public static error(message: string, error: any): void {
+    this.logger.error({ message, error });
+  }
+
+  public static unexpectedError(error: any): void {
+    this.logger.error({ message: 'Unexpected Error', error });
+  }
+
   public static getLogger(): Logger {
     return this.logger;
   }
