@@ -1,11 +1,17 @@
 import express from 'express';
 import http from 'http';
 import { Server } from 'socket.io';
+import * as dotenv from 'dotenv';
 
 import { EventListenner } from './presentation/socket/event-listenner';
 import { EnvironmentHelper } from './helpers/environment.helper';
+import { LoggerHelper } from './helpers/logger.helper';
 
 const LOCAL_WEB_URL = 'http://localhost:3000';
+
+dotenv.config({ path: __dirname + '/.env' });
+
+LoggerHelper.createLogger();
 
 const app = express();
 const server = http.createServer(app);
