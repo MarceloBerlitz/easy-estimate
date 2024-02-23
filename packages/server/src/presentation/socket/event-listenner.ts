@@ -16,7 +16,7 @@ export class EventListenner {
     io.on('connection', (socket: Socket) => {
       const voterId = socket.id;
       LoggerHelper.clientEvent('connection', `clientId: ${voterId}`);
-      LoggerHelper.info('total clients', io.sockets.sockets.size);
+      LoggerHelper.info('total clients', `${io.sockets.sockets.size}`);
 
       socket.on(ClientEventsEnum.CREATE_ROOM, (payload: CreateRoomPayload) =>
         createRoomHandler(socket, voterId, payload)

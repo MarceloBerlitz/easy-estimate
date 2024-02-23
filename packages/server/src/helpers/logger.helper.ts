@@ -63,7 +63,7 @@ export class LoggerHelper {
     });
   }
 
-  public static info(name: 'total rooms' | 'total clients', message: string | number): void {
+  public static info(name: 'total rooms' | 'total clients', message: string): void {
     this.logger.info({
       message,
       labels: {

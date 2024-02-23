@@ -26,7 +26,7 @@ export const createRoomHandler = (socket: Socket, voterId: string, payload: Crea
     socket.join(room.id);
 
     socket.emit(ServerEventsEnum.ROOM_CREATED, { room, voter });
-    LoggerHelper.info('total rooms', rooms.length);
+    LoggerHelper.info('total rooms', `${rooms.length}`);
     LoggerHelper.serverEvent(ServerEventsEnum.ROOM_CREATED, `clientId: ${voterId}`);
   } catch (error) {
     LoggerHelper.unexpectedError(error);
