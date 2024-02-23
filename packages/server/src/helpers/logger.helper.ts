@@ -13,29 +13,28 @@ export class LoggerHelper {
       transports: [],
     });
 
-    if (process.env.NODE_ENV !== 'production') {
-      this.logger.add(
-        new winston.transports.Console({
-          format: winston.format.simple(),
-        })
-      );
-      return;
-    }
-
     this.logger.add(
-      new LokiTransport({
-        host: process.env.LOG_HOST,
-        basicAuth: `${process.env.LOG_USER}:${process.env.LOG_PWD}`,
-        json: true,
-        format: winston.format.json(),
-        replaceTimestamp: true,
-        labels: {
-          app: '@ee/server',
-          environment: process.env.NODE_ENV,
-        },
-        onConnectionError: (err) => console.error(err),
+      new winston.transports.Console({
+        format: winston.format.simple(),
       })
     );
+
+    if (process.env.NODE_ENV === 'production') {
+      this.logger.add(
+        new LokiTransport({
+          host: process.env.LOG_HOST,
+          basicAuth: `${process.env.LOG_USER}:${process.env.LOG_PWD}`,
+          json: true,
+          format: winston.format.json(),
+          replaceTimestamp: true,
+          labels: {
+            app: '@ee/server',
+            environment: process.env.NODE_ENV,
+          },
+          onConnectionError: (err) => console.error(err),
+        })
+      );
+    }
   }
 
   public static clientEvent(
