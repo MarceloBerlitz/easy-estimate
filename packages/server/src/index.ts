@@ -29,7 +29,10 @@ app.use(express.static(baseDir));
 app.get('*', (_, res) => res.sendFile('index.html', { root: baseDir }));
 
 server.listen(port, () => {
-  console.log('Listening on port ' + port);
+  LoggerHelper.getLogger().info({
+    message: 'Listening on port ' + port,
+    labels: { name: 'listening', type: 'info' },
+  });
 });
 
 export { io };

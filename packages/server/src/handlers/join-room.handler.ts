@@ -33,5 +33,5 @@ export const joinRoomHandler = (socket: Socket, voterId: string, payload: JoinRo
     computedVotes: room.computedVotes,
   });
 
-  console.log(`[event sent] <${ServerEventsEnum.VOTER_JOINED}> roomId: ${room.id}`);
+  LoggerHelper.serverEvent(ServerEventsEnum.VOTER_JOINED, `roomId: ${room.id}`);
 };

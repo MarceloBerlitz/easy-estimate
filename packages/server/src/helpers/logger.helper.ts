@@ -69,4 +69,8 @@ export class LoggerHelper {
       },
     });
   }
+
+  public static getLogger(): Logger {
+    return this.logger;
+  }
 }
