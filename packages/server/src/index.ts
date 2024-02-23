@@ -1,11 +1,17 @@
 import express from 'express';
 import http from 'http';
 import { Server } from 'socket.io';
+import * as dotenv from 'dotenv';
 
 import { EventListenner } from './presentation/socket/event-listenner';
 import { EnvironmentHelper } from './helpers/environment.helper';
+import { LoggerHelper } from './helpers/logger.helper';
 
 const LOCAL_WEB_URL = 'http://localhost:3000';
+
+dotenv.config({ path: __dirname + '/.env' });
+
+LoggerHelper.createLogger();
 
 const app = express();
 const server = http.createServer(app);
@@ -23,7 +29,10 @@ app.use(express.static(baseDir));
 app.get('*', (_, res) => res.sendFile('index.html', { root: baseDir }));
 
 server.listen(port, () => {
-  console.log('Listening on port ' + port);
+  LoggerHelper.getLogger().info({
+    message: 'Listening on port ' + port,
+    labels: { name: 'listening', type: 'info' },
+  });
 });
 
 export { io };

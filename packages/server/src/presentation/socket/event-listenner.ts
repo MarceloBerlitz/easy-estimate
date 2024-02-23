@@ -9,13 +9,14 @@ import { VotePayload, voteHandler } from '../../handlers/vote.handler';
 import { RevealPayload, revealHandler } from '../../handlers/reveal.handler';
 import { DeleteVotesPayload, deleteVotesHandler } from '../../handlers/delete-votes.handler';
 import { HidePayload, hideHandler } from '../../handlers/hide.handler';
+import { LoggerHelper } from '../../helpers/logger.helper';
 
 export class EventListenner {
   public static listen(io: Server): void {
     io.on('connection', (socket: Socket) => {
       const voterId = socket.id;
-      console.log(`[event received] <connection> clientId: ${voterId}`);
-      console.log(`[clients connected]: ${io.sockets.sockets.size}`);
+      LoggerHelper.clientEvent('connection', `clientId: ${voterId}`);
+      LoggerHelper.info('total clients', io.sockets.sockets.size);
 
       socket.on(ClientEventsEnum.CREATE_ROOM, (payload: CreateRoomPayload) =>
         createRoomHandler(socket, voterId, payload)
