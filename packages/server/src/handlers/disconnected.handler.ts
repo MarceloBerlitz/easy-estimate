@@ -7,7 +7,7 @@ import { LoggerHelper } from '../helpers/logger.helper';
 
 export const disconnectedHandler = (voterId: string) => {
   LoggerHelper.clientEvent('disconnect', `clientId: ${voterId}`);
-  LoggerHelper.info('total clients', io.sockets.sockets.size);
+  LoggerHelper.info('total clients', `${io.sockets.sockets.size}`);
 
   try {
     let voterIndex: number;
@@ -31,7 +31,7 @@ export const disconnectedHandler = (voterId: string) => {
 
     if (room.voters.length < 1) {
       rooms.splice(roomIndex, 1);
-      LoggerHelper.info('total rooms', rooms.length);
+      LoggerHelper.info('total rooms', `${rooms.length}`);
       return;
     }
 

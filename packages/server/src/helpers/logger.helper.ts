@@ -13,27 +13,27 @@ export class LoggerHelper {
       transports: [],
     });
 
-    if (process.env.NODE_ENV === 'production') {
+    if (process.env.NODE_ENV !== 'production') {
       this.logger.add(
-        new LokiTransport({
-          host: process.env.LOG_HOST,
-          basicAuth: `${process.env.LOG_USER}:${process.env.LOG_PWD}`,
-          json: true,
-          format: winston.format.json(),
-          replaceTimestamp: true,
-          labels: {
-            app: '@ee/server',
-            environment: process.env.NODE_ENV,
-          },
-          onConnectionError: (err) => console.error(err),
+        new winston.transports.Console({
+          format: winston.format.simple(),
         })
       );
       return;
     }
 
     this.logger.add(
-      new winston.transports.Console({
-        format: winston.format.simple(),
+      new LokiTransport({
+        host: process.env.LOG_HOST,
+        basicAuth: `${process.env.LOG_USER}:${process.env.LOG_PWD}`,
+        json: true,
+        format: winston.format.json(),
+        replaceTimestamp: true,
+        labels: {
+          app: '@ee/server',
+          environment: process.env.NODE_ENV,
+        },
+        onConnectionError: (err) => console.error(err),
       })
     );
   }
@@ -63,7 +63,7 @@ export class LoggerHelper {
     });
   }
 
-  public static info(name: 'total rooms' | 'total clients', message: string | number): void {
+  public static info(name: 'total rooms' | 'total clients', message: string): void {
     this.logger.info({
       message,
       labels: {
