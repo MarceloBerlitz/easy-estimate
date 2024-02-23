@@ -3,6 +3,7 @@ import { Socket } from 'socket.io';
 import { rooms } from '../rooms';
 import { ClientEventsEnum, ServerEventsEnum, VoterType } from '@ee/lib';
 import { io } from '..';
+import { LoggerHelper } from '../helpers/logger.helper';
 
 export type DeleteVotesPayload = {
   roomId: string;
@@ -13,12 +14,13 @@ export const deleteVotesHandler = (
   voterId: string,
   payload: DeleteVotesPayload
 ) => {
-  console.log(`[event received] <${ClientEventsEnum.DELETE_VOTES}> clientId: ${voterId}`);
+  LoggerHelper.clientEvent(ClientEventsEnum.DELETE_VOTES, `clientId: ${voterId}`);
 
   const room = rooms.find((room) => room.id === payload.roomId);
 
   if (!room) {
     socket.emit(ServerEventsEnum.ERROR, 'room not found');
+    LoggerHelper.serverEvent(ServerEventsEnum.ERROR, `room not found: ${payload.roomId}`);
     return;
   }
 
@@ -31,5 +33,5 @@ export const deleteVotesHandler = (
 
   io.to(room.id).emit(ServerEventsEnum.VOTES_DELETED);
 
-  console.log(`[event sent] <${ServerEventsEnum.VOTES_DELETED}> roomId: ${room.id}`);
+  LoggerHelper.serverEvent(ServerEventsEnum.VOTES_DELETED, `roomId: ${room.id}`);
 };

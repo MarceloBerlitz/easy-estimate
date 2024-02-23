@@ -5,18 +5,20 @@ import { ClientEventsEnum, ServerEventsEnum } from '@ee/lib';
 import { rooms } from '../rooms';
 import { io } from '..';
 import { ComputedVotesMapper } from '../mappers/computed-votes.mapper';
+import { LoggerHelper } from '../helpers/logger.helper';
 
 export type RevealPayload = {
   roomId: string;
 };
 
 export const revealHandler = (socket: Socket, voterId: string, payload: RevealPayload) => {
-  console.log(`[event received] <${ClientEventsEnum.REVEAL}> clientId: ${voterId}`);
+  LoggerHelper.clientEvent(ClientEventsEnum.REVEAL, `clientId: ${voterId}`);
 
   const room = rooms.find((room) => room.id === payload.roomId);
 
   if (!room) {
     socket.emit(ServerEventsEnum.ERROR, 'room not found');
+    LoggerHelper.serverEvent(ServerEventsEnum.ERROR, `room not found: ${payload.roomId}`);
     return;
   }
 
@@ -28,5 +30,5 @@ export const revealHandler = (socket: Socket, voterId: string, payload: RevealPa
     computedVotes: room.computedVotes,
   });
 
-  console.log(`[event sent] <${ServerEventsEnum.POINTS_REVEALED}> roomId: ${room.id}`);
+  LoggerHelper.serverEvent(ServerEventsEnum.POINTS_REVEALED, `roomId: ${room.id}`);
 };

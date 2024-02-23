@@ -14,7 +14,6 @@ export const createRoomHandler = (socket: Socket, voterId: string, payload: Crea
 
   if (!payload.name) {
     socket.emit(ServerEventsEnum.ERROR, 'name is required');
-    LoggerHelper.serverEvent(ServerEventsEnum.ERROR, 'name is required');
     return;
   }
 

@@ -35,7 +35,10 @@ export class LoggerHelper {
     }
   }
 
-  public static clientEvent(event: ClientEventsEnum, message: string): void {
+  public static clientEvent(
+    event: ClientEventsEnum | 'connection' | 'disconnect',
+    message: string
+  ): void {
     this.logger.info({
       message,
       labels: {
