@@ -10,7 +10,11 @@ export class LoggerHelper {
     this.logger = winston.createLogger({
       level: process.env.LOG_LEVEL ?? 'info',
       exitOnError: true,
-      transports: [
+      transports: [],
+    });
+
+    if (process.env.NODE_ENV === 'production') {
+      this.logger.add(
         new LokiTransport({
           host: process.env.LOG_HOST,
           basicAuth: `${process.env.LOG_USER}:${process.env.LOG_PWD}`,
@@ -22,17 +26,16 @@ export class LoggerHelper {
             environment: process.env.NODE_ENV,
           },
           onConnectionError: (err) => console.error(err),
-        }),
-      ],
-    });
-
-    if (process.env.NODE_ENV !== 'production') {
-      this.logger.add(
-        new winston.transports.Console({
-          format: winston.format.simple(),
         })
       );
+      return;
     }
+
+    this.logger.add(
+      new winston.transports.Console({
+        format: winston.format.simple(),
+      })
+    );
   }
 
   public static clientEvent(
