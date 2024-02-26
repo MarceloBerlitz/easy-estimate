@@ -95,8 +95,10 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
         voters: VoterType[];
         computedVotes?: ComputedVotesType;
       }) => {
+        let isMe = false;
         setRoom((prev) => {
           if (localVoter.id === logoutVoter.id) {
+            isMe = true;
             return {};
           }
           return {
@@ -106,7 +108,9 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
             computedVotes,
           };
         });
-        navigate(RoutesEnum.HOME);
+        if (isMe) {
+          navigate(RoutesEnum.HOME);
+        }
       }
     );
 
