@@ -3,24 +3,34 @@ import React, { ReactNode, useContext, useEffect, useState } from 'react';
 import { RoomType, VoterType } from '@ee/lib';
 
 type RoomContextType = {
-  room?: RoomType;
-  voter?: VoterType;
-  setRoom: React.Dispatch<React.SetStateAction<RoomType | undefined>>;
-  setVoter: React.Dispatch<React.SetStateAction<VoterType | undefined>>;
-  getSavedName: () => string;
+  room: Partial<RoomType>;
+  voter: VoterType;
+  setRoom: React.Dispatch<React.SetStateAction<Partial<RoomType>>>;
+  setVoter: React.Dispatch<React.SetStateAction<VoterType>>;
 };
 
-const RoomContext = React.createContext<Partial<RoomContextType>>({});
+const RoomContext = React.createContext<RoomContextType>({
+  voter: { name: '', id: '' },
+  room: {} as any,
+  setRoom: () => {},
+  setVoter: () => {},
+});
 
 export const RoomProvider = ({ children }: { children: ReactNode }) => {
-  const [roomState, setRoomState] = useState<RoomType | undefined>();
-  const [voterState, setVoterState] = useState<VoterType | undefined>();
+  const [roomState, setRoomState] = useState<Partial<RoomType>>(
+    JSON.parse(localStorage.getItem('room') ?? '{}')
+  );
+  const [voterState, setVoterState] = useState<VoterType>(
+    JSON.parse(localStorage.getItem('voter') ?? '{}')
+  );
 
   useEffect(() => {
-    if (voterState?.name) {
-      localStorage.setItem('name', voterState.name);
-    }
+    localStorage.setItem('voter', JSON.stringify(voterState));
   }, [voterState]);
+
+  useEffect(() => {
+    localStorage.setItem('room', JSON.stringify(roomState));
+  }, [roomState]);
 
   return (
     <RoomContext.Provider
@@ -46,6 +56,5 @@ export const useRoom = (): RoomContextType => {
     voter: context.voter,
     setRoom: context.setRoom,
     setVoter: context.setVoter,
-    getSavedName: () => localStorage.getItem('name') ?? '',
   };
 };

@@ -14,7 +14,7 @@ const SocketContext = React.createContext<{
 }>({});
 
 export const SocketProvider = ({ children }: { children: ReactNode }) => {
-  const { setRoom, setVoter } = useRoom();
+  const { setRoom, setVoter, voter: localVoter } = useRoom();
   const navigate = useNavigate();
   const [isConnected, setIsConnected] = useState(false);
 
@@ -34,6 +34,7 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
     });
 
     socket.on('disconnect', () => {
+      setRoom({});
       setIsConnected(false);
       console.log(`Voter disconnected`);
     });
@@ -58,8 +59,11 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
       }
     );
 
-    socket.on(ServerEventsEnum.VOTER_JOINED, ({ voters, computedVotes }): void => {
+    socket.on(ServerEventsEnum.VOTER_JOINED, ({ voter, voters, computedVotes }): void => {
       setRoom((prev) => ({ ...(prev as RoomType), voters, computedVotes }));
+      if (voter.clientId === socket.id) {
+        setVoter((prev) => ({ ...prev, id: voter.id }));
+      }
     });
 
     socket.on(ServerEventsEnum.POINTS_REVEALED, ({ computedVotes }) => {
@@ -75,24 +79,41 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
         ...(prev as RoomType),
         votes: [],
         computedVotes: undefined,
-        voters: prev!.voters.map((voter) => ({ ...voter, hasVoted: false })),
+        voters: prev!.voters?.map((voter) => ({ ...voter, hasVoted: false })),
       }));
     });
 
     socket.on(
-      ServerEventsEnum.VOTER_DISCONNECTED,
+      ServerEventsEnum.LOGGED_OUT,
       ({
-        leavingVoter,
+        logoutVoter,
         voters,
         computedVotes,
       }: {
-        leavingVoter: VoterType;
+        logoutVoter: VoterType;
         voters: VoterType[];
         computedVotes?: ComputedVotesType;
       }) => {
+        setRoom((prev) => {
+          if (localVoter.id === logoutVoter.id) {
+            return {};
+          }
+          return {
+            ...(prev as RoomType),
+            votes: prev!.votes!.filter((vote) => vote.voter.id !== logoutVoter.id),
+            voters,
+            computedVotes,
+          };
+        });
+        navigate(RoutesEnum.HOME);
+      }
+    );
+
+    socket.on(
+      ServerEventsEnum.VOTER_DISCONNECTED,
+      ({ voters, computedVotes }: { voters: VoterType[]; computedVotes?: ComputedVotesType }) => {
         setRoom((prev) => ({
           ...(prev as RoomType),
-          votes: prev!.votes.filter((vote) => vote.voter.id !== leavingVoter.id),
           voters,
           computedVotes,
         }));

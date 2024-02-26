@@ -11,7 +11,7 @@ import { Results } from './partials/Results/Results';
 import { DisplayNameInput } from './partials/DisplayNameInput/DisplayNameInput';
 import { CenteredWrapper } from '../../components/CenteredWrapper';
 import { ButtonsGroup } from '../../components/ButtonsGroup';
-import { Avatar, Button, Space } from 'antd';
+import { Avatar, Button, Modal, Space } from 'antd';
 import { CustomHeader } from './styles';
 import {
   CopyOutlined,
@@ -42,15 +42,36 @@ export const Room = () => {
   const [currentVote, setCurrentVote] = useState<Partial<VoteType>>(emptyVote);
 
   useEffect(() => {
+    if (!isConnected) {
+      socket.connect();
+    }
+
     socket.on(ServerEventsEnum.VOTES_DELETED, () => {
       setCurrentVote(emptyVote);
     });
+
+    socket.on('connect', () => {
+      const createdRightnow = localStorage.getItem('created');
+      localStorage.setItem('created', '');
+      if (!createdRightnow && room?.id === roomIdParam && voter.id && voter.name) {
+        socket.emit(ClientEventsEnum.JOIN_ROOM, {
+          name: voter.name,
+          voterId: voter.id,
+          roomId: roomIdParam,
+        });
+      }
+    });
+
+    // return () => {
+    //   if (isConnected) {
+    //     socket.disconnect();
+    //   }
+    // };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const onJoinHandler = useCallback((name: string) => {
-    socket.connect();
-    const voter = { id: socket.id!, name };
+    const voter = { name, clientId: socket.id, id: '' };
     setVoter(voter);
     setRoom({ id: roomIdParam!, voters: [], votes: [] });
     socket.emit(ClientEventsEnum.JOIN_ROOM, { name, roomId: roomIdParam });
@@ -62,7 +83,7 @@ export const Room = () => {
   }, [currentVote]);
 
   const hasVotes = useMemo(() => {
-    return room?.voters.some((voter) => voter.hasVoted);
+    return room?.voters?.some((voter) => voter.hasVoted);
   }, [room?.voters]);
 
   const voteChangeHandler = useCallback((vote: Partial<VoteType>) => {
@@ -70,30 +91,32 @@ export const Room = () => {
   }, []);
 
   const leaveHandler = useCallback(() => {
-    if (isConnected) {
-      socket.disconnect();
-    }
-    navigate(RoutesEnum.HOME);
+    socket.emit(ClientEventsEnum.LOGOUT, { roomId: room.id, voterId: voter.id });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [socket, isConnected]);
+  }, [socket, isConnected, room, voter]);
 
   const voteHandler = useCallback(() => {
-    socket.emit(ClientEventsEnum.VOTE, { roomId: room!.id, vote: currentVote });
-  }, [currentVote, socket, room]);
+    socket.emit(ClientEventsEnum.VOTE, { roomId: room!.id, vote: currentVote, voterId: voter.id });
+  }, [currentVote, socket, room, voter]);
 
   const revealHandler = useCallback(() => {
-    socket.emit(ClientEventsEnum.REVEAL, { roomId: room!.id });
-  }, [socket, room]);
+    socket.emit(ClientEventsEnum.REVEAL, { roomId: room!.id, voterId: voter.id });
+  }, [socket, room, voter]);
 
   const hideHandler = useCallback(() => {
-    socket.emit(ClientEventsEnum.HIDE, { roomId: room!.id });
-  }, [socket, room]);
+    socket.emit(ClientEventsEnum.HIDE, { roomId: room!.id, voterId: voter.id });
+  }, [socket, room, voter]);
 
   const deleteVotesHandler = useCallback(() => {
-    socket.emit(ClientEventsEnum.DELETE_VOTES, { roomId: room!.id });
-  }, [socket, room]);
+    Modal.confirm({
+      title: 'You are going to clear all votes. Are you sure?',
+      onOk: () => {
+        socket.emit(ClientEventsEnum.DELETE_VOTES, { roomId: room!.id, voterId: voter.id });
+      },
+    });
+  }, [socket, room, voter]);
 
-  return !room ? (
+  return !room?.id ? (
     <CenteredWrapper>
       <DisplayNameInput onJoin={onJoinHandler} />
     </CenteredWrapper>
