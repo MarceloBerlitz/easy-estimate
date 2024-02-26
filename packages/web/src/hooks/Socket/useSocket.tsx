@@ -7,6 +7,7 @@ import { ComputedVotesType, RoomType, ServerEventsEnum, VoterType } from '@ee/li
 
 import { useRoom } from '../Room/useRoom';
 import { RoutesEnum } from '../../enums/routes.enum';
+import { Modal } from 'antd';
 
 const SocketContext = React.createContext<{
   socket?: Socket;
@@ -40,7 +41,7 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
     });
 
     socket.on(ServerEventsEnum.ERROR, (payload) => {
-      alert(JSON.stringify(payload));
+      Modal.error({ title: JSON.stringify(payload) });
     });
 
     socket.on(

@@ -11,7 +11,7 @@ type RoomContextType = {
 
 const RoomContext = React.createContext<RoomContextType>({
   voter: { name: '', id: '' },
-  room: {} as any,
+  room: {},
   setRoom: () => {},
   setVoter: () => {},
 });

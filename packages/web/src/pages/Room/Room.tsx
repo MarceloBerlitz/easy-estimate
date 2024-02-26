@@ -1,6 +1,16 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
+import { Avatar, Button, Modal, Space } from 'antd';
+import {
+  CopyOutlined,
+  DeleteOutlined,
+  EyeInvisibleOutlined,
+  EyeOutlined,
+  LogoutOutlined,
+  SaveOutlined,
+} from '@ant-design/icons';
+
 import { ClientEventsEnum, ServerEventsEnum, VOTE_PARAMETERS_OPTIONS, VoteType } from '@ee/lib';
 
 import { useRoom } from '../../hooks/Room/useRoom';
@@ -10,16 +20,7 @@ import { Results } from './partials/Results/Results';
 import { DisplayNameInput } from './partials/DisplayNameInput/DisplayNameInput';
 import { CenteredWrapper } from '../../components/CenteredWrapper';
 import { ButtonsGroup } from '../../components/ButtonsGroup';
-import { Avatar, Button, Modal, Space } from 'antd';
 import { CustomHeader } from './styles';
-import {
-  CopyOutlined,
-  DeleteOutlined,
-  EyeInvisibleOutlined,
-  EyeOutlined,
-  LogoutOutlined,
-  SaveOutlined,
-} from '@ant-design/icons';
 import { ParamsCharts } from './partials/ParamsCharts/ParamsCharts';
 
 export const Room = () => {
@@ -60,11 +61,6 @@ export const Room = () => {
       }
     });
 
-    // return () => {
-    //   if (isConnected) {
-    //     socket.disconnect();
-    //   }
-    // };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -73,6 +69,7 @@ export const Room = () => {
     setVoter(voter);
     setRoom({ id: roomIdParam!, voters: [], votes: [] });
     socket.emit(ClientEventsEnum.JOIN_ROOM, { name, roomId: roomIdParam });
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
