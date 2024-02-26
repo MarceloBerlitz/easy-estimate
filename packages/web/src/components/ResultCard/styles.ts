@@ -18,9 +18,9 @@ export const ResultCardContentWrapper = styled.div`
   font-size: 14px;
 `;
 
-export const TopDot = styled.div<{ visible: boolean }>`
+export const TopDot = styled.div<{ $visible: boolean }>`
   display: flex;
-  visibility: ${({ visible }) => (visible ? 'visible' : 'hidden')};
+  visibility: ${({ $visible }) => ($visible ? 'visible' : 'hidden')};
   align-self: flex-start;
   margin-top: 3px;
   margin-left: 3px;
@@ -30,9 +30,9 @@ export const TopDot = styled.div<{ visible: boolean }>`
   background-color: black;
 `;
 
-export const BottomDot = styled.div<{ visible: boolean }>`
+export const BottomDot = styled.div<{ $visible: boolean }>`
   display: flex;
-  visibility: ${({ visible }) => (visible ? 'visible' : 'hidden')};
+  visibility: ${({ $visible }) => ($visible ? 'visible' : 'hidden')};
   align-self: flex-end;
   margin-bottom: 3px;
   margin-right: 3px;
