@@ -15,7 +15,7 @@ const SocketContext = React.createContext<{
 }>({});
 
 export const SocketProvider = ({ children }: { children: ReactNode }) => {
-  const { setRoom, setVoter, voter: localVoter } = useRoom();
+  const { setRoom, setVoter } = useRoom();
   const navigate = useNavigate();
   const [isConnected, setIsConnected] = useState(false);
 
@@ -95,22 +95,12 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
         voters: VoterType[];
         computedVotes?: ComputedVotesType;
       }) => {
-        let isMe = false;
-        setRoom((prev) => {
-          if (localVoter.id === logoutVoter.id) {
-            isMe = true;
-            return {};
-          }
-          return {
-            ...(prev as RoomType),
-            votes: prev!.votes!.filter((vote) => vote.voter.id !== logoutVoter.id),
-            voters,
-            computedVotes,
-          };
-        });
-        if (isMe) {
-          navigate(RoutesEnum.HOME);
-        }
+        setRoom((prev) => ({
+          ...(prev as RoomType),
+          votes: prev!.votes!.filter((vote) => vote.voter.id !== logoutVoter.id),
+          voters,
+          computedVotes,
+        }));
       }
     );
 
