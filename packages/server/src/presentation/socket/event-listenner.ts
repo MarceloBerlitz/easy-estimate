@@ -38,7 +38,7 @@ export class EventListenner {
         deleteVotesHandler(socket, clientId, payload)
       );
       socket.on(ClientEventsEnum.LOGOUT, (payload: LogoutPayload) => {
-        logoutHandler(clientId, payload);
+        logoutHandler(socket, clientId, payload);
       });
       socket.on('disconnect', () => disconnectedHandler(clientId));
     });

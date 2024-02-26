@@ -90,8 +90,8 @@ export const Room = () => {
   const leaveHandler = useCallback(() => {
     if (voter.id) {
       socket.emit(ClientEventsEnum.LOGOUT, { roomId: room.id, voterId: voter.id });
-      return;
     }
+    setRoom({});
     navigate(RoutesEnum.HOME);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [socket, isConnected, room, voter]);

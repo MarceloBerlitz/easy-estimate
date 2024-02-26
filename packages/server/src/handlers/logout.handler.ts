@@ -12,7 +12,7 @@ export type LogoutPayload = {
   voterId: string;
 };
 
-export const logoutHandler = (clientId: string, payload: LogoutPayload) => {
+export const logoutHandler = (socket: Socket, clientId: string, payload: LogoutPayload) => {
   LoggerHelper.clientEvent(ClientEventsEnum.LOGOUT, `clientId: ${clientId}`);
 
   try {
@@ -36,6 +36,8 @@ export const logoutHandler = (clientId: string, payload: LogoutPayload) => {
     if (room.computedVotes) {
       room.computedVotes = ComputedVotesMapper.mapFromVotes(room.votes);
     }
+
+    socket.leave(room.id);
 
     io.to(room.id).emit(ServerEventsEnum.LOGGED_OUT, {
       logoutVoter,
