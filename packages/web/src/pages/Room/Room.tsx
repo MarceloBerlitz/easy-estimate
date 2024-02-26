@@ -43,15 +43,11 @@ export const Room = () => {
   const [currentVote, setCurrentVote] = useState<Partial<VoteType>>(emptyVote);
 
   useEffect(() => {
-    if (!isConnected) {
-      socket.connect();
-    }
-
-    socket.on(ServerEventsEnum.VOTES_DELETED, () => {
+    const votesDeleteHandler = () => {
       setCurrentVote(emptyVote);
-    });
+    };
 
-    socket.on('connect', () => {
+    const connectHandler = () => {
       const createdRightnow = localStorage.getItem('created');
       localStorage.setItem('created', '');
       if (!createdRightnow && room?.id === roomIdParam && voter.id && voter.name) {
@@ -61,8 +57,31 @@ export const Room = () => {
           roomId: roomIdParam,
         });
       }
-    });
+    };
 
+    const freezeHandler = () => {
+      socket.disconnect();
+    };
+    const resumeHandler = () => {
+      socket.connect();
+    };
+
+    document.addEventListener('freeze', freezeHandler);
+    document.addEventListener('resume', resumeHandler);
+
+    socket.on(ServerEventsEnum.VOTES_DELETED, votesDeleteHandler);
+    socket.on('connect', connectHandler);
+
+    if (!isConnected) {
+      socket.connect();
+    }
+
+    return () => {
+      socket.off('connect', connectHandler);
+      socket.off(ServerEventsEnum.VOTES_DELETED, votesDeleteHandler);
+      document.removeEventListener('freeze', freezeHandler);
+      document.removeEventListener('resume', resumeHandler);
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
