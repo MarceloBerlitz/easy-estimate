@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import { Avatar, Button, Modal, Space } from 'antd';
 import {
@@ -22,11 +22,13 @@ import { CenteredWrapper } from '../../components/CenteredWrapper';
 import { ButtonsGroup } from '../../components/ButtonsGroup';
 import { CustomHeader } from './styles';
 import { ParamsCharts } from './partials/ParamsCharts/ParamsCharts';
+import { RoutesEnum } from '../../enums/routes.enum';
 
 export const Room = () => {
   const { room, voter, setVoter, setRoom } = useRoom();
   const { socket, isConnected } = useSocket();
   const { roomId: roomIdParam } = useParams();
+  const navigate = useNavigate();
 
   const emptyVote: Partial<VoteType> = useMemo(
     () => ({
@@ -86,7 +88,11 @@ export const Room = () => {
   }, []);
 
   const leaveHandler = useCallback(() => {
-    socket.emit(ClientEventsEnum.LOGOUT, { roomId: room.id, voterId: voter.id });
+    if (voter.id) {
+      socket.emit(ClientEventsEnum.LOGOUT, { roomId: room.id, voterId: voter.id });
+      return;
+    }
+    navigate(RoutesEnum.HOME);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [socket, isConnected, room, voter]);
 
