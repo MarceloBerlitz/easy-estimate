@@ -142,7 +142,6 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
     socket.on(ServerEventsEnum.VOTER_DISCONNECTED, voterDisconnectedHandler);
 
     socket.onAnyOutgoing((evt) => {
-      console.log({ outgoing: evt });
       if (evt !== ClientEventsEnum.LOGOUT) {
         setIsLoading(true);
       }
