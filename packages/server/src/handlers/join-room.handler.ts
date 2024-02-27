@@ -27,9 +27,7 @@ export const joinRoomHandler = (socket: Socket, clientId: string, payload: JoinR
       LoggerHelper.getLogger().info('room not found. creating room.');
       voter = { ...VoterFactory.create(clientId, payload.name), id: payload.voterId ?? uuid() };
       room = { ...RoomFactory.create(voter), id: payload.roomId };
-      console.log({ rooms });
       rooms.push(room);
-      console.log({ rooms });
     } else {
       if (!payload.voterId) {
         voter = VoterFactory.create(clientId, payload.name);
