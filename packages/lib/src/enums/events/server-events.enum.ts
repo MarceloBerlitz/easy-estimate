@@ -6,5 +6,6 @@ export enum ServerEventsEnum {
   POINTS_REVEALED = 'points-revealed',
   POINTS_HIDDEN = 'points-hidden',
   VOTES_DELETED = 'votes-deleted',
+  LOGGED_OUT = 'logged-out',
   ERROR = 'error',
 }

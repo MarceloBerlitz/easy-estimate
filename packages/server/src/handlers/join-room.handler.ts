@@ -10,13 +10,13 @@ import { LoggerHelper } from '../helpers/logger.helper';
 export type JoinRoomPayload = {
   name: string;
   roomId: string;
+  voterId?: string;
 };
 
-export const joinRoomHandler = (socket: Socket, voterId: string, payload: JoinRoomPayload) => {
-  LoggerHelper.clientEvent(ClientEventsEnum.JOIN_ROOM, `clientId: ${voterId}`);
+export const joinRoomHandler = (socket: Socket, clientId: string, payload: JoinRoomPayload) => {
+  LoggerHelper.clientEvent(ClientEventsEnum.JOIN_ROOM, `clientId: ${clientId}`);
 
   try {
-    const newVoter = VoterFactory.create(voterId, payload.name);
     const room = rooms.find((room) => room.id === payload.roomId);
 
     if (!room) {
@@ -25,11 +25,26 @@ export const joinRoomHandler = (socket: Socket, voterId: string, payload: JoinRo
       return;
     }
 
-    room.voters.push(newVoter);
+    let voter;
+
+    if (!payload.voterId) {
+      voter = VoterFactory.create(clientId, payload.name);
+      room.voters.push(voter);
+    } else {
+      voter = room.voters.find((voter) => voter.id === payload.voterId);
+      if (voter) {
+        voter.clientId = clientId;
+      } else {
+        socket.emit(ServerEventsEnum.ERROR, 'room not found');
+        LoggerHelper.serverEvent(ServerEventsEnum.ERROR, `room not found: ${payload.roomId}`);
+        return;
+      }
+    }
 
     socket.join(room.id);
 
     io.to(room.id).emit(ServerEventsEnum.VOTER_JOINED, {
+      voter,
       voters: room.voters,
       computedVotes: room.computedVotes,
     });

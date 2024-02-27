@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import { Button, Input, Space } from 'antd';
 import { ArrowRightOutlined } from '@ant-design/icons';
@@ -10,20 +10,28 @@ import { useRoom } from '../../hooks/Room/useRoom';
 import { CenteredWrapper } from '../../components/CenteredWrapper';
 
 export const Home = () => {
-  const { getSavedName } = useRoom();
-  const [nameState, setNameState] = useState(getSavedName());
+  const { voter } = useRoom();
+  const [nameState, setNameState] = useState(voter.name);
   const { socket, isConnected } = useSocket();
 
+  useEffect(() => {
+    localStorage.setItem('created', '');
+    if (!isConnected) {
+      socket.connect();
+    }
+  }, [isConnected, socket]);
+
   const createRoomHandler = useCallback(() => {
+    if (!isConnected) {
+      socket.connect();
+    }
     if (!nameState) {
       return;
     }
 
-    if (!isConnected) {
-      socket.connect();
-    }
+    localStorage.setItem('created', 'true');
     socket.emit(ClientEventsEnum.CREATE_ROOM, { name: nameState });
-  }, [socket, isConnected, nameState]);
+  }, [socket, nameState, isConnected]);
 
   return (
     <CenteredWrapper>

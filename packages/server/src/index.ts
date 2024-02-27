@@ -7,7 +7,7 @@ import { EventListenner } from './presentation/socket/event-listenner';
 import { EnvironmentHelper } from './helpers/environment.helper';
 import { LoggerHelper } from './helpers/logger.helper';
 
-const LOCAL_WEB_URL = 'http://localhost:3000';
+const LOCAL_WEB_URL = '*';
 
 dotenv.config({ path: __dirname + '/.env' });
 
