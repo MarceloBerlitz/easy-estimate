@@ -1,5 +1,6 @@
 import React from 'react';
 import { Circle, IndicatorContainer } from './styles';
+import { Tooltip } from 'antd';
 
 type OnlineIndicatorProps = {
   isOnline: boolean;
@@ -9,7 +10,9 @@ type OnlineIndicatorProps = {
 export const OnlineIndicator: React.FC<OnlineIndicatorProps> = ({ isOnline, children }) => {
   return (
     <IndicatorContainer>
-      <Circle $isOnline={isOnline} />
+      <Tooltip title={isOnline ? 'online' : 'offline'}>
+        <Circle $isOnline={isOnline} />
+      </Tooltip>
       <div>{children}</div>
     </IndicatorContainer>
   );
