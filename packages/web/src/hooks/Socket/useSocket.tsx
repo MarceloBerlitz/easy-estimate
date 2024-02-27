@@ -35,7 +35,6 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
     };
 
     const disconnectHandler = () => {
-      setRoom({});
       setIsConnected(false);
       console.log(`Voter disconnected`);
     };
