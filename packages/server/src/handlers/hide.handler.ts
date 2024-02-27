@@ -8,10 +8,11 @@ import { LoggerHelper } from '../helpers/logger.helper';
 
 export type HidePayload = {
   roomId: string;
+  voterId: string;
 };
 
-export const hideHandler = (socket: Socket, voterId: string, payload: HidePayload) => {
-  LoggerHelper.clientEvent(ClientEventsEnum.HIDE, `clientId: ${voterId}`);
+export const hideHandler = (socket: Socket, clientId: string, payload: HidePayload) => {
+  LoggerHelper.clientEvent(ClientEventsEnum.HIDE, `clientId: ${clientId}`);
 
   try {
     const room = rooms.find((room) => room.id === payload.roomId);
@@ -20,6 +21,22 @@ export const hideHandler = (socket: Socket, voterId: string, payload: HidePayloa
       socket.emit(ServerEventsEnum.ERROR, 'room not found');
       LoggerHelper.serverEvent(ServerEventsEnum.ERROR, `room not found: ${payload.roomId}`);
       return;
+    }
+
+    const voter = room.voters.find((voter) => voter.id === payload.voterId);
+
+    if (!voter) {
+      socket.emit(ServerEventsEnum.ERROR, 'room not found');
+      LoggerHelper.serverEvent(
+        ServerEventsEnum.ERROR,
+        `room not found: ${payload.roomId} - clientId: ${clientId}`
+      );
+      return;
+    }
+
+    if (!voter.clientId) {
+      voter.clientId = clientId;
+      socket.join(room.id);
     }
 
     delete room.computedVotes;

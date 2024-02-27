@@ -9,34 +9,38 @@ import { VotePayload, voteHandler } from '../../handlers/vote.handler';
 import { RevealPayload, revealHandler } from '../../handlers/reveal.handler';
 import { DeleteVotesPayload, deleteVotesHandler } from '../../handlers/delete-votes.handler';
 import { HidePayload, hideHandler } from '../../handlers/hide.handler';
+import { LogoutPayload, logoutHandler } from '../../handlers/logout.handler';
 import { LoggerHelper } from '../../helpers/logger.helper';
 
 export class EventListenner {
   public static listen(io: Server): void {
     io.on('connection', (socket: Socket) => {
-      const voterId = socket.id;
-      LoggerHelper.clientEvent('connection', `clientId: ${voterId}`);
+      const clientId = socket.id;
+      LoggerHelper.clientEvent('connection', `clientId: ${clientId}`);
       LoggerHelper.info('total clients', `${io.sockets.sockets.size}`);
 
       socket.on(ClientEventsEnum.CREATE_ROOM, (payload: CreateRoomPayload) =>
-        createRoomHandler(socket, voterId, payload)
+        createRoomHandler(socket, clientId, payload)
       );
       socket.on(ClientEventsEnum.JOIN_ROOM, (payload: JoinRoomPayload) =>
-        joinRoomHandler(socket, voterId, payload)
+        joinRoomHandler(socket, clientId, payload)
       );
       socket.on(ClientEventsEnum.VOTE, (payload: VotePayload) =>
-        voteHandler(socket, voterId, payload)
+        voteHandler(socket, clientId, payload)
       );
       socket.on(ClientEventsEnum.REVEAL, (payload: RevealPayload) =>
-        revealHandler(socket, voterId, payload)
+        revealHandler(socket, clientId, payload)
       );
       socket.on(ClientEventsEnum.HIDE, (payload: HidePayload) =>
-        hideHandler(socket, voterId, payload)
+        hideHandler(socket, clientId, payload)
       );
       socket.on(ClientEventsEnum.DELETE_VOTES, (payload: DeleteVotesPayload) =>
-        deleteVotesHandler(socket, voterId, payload)
+        deleteVotesHandler(socket, clientId, payload)
       );
-      socket.on('disconnect', () => disconnectedHandler(voterId));
+      socket.on(ClientEventsEnum.LOGOUT, (payload: LogoutPayload) => {
+        logoutHandler(socket, clientId, payload);
+      });
+      socket.on('disconnect', () => disconnectedHandler(clientId));
     });
   }
 }

@@ -9,9 +9,9 @@ type Props = {
 export const ResultCard: React.FC<Props> = ({ children, visible }) => {
   return (
     <ResultCardWrapper>
-      <TopDot visible={visible} />
+      <TopDot $visible={visible} />
       <ResultCardContentWrapper>{children}</ResultCardContentWrapper>
-      <BottomDot visible={visible} />
+      <BottomDot $visible={visible} />
     </ResultCardWrapper>
   );
 };

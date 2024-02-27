@@ -5,4 +5,5 @@ export enum ClientEventsEnum {
   REVEAL = 'reveal',
   HIDE = 'hide',
   DELETE_VOTES = 'delete-votes',
+  LOGOUT = 'logout',
 }

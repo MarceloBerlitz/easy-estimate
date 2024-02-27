@@ -9,8 +9,8 @@ type Props = {
 };
 
 export const DisplayNameInput: React.FC<Props> = ({ onJoin }) => {
-  const { getSavedName } = useRoom();
-  const [nameState, setNameState] = useState(getSavedName());
+  const { voter } = useRoom();
+  const [nameState, setNameState] = useState(voter.name);
 
   return (
     <>

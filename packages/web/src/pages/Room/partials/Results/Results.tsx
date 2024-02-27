@@ -7,9 +7,17 @@ import { VoterType } from '@ee/lib';
 
 import { useRoom } from '../../../../hooks/Room/useRoom';
 import { ResultCard } from '../../../../components/ResultCard/ResultCard';
+import { OnlineIndicator } from '../OnlineIndicator/OnlineIndicator';
 
 const columns = [
-  { title: 'Name', dataIndex: 'name', key: 'name' },
+  {
+    title: 'Name',
+    dataIndex: 'name',
+    key: 'name',
+    render: (name: string, other: VoterType) => (
+      <OnlineIndicator isOnline={!!other.clientId}> {name}</OnlineIndicator>
+    ),
+  },
   {
     title: 'Story points',
     dataIndex: 'storyPoints',
@@ -28,6 +36,7 @@ export const Results: React.FC = () => {
       key: voter.id,
       id: voter.id,
       name: voter.name,
+      clientId: voter.clientId,
       hasVoted: voter.hasVoted,
       storyPoints: room?.computedVotes?.votes.find((vote) => vote.voter.id === voter.id)
         ?.storyPoints ?? <CheckOutlined />,
