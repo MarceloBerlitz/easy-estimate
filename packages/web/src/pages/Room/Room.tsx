@@ -59,16 +59,6 @@ export const Room = () => {
       }
     };
 
-    const freezeHandler = () => {
-      socket.disconnect();
-    };
-    const resumeHandler = () => {
-      socket.connect();
-    };
-
-    document.addEventListener('freeze', freezeHandler);
-    document.addEventListener('resume', resumeHandler);
-
     socket.on(ServerEventsEnum.VOTES_DELETED, votesDeleteHandler);
     socket.on('connect', connectHandler);
 
@@ -79,8 +69,6 @@ export const Room = () => {
     return () => {
       socket.off('connect', connectHandler);
       socket.off(ServerEventsEnum.VOTES_DELETED, votesDeleteHandler);
-      document.removeEventListener('freeze', freezeHandler);
-      document.removeEventListener('resume', resumeHandler);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
