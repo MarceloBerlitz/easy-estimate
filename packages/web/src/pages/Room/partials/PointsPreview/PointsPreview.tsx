@@ -2,7 +2,7 @@ import { VoteMapper, VoteType } from '@ee/lib';
 
 import { PointsPreviewWrapper } from './styles';
 import { ResultCard } from '../../../../components/ResultCard/ResultCard';
-import { Space } from 'antd';
+import { Space, Typography } from 'antd';
 
 type Props = {
   vote: VoteType;
@@ -13,10 +13,14 @@ export const PointsPreview = ({ vote, areAllSelected }: Props) => {
   return (
     <PointsPreviewWrapper>
       {!areAllSelected ? (
-        <strong>Select all parameters to see your estimative</strong>
+        <Typography>
+          <strong>Select all parameters to see your estimative</strong>
+        </Typography>
       ) : (
         <Space size={8}>
-          <strong>Your estimative:</strong>
+          <Typography>
+            <strong>Your estimative:</strong>
+          </Typography>
           <ResultCard visible={!!vote}>{VoteMapper.mapVoteToStoryPoints(vote)}</ResultCard>
         </Space>
       )}

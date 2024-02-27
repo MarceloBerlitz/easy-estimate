@@ -11,3 +11,9 @@ export const VOTE_OPTIONS_LABELS = {
   [VoteOptionEnum.MEDIUM]: 'medium',
   [VoteOptionEnum.LARGE]: 'large',
 };
+
+export const VOTE_OPTIONS_COLORS = {
+  [VoteOptionEnum.SMALL]: '#add5fa',
+  [VoteOptionEnum.MEDIUM]: '#f9d99a',
+  [VoteOptionEnum.LARGE]: '#f9a59a',
+};
