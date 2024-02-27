@@ -36,8 +36,6 @@ export const joinRoomHandler = (socket: Socket, clientId: string, payload: JoinR
       console.log({ rooms });
       rooms.push(room);
       console.log({ rooms });
-
-      socket.join(room.id);
     } else {
       if (!payload.voterId) {
         voter = VoterFactory.create(clientId, payload.name);
@@ -47,9 +45,8 @@ export const joinRoomHandler = (socket: Socket, clientId: string, payload: JoinR
         if (voter) {
           voter.clientId = clientId;
         } else {
-          socket.emit(ServerEventsEnum.ERROR, 'room not found');
-          LoggerHelper.serverEvent(ServerEventsEnum.ERROR, `room not found: ${payload.roomId}`);
-          return;
+          voter = { ...VoterFactory.create(clientId, payload.name), id: payload.voterId };
+          room.voters.push(voter);
         }
       }
     }
