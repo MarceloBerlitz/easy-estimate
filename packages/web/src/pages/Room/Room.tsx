@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
-import { Avatar, Button, Modal, Space } from 'antd';
+import { Avatar, Button, Card, Col, Modal, Row, Space, Typography } from 'antd';
 import {
   CopyOutlined,
   DeleteOutlined,
@@ -130,63 +130,112 @@ export const Room = () => {
     </CenteredWrapper>
   ) : (
     <div>
-      <CustomHeader>
-        <Space>
-          <Avatar style={{ backgroundColor: '#1c6ed2', verticalAlign: 'middle' }} size="large">
-            {voter?.name.substring(0, 1)}{' '}
-          </Avatar>
-          <h2>{voter?.name}</h2>
-        </Space>
-        <Button onClick={leaveHandler} danger>
-          leave
-          <LogoutOutlined />
-        </Button>
-      </CustomHeader>
-      <p>
-        Room ID: {roomIdParam}{' '}
-        <Button size="small" onClick={() => navigator.clipboard.writeText(window.location.href)}>
-          Copy link
-          <CopyOutlined />
-        </Button>
-      </p>
-      <br />
-      <VoteHelper
-        currentVote={currentVote}
-        onVoteChange={voteChangeHandler}
-        allParametersSelected={allParametersSelected}
-      />
-      <br />
-      <ButtonsGroup>
-        <Button
-          disabled={!allParametersSelected}
-          onClick={voteHandler}
-          type="primary"
-          icon={<SaveOutlined />}
-        >
-          vote
-        </Button>
-        {!room?.computedVotes ? (
-          <Button
-            disabled={!hasVotes}
-            onClick={revealHandler}
-            type="primary"
-            icon={<EyeOutlined />}
-          >
-            reveal
-          </Button>
-        ) : (
-          <Button onClick={hideHandler} icon={<EyeInvisibleOutlined />}>
-            hide
-          </Button>
-        )}
-        <Button onClick={deleteVotesHandler} danger type="primary" icon={<DeleteOutlined />}>
-          clear votes
-        </Button>
-      </ButtonsGroup>
+      <Row gutter={[16, 16]}>
+        <Col span={24}>
+          <CustomHeader>
+            <Space>
+              <Avatar style={{ backgroundColor: '#1c6ed2', verticalAlign: 'middle' }} size="large">
+                {voter?.name.substring(0, 1)}{' '}
+              </Avatar>
+              <Typography.Title level={2} style={{ margin: 'auto' }}>
+                {voter?.name}
+              </Typography.Title>
+            </Space>
+            <Button onClick={leaveHandler} danger>
+              Leave
+              <LogoutOutlined />
+            </Button>
+          </CustomHeader>
+        </Col>
 
-      <Results />
-      <br />
-      <ParamsCharts computedVotes={room.computedVotes} />
+        <Col span={24}>
+          <Typography>
+            Room ID: {roomIdParam}{' '}
+            <Button
+              size="small"
+              type="dashed"
+              onClick={() => navigator.clipboard.writeText(window.location.href)}
+            >
+              Copy room link
+              <CopyOutlined />
+            </Button>
+          </Typography>
+        </Col>
+
+        <Col xs={24} sm={24} md={12}>
+          <Card
+            title={
+              <Typography.Title level={2} style={{ margin: 'auto' }}>
+                Vote
+              </Typography.Title>
+            }
+          >
+            <VoteHelper
+              currentVote={currentVote}
+              onVoteChange={voteChangeHandler}
+              allParametersSelected={allParametersSelected}
+            />
+            <ButtonsGroup>
+              <Button
+                disabled={!allParametersSelected}
+                onClick={voteHandler}
+                type="primary"
+                icon={<SaveOutlined />}
+              >
+                Vote
+              </Button>
+            </ButtonsGroup>
+          </Card>
+        </Col>
+        <Col xs={24} sm={24} md={12}>
+          <Card
+            title={
+              <Typography.Title level={2} style={{ margin: 'auto' }}>
+                Results
+              </Typography.Title>
+            }
+          >
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              <Results />
+              <ButtonsGroup>
+                {!room?.computedVotes ? (
+                  <Button
+                    disabled={!hasVotes}
+                    onClick={revealHandler}
+                    type="primary"
+                    icon={<EyeOutlined />}
+                  >
+                    Reveal
+                  </Button>
+                ) : (
+                  <Button onClick={hideHandler} icon={<EyeInvisibleOutlined />}>
+                    Hide
+                  </Button>
+                )}
+                <Button
+                  onClick={deleteVotesHandler}
+                  danger
+                  type="primary"
+                  icon={<DeleteOutlined />}
+                >
+                  Clear all votes
+                </Button>
+              </ButtonsGroup>
+            </div>
+          </Card>
+        </Col>
+        <Col xs={24} sm={24} md={12}>
+          <Card
+            title={
+              <Typography.Title level={2} style={{ margin: 'auto' }}>
+                Details
+              </Typography.Title>
+            }
+          >
+            <ParamsCharts computedVotes={room.computedVotes} />
+          </Card>
+        </Col>
+      </Row>
       {/* <h3>DEBUG</h3>
       <div style={{ maxWidth: 600 }}>{JSON.stringify(room)}</div> */}
     </div>
