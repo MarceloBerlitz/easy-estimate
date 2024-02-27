@@ -1,15 +1,24 @@
 import { Server, Socket } from 'socket.io';
 
-import { ClientEventsEnum } from '@ee/lib';
+import {
+  ClientEventsEnum,
+  CreateRoomPayload,
+  DeleteVotesPayload,
+  HidePayload,
+  JoinRoomPayload,
+  LogoutPayload,
+  RevealPayload,
+  VotePayload,
+} from '@ee/lib';
 
 import { disconnectedHandler } from '../../handlers/disconnected.handler';
-import { CreateRoomPayload, createRoomHandler } from '../../handlers/create-room.handler';
-import { JoinRoomPayload, joinRoomHandler } from '../../handlers/join-room.handler';
-import { VotePayload, voteHandler } from '../../handlers/vote.handler';
-import { RevealPayload, revealHandler } from '../../handlers/reveal.handler';
-import { DeleteVotesPayload, deleteVotesHandler } from '../../handlers/delete-votes.handler';
-import { HidePayload, hideHandler } from '../../handlers/hide.handler';
-import { LogoutPayload, logoutHandler } from '../../handlers/logout.handler';
+import { createRoomHandler } from '../../handlers/create-room.handler';
+import { joinRoomHandler } from '../../handlers/join-room.handler';
+import { voteHandler } from '../../handlers/vote.handler';
+import { revealHandler } from '../../handlers/reveal.handler';
+import { deleteVotesHandler } from '../../handlers/delete-votes.handler';
+import { hideHandler } from '../../handlers/hide.handler';
+import { logoutHandler } from '../../handlers/logout.handler';
 import { LoggerHelper } from '../../helpers/logger.helper';
 
 export class EventListenner {

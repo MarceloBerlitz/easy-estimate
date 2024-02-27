@@ -1,15 +1,10 @@
 import { Socket } from 'socket.io';
 
-import { ClientEventsEnum, ServerEventsEnum } from '@ee/lib';
+import { ClientEventsEnum, HidePayload, ServerEventsEnum } from '@ee/lib';
 
 import { rooms } from '../rooms';
 import { io } from '..';
 import { LoggerHelper } from '../helpers/logger.helper';
-
-export type HidePayload = {
-  roomId: string;
-  voterId: string;
-};
 
 export const hideHandler = (socket: Socket, clientId: string, payload: HidePayload) => {
   LoggerHelper.clientEvent(ClientEventsEnum.HIDE, `clientId: ${clientId}`);

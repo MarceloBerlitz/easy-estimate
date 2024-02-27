@@ -1,17 +1,11 @@
 import { Socket } from 'socket.io';
 
-import { ClientEventsEnum, ServerEventsEnum } from '@ee/lib';
+import { ClientEventsEnum, JoinRoomPayload, ServerEventsEnum } from '@ee/lib';
 
 import { rooms } from '../rooms';
 import { VoterFactory } from '../factories/voter.factory';
 import { io } from '..';
 import { LoggerHelper } from '../helpers/logger.helper';
-
-export type JoinRoomPayload = {
-  name: string;
-  roomId: string;
-  voterId?: string;
-};
 
 export const joinRoomHandler = (socket: Socket, clientId: string, payload: JoinRoomPayload) => {
   LoggerHelper.clientEvent(ClientEventsEnum.JOIN_ROOM, `clientId: ${clientId}`);

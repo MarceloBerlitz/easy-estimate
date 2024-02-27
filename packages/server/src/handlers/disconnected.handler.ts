@@ -24,12 +24,6 @@ export const disconnectedHandler = (clientId: string) => {
 
     disconnectedVoter.clientId = null;
 
-    // room.voters.splice(voterIndex, 1);
-    // room.votes = room.votes.filter((vote: VoteType) => vote.voter.id !== clientId);
-    // if (room.computedVotes) {
-    //   room.computedVotes = ComputedVotesMapper.mapFromVotes(room.votes);
-    // }
-
     if (room.voters.filter((voter) => !!voter.clientId).length < 1) {
       rooms.splice(roomIndex, 1);
       LoggerHelper.info('total rooms', `${rooms.length}`);

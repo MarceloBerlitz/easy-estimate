@@ -4,7 +4,15 @@ import { useNavigate } from 'react-router-dom';
 import { Socket, io } from 'socket.io-client';
 import { Modal } from 'antd';
 
-import { ComputedVotesType, RoomType, ServerEventsEnum, VoterType } from '@ee/lib';
+import {
+  LoggedOutPayload,
+  PointsRevealedPayload,
+  RoomCreatedPayload,
+  ServerEventsEnum,
+  VoteMadePayload,
+  VoterDisconnectedPayload,
+  VoterJoinedPayload,
+} from '@ee/lib';
 
 import { useRoom } from '../Room/useRoom';
 import { RoutesEnum } from '../../enums/routes.enum';
@@ -43,78 +51,50 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
       Modal.error({ title: JSON.stringify(payload) });
     };
 
-    const roomCreatedHandler = ({ room, voter }: { room: RoomType; voter: VoterType }) => {
+    const roomCreatedHandler = ({ room, voter }: RoomCreatedPayload) => {
       setRoom(room);
       setVoter(voter);
       navigate(RoutesEnum.ROOM.replace(':roomId', room.id));
     };
 
-    const voteMadeHandler = ({
-      voters,
-      computedVotes,
-    }: {
-      voters: VoterType[];
-      computedVotes?: ComputedVotesType;
-    }) => {
-      setRoom((prev) => ({ ...(prev as RoomType), voters, computedVotes }));
+    const voteMadeHandler = ({ voters, computedVotes }: VoteMadePayload) => {
+      setRoom((prev) => ({ ...prev, voters, computedVotes }));
     };
-    const voterJoinedHandler = ({
-      voter,
-      voters,
-      computedVotes,
-    }: {
-      voter: VoterType;
-      voters: VoterType[];
-      computedVotes: ComputedVotesType;
-    }): void => {
-      setRoom((prev) => ({ ...(prev as RoomType), voters, computedVotes }));
+    const voterJoinedHandler = ({ voter, voters, computedVotes }: VoterJoinedPayload): void => {
+      setRoom((prev) => ({ ...prev, voters, computedVotes }));
       if (voter.clientId === socket.id) {
         setVoter((prev) => ({ ...prev, id: voter.id }));
       }
     };
-    const pointsRevealedHandler = ({ computedVotes }: { computedVotes: ComputedVotesType }) => {
-      setRoom((prev) => ({ ...(prev as RoomType), computedVotes }));
+    const pointsRevealedHandler = ({ computedVotes }: PointsRevealedPayload) => {
+      setRoom((prev) => ({ ...prev, computedVotes }));
     };
 
     const pointsHiddenHandler = () => {
-      setRoom((prev) => ({ ...(prev as RoomType), computedVotes: undefined }));
+      setRoom((prev) => ({ ...prev, computedVotes: undefined }));
     };
 
     const votesDeletedHandler = () => {
       setRoom((prev) => ({
-        ...(prev as RoomType),
+        ...prev,
         votes: [],
         computedVotes: undefined,
         voters: prev!.voters?.map((voter) => ({ ...voter, hasVoted: false })),
       }));
     };
 
-    const loggedOutHandler = ({
-      logoutVoter,
-      voters,
-      computedVotes,
-    }: {
-      logoutVoter: VoterType;
-      voters: VoterType[];
-      computedVotes?: ComputedVotesType;
-    }) => {
+    const loggedOutHandler = ({ logoutVoter, voters, computedVotes }: LoggedOutPayload) => {
       setRoom((prev) => ({
-        ...(prev as RoomType),
+        ...prev,
         votes: prev!.votes!.filter((vote) => vote.voter.id !== logoutVoter.id),
         voters,
         computedVotes,
       }));
     };
 
-    const voterDisconnectedHandler = ({
-      voters,
-      computedVotes,
-    }: {
-      voters: VoterType[];
-      computedVotes?: ComputedVotesType;
-    }) => {
+    const voterDisconnectedHandler = ({ voters, computedVotes }: VoterDisconnectedPayload) => {
       setRoom((prev) => ({
-        ...(prev as RoomType),
+        ...prev,
         voters,
         computedVotes,
       }));
