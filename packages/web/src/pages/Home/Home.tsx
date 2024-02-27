@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 
-import { Button, Input, Space } from 'antd';
+import { Button, Input, Space, Typography } from 'antd';
 import { ArrowRightOutlined } from '@ant-design/icons';
 
 import { ClientEventsEnum } from '@ee/lib';
@@ -12,7 +12,7 @@ import { CenteredWrapper } from '../../components/CenteredWrapper';
 export const Home = () => {
   const { voter } = useRoom();
   const [nameState, setNameState] = useState(voter.name);
-  const { socket, isConnected } = useSocket();
+  const { socket, isConnected, isLoading } = useSocket();
 
   useEffect(() => {
     localStorage.setItem('created', '');
@@ -35,7 +35,7 @@ export const Home = () => {
 
   return (
     <CenteredWrapper>
-      <h1>Easy Estimate</h1>
+      <Typography.Title level={1}>Easy Estimate</Typography.Title>
       <span>
         <Space.Compact style={{ width: '100%' }}>
           <Input
@@ -44,11 +44,17 @@ export const Home = () => {
             onChange={(e) => setNameState(e.currentTarget.value)}
             autoFocus
             onKeyDown={(e) => {
-              if (e.key === 'Enter') createRoomHandler();
+              if (e.key === 'Enter' && !isLoading) createRoomHandler();
             }}
             size="large"
           />
-          <Button type="primary" disabled={!nameState} onClick={createRoomHandler} size="large">
+          <Button
+            type="primary"
+            disabled={!nameState}
+            onClick={createRoomHandler}
+            size="large"
+            loading={isLoading}
+          >
             Create session
             <ArrowRightOutlined />
           </Button>

@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
-import { Avatar, Button, Card, Col, Modal, Row, Space, Typography } from 'antd';
+import { Avatar, Button, Card, Col, Modal, Row, Space, Spin, Typography } from 'antd';
 import {
   CopyOutlined,
   DeleteOutlined,
@@ -26,7 +26,7 @@ import { RoutesEnum } from '../../enums/routes.enum';
 
 export const Room = () => {
   const { room, voter, setVoter, setRoom } = useRoom();
-  const { socket, isConnected } = useSocket();
+  const { socket, isConnected, isLoading } = useSocket();
   const { roomId: roomIdParam } = useParams();
   const navigate = useNavigate();
 
@@ -129,7 +129,7 @@ export const Room = () => {
       <DisplayNameInput onJoin={onJoinHandler} />
     </CenteredWrapper>
   ) : (
-    <div>
+    <Spin spinning={isLoading}>
       <Row gutter={[16, 16]}>
         <Col span={24}>
           <CustomHeader>
@@ -238,6 +238,6 @@ export const Room = () => {
       </Row>
       {/* <h3>DEBUG</h3>
       <div style={{ maxWidth: 600 }}>{JSON.stringify(room)}</div> */}
-    </div>
+    </Spin>
   );
 };
