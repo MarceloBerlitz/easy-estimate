@@ -13,6 +13,8 @@ export const voteHandler = (socket: Socket, clientId: string, payload: VotePaylo
   try {
     const room = rooms.find((room) => room.id === payload.roomId);
 
+    console.log({ room });
+
     if (!room) {
       socket.emit(ServerEventsEnum.ERROR, 'room not found');
       LoggerHelper.serverEvent(ServerEventsEnum.ERROR, `room not found: ${payload.roomId}`);
