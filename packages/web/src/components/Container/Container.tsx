@@ -1,14 +1,7 @@
-import styled from 'styled-components';
+import React, { PropsWithChildren } from 'react';
 
-export const Container = styled.div`
-  margin: 0 auto;
-  max-width: 1200px;
-  min-height: 100vh;
-  box-sizing: border-box;
-  padding: 1rem;
-  display: flex;
+import { ContainerWrapper } from './styles';
 
-  & > * {
-    width: 100%;
-  }
-`;
+export const Container: React.FC<PropsWithChildren> = ({ children }) => {
+  return <ContainerWrapper>{children}</ContainerWrapper>;
+};

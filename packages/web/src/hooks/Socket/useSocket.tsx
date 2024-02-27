@@ -12,6 +12,7 @@ import {
   VoteMadePayload,
   VoterDisconnectedPayload,
   VoterJoinedPayload,
+  ClientEventsEnum,
 } from '@ee/lib';
 
 import { useRoom } from '../Room/useRoom';
@@ -20,12 +21,14 @@ import { RoutesEnum } from '../../enums/routes.enum';
 const SocketContext = React.createContext<{
   socket?: Socket;
   isConnected?: boolean;
+  isLoading?: boolean;
 }>({});
 
 export const SocketProvider = ({ children }: { children: ReactNode }) => {
   const { setRoom, setVoter } = useRoom();
   const navigate = useNavigate();
   const [isConnected, setIsConnected] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const socket = useMemo(
     () =>
@@ -38,6 +41,7 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     const connectHandler = () => {
       setIsConnected(true);
+      setIsLoading(false);
       const voterId = socket.id;
       console.log(`Voter connected on Client with id: ${voterId}`);
     };
@@ -112,6 +116,17 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
     socket.on(ServerEventsEnum.LOGGED_OUT, loggedOutHandler);
     socket.on(ServerEventsEnum.VOTER_DISCONNECTED, voterDisconnectedHandler);
 
+    socket.onAnyOutgoing((evt) => {
+      console.log({ outgoing: evt });
+      if (evt !== ClientEventsEnum.LOGOUT) {
+        setIsLoading(true);
+      }
+    });
+
+    socket.onAny(() => {
+      setIsLoading(false);
+    });
+
     return () => {
       socket.off('connect', connectHandler);
       socket.off('disconnect', disconnectHandler);
@@ -133,6 +148,7 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
       value={{
         socket,
         isConnected,
+        isLoading,
       }}
     >
       {children}
@@ -140,10 +156,10 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
   );
 };
 
-export const useSocket = (): { socket: Socket; isConnected?: boolean } => {
-  const { socket, isConnected } = useContext(SocketContext);
+export const useSocket = (): { socket: Socket; isConnected?: boolean; isLoading?: boolean } => {
+  const { socket, isConnected, isLoading } = useContext(SocketContext);
   if (!socket) {
     throw new Error('useSocket hook must be within a SocketProvider');
   }
-  return { socket, isConnected };
+  return { socket, isConnected, isLoading };
 };
