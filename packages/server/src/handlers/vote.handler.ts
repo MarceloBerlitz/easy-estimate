@@ -1,12 +1,6 @@
 import { Socket } from 'socket.io';
 
-import {
-  ClientEventsEnum,
-  ServerEventsEnum,
-  VoteParametersType,
-  VoteType,
-  VoterType,
-} from '@ee/lib';
+import { ClientEventsEnum, ServerEventsEnum, VoteParametersType, VoteType } from '@ee/lib';
 
 import { rooms } from '../rooms';
 import { io } from '..';
