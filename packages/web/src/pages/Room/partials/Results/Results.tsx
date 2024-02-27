@@ -43,10 +43,5 @@ export const Results: React.FC = () => {
     }));
   }, [room?.voters, room?.computedVotes]);
 
-  return (
-    <div>
-      <h2>Results</h2>
-      <Table columns={columns} dataSource={data} pagination={{ hideOnSinglePage: true }} />
-    </div>
-  );
+  return <Table columns={columns} dataSource={data} pagination={{ hideOnSinglePage: true }} />;
 };

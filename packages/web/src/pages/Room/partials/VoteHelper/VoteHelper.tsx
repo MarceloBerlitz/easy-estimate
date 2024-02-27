@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Tooltip } from 'antd';
+import { Tooltip, Typography } from 'antd';
 import { InfoCircleOutlined } from '@ant-design/icons';
 
 import {
@@ -26,13 +26,13 @@ export const VoteHelper: React.FC<Props> = ({
   allParametersSelected,
 }) => {
   return (
-    <>
+    <span>
       <VotesHelperWrapper>
         {VOTE_PARAMETERS_OPTIONS.map((parameter) => {
           return (
             <ParameterWrapper key={parameter}>
               <ParameterTitleWrapper>
-                <h2>{parameter}</h2>
+                <Typography.Title level={3}>{parameter}</Typography.Title>
                 <Tooltip title={VOTE_PARAMETERS_TOOLTIPS[parameter]}>
                   <InfoCircleOutlined />
                 </Tooltip>
@@ -49,6 +49,6 @@ export const VoteHelper: React.FC<Props> = ({
         })}
       </VotesHelperWrapper>
       <PointsPreview vote={currentVote as VoteType} areAllSelected={allParametersSelected} />
-    </>
+    </span>
   );
 };

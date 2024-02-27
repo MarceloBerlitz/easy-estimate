@@ -5,4 +5,5 @@ export const CustomHeader = styled.header`
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
+  padding: 2rem 0;
 `;

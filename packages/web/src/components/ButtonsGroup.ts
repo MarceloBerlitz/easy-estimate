@@ -5,7 +5,7 @@ export const ButtonsGroup = styled.div`
   display: flex;
   flex-direction: row;
   gap: 1rem;
-  height: 3rem;
+  height: auto;
   align-items: center;
   /* background-color: lightgrey; */
 `;
