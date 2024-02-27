@@ -1,12 +1,6 @@
 import { Socket } from 'socket.io';
 
-import {
-  ClientEventsEnum,
-  ServerEventsEnum,
-  VoteParametersType,
-  VoteType,
-  VoterType,
-} from '@ee/lib';
+import { ClientEventsEnum, ServerEventsEnum, VoteParametersType, VoteType } from '@ee/lib';
 
 import { rooms } from '../rooms';
 import { io } from '..';
@@ -24,6 +18,8 @@ export const voteHandler = (socket: Socket, clientId: string, payload: VotePaylo
 
   try {
     const room = rooms.find((room) => room.id === payload.roomId);
+
+    console.log({ room });
 
     if (!room) {
       socket.emit(ServerEventsEnum.ERROR, 'room not found');
