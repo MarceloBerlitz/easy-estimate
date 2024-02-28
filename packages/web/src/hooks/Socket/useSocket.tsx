@@ -129,6 +129,16 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
       }));
     };
 
+    const anyOutgoingHandler = (evt: string) => {
+      if (evt !== ClientEventsEnum.LOGOUT) {
+        setIsLoading(true);
+      }
+    };
+
+    const anyHandler = () => {
+      setIsLoading(false);
+    };
+
     socket.on('connect', connectHandler);
     socket.on('disconnect', disconnectHandler);
     socket.on(ServerEventsEnum.ERROR, errorHandler);
@@ -140,16 +150,8 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
     socket.on(ServerEventsEnum.VOTES_DELETED, votesDeletedHandler);
     socket.on(ServerEventsEnum.LOGGED_OUT, loggedOutHandler);
     socket.on(ServerEventsEnum.VOTER_DISCONNECTED, voterDisconnectedHandler);
-
-    socket.onAnyOutgoing((evt) => {
-      if (evt !== ClientEventsEnum.LOGOUT) {
-        setIsLoading(true);
-      }
-    });
-
-    socket.onAny(() => {
-      setIsLoading(false);
-    });
+    socket.onAnyOutgoing(anyOutgoingHandler);
+    socket.onAny(anyHandler);
 
     return () => {
       socket.off('connect', connectHandler);
@@ -163,6 +165,8 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
       socket.off(ServerEventsEnum.VOTES_DELETED, votesDeletedHandler);
       socket.off(ServerEventsEnum.LOGGED_OUT, loggedOutHandler);
       socket.off(ServerEventsEnum.VOTER_DISCONNECTED, voterDisconnectedHandler);
+      socket.offAnyOutgoing(anyOutgoingHandler);
+      socket.offAny(anyHandler);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
