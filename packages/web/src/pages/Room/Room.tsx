@@ -1,14 +1,16 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
-import { Avatar, Button, Card, Col, Modal, Row, Space, Spin, Typography } from 'antd';
+import { Avatar, Button, Card, Col, Modal, Row, Space, Spin, Switch, Typography } from 'antd';
 import {
   CopyOutlined,
   DeleteOutlined,
   EyeInvisibleOutlined,
   EyeOutlined,
   LogoutOutlined,
+  MoonOutlined,
   SaveOutlined,
+  SunOutlined,
 } from '@ant-design/icons';
 
 import { ClientEventsEnum, ServerEventsEnum, VOTE_PARAMETERS_OPTIONS, VoteType } from '@ee/lib';
@@ -24,7 +26,12 @@ import { CustomHeader } from './styles';
 import { ParamsCharts } from './partials/ParamsCharts/ParamsCharts';
 import { RoutesEnum } from '../../enums/routes.enum';
 
-export const Room = () => {
+type Props = {
+  isDarkMode: boolean;
+  onDarkModeChange: React.Dispatch<React.SetStateAction<string>>;
+};
+
+export const Room: React.FC<Props> = ({ isDarkMode, onDarkModeChange }) => {
   const { room, voter, setVoter, setRoom } = useRoom();
   const { socket, isConnected, isLoading } = useSocket();
   const { roomId: roomIdParam } = useParams();
@@ -141,10 +148,18 @@ export const Room = () => {
                 {voter?.name}
               </Typography.Title>
             </Space>
-            <Button onClick={leaveHandler} danger>
-              Leave
-              <LogoutOutlined />
-            </Button>
+            <Space>
+              <Switch
+                defaultValue={isDarkMode}
+                checkedChildren={<MoonOutlined />}
+                unCheckedChildren={<SunOutlined />}
+                onChange={(checked) => onDarkModeChange(String(checked))}
+              />
+              <Button onClick={leaveHandler} danger>
+                Leave
+                <LogoutOutlined />
+              </Button>
+            </Space>
           </CustomHeader>
         </Col>
 
