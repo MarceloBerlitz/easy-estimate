@@ -1,16 +1,11 @@
 import { Socket } from 'socket.io';
 
-import { ClientEventsEnum, ServerEventsEnum } from '@ee/lib';
+import { ClientEventsEnum, LogoutPayload, ServerEventsEnum } from '@ee/lib';
 
 import { LoggerHelper } from '../helpers/logger.helper';
 import { rooms } from '../rooms';
 import { io } from '..';
 import { ComputedVotesMapper } from '../mappers/computed-votes.mapper';
-
-export type LogoutPayload = {
-  roomId: string;
-  voterId: string;
-};
 
 export const logoutHandler = (socket: Socket, clientId: string, payload: LogoutPayload) => {
   LoggerHelper.clientEvent(ClientEventsEnum.LOGOUT, `clientId: ${clientId}`);

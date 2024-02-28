@@ -1,14 +1,10 @@
 import { Socket } from 'socket.io';
 
+import { ClientEventsEnum, DeleteVotesPayload, ServerEventsEnum, VoterType } from '@ee/lib';
+
 import { rooms } from '../rooms';
-import { ClientEventsEnum, ServerEventsEnum, VoterType } from '@ee/lib';
 import { io } from '..';
 import { LoggerHelper } from '../helpers/logger.helper';
-
-export type DeleteVotesPayload = {
-  roomId: string;
-  voterId: string;
-};
 
 export const deleteVotesHandler = (
   socket: Socket,

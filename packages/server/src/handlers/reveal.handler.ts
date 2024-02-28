@@ -1,16 +1,11 @@
 import { Socket } from 'socket.io';
 
-import { ClientEventsEnum, ServerEventsEnum, VoterType } from '@ee/lib';
+import { ClientEventsEnum, RevealPayload, ServerEventsEnum } from '@ee/lib';
 
 import { rooms } from '../rooms';
 import { io } from '..';
 import { ComputedVotesMapper } from '../mappers/computed-votes.mapper';
 import { LoggerHelper } from '../helpers/logger.helper';
-
-export type RevealPayload = {
-  roomId: string;
-  voterId: string;
-};
 
 export const revealHandler = (socket: Socket, clientId: string, payload: RevealPayload) => {
   LoggerHelper.clientEvent(ClientEventsEnum.REVEAL, `clientId: ${clientId}`);

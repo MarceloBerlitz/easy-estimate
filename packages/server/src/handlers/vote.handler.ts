@@ -1,17 +1,11 @@
 import { Socket } from 'socket.io';
 
-import { ClientEventsEnum, ServerEventsEnum, VoteParametersType, VoteType } from '@ee/lib';
+import { ClientEventsEnum, ServerEventsEnum, VotePayload, VoteType } from '@ee/lib';
 
 import { rooms } from '../rooms';
 import { io } from '..';
 import { ComputedVotesMapper } from '../mappers/computed-votes.mapper';
 import { LoggerHelper } from '../helpers/logger.helper';
-
-export type VotePayload = {
-  voterId: string;
-  roomId: string;
-  vote: VoteParametersType;
-};
 
 export const voteHandler = (socket: Socket, clientId: string, payload: VotePayload) => {
   LoggerHelper.clientEvent(ClientEventsEnum.VOTE, `clientId: ${clientId}`);

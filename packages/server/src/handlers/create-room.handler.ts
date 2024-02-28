@@ -1,13 +1,11 @@
 import { Socket } from 'socket.io';
 
-import { ClientEventsEnum, ServerEventsEnum } from '@ee/lib';
+import { ClientEventsEnum, ServerEventsEnum, CreateRoomPayload } from '@ee/lib';
 
 import { VoterFactory } from '../factories/voter.factory';
 import { RoomFactory } from '../factories/room.factory';
 import { rooms } from '../rooms';
 import { LoggerHelper } from '../helpers/logger.helper';
-
-export type CreateRoomPayload = { name: string };
 
 export const createRoomHandler = (socket: Socket, clientId: string, payload: CreateRoomPayload) => {
   LoggerHelper.clientEvent(ClientEventsEnum.CREATE_ROOM, `clientId: ${clientId}`);
