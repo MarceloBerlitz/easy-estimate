@@ -31,7 +31,13 @@ export const ParamsCharts: React.FC<Props> = ({ computedVotes }) => {
   }, [computedVotes]);
   return (
     <ChartWrapper>
-      <Bar options={{ responsive: true }} data={data} style={{ width: '100%' }} />
+      <Bar
+        options={{
+          responsive: true,
+        }}
+        data={data}
+        style={{ width: '100%' }}
+      />
     </ChartWrapper>
   );
 };
