@@ -13,7 +13,7 @@ export const VOTE_OPTIONS_LABELS = {
 };
 
 export const VOTE_OPTIONS_COLORS = {
-  [VoteOptionEnum.SMALL]: '#add5fa',
-  [VoteOptionEnum.MEDIUM]: '#f9d99a',
-  [VoteOptionEnum.LARGE]: '#f9a59a',
+  [VoteOptionEnum.SMALL]: '#86d65e',
+  [VoteOptionEnum.MEDIUM]: '#fac459',
+  [VoteOptionEnum.LARGE]: '#fe8182',
 };

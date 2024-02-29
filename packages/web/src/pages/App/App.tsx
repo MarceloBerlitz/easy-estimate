@@ -23,7 +23,14 @@ const App: React.FC = () => {
   }, [isDarkMode]);
 
   return (
-    <ConfigProvider theme={{ algorithm: isDarkMode === 'true' ? darkAlgorithm : defaultAlgorithm }}>
+    <ConfigProvider
+      theme={{
+        algorithm: isDarkMode === 'true' ? darkAlgorithm : defaultAlgorithm,
+        token: {
+          borderRadius: 3,
+        },
+      }}
+    >
       <RoomProvider>
         <SocketProvider>
           <Layout>
