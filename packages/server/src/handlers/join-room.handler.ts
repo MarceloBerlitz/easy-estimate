@@ -69,6 +69,7 @@ export class JoinRoomHandler implements EventHandler {
       const newVoter = VoterFactory.create(clientId, payload.name, payload.voterId);
       const newRoom = RoomFactory.create(newVoter, payload.roomId);
       this.roomService.addRoom(newRoom);
+      this.logger.info('total rooms', `${this.roomService.getRoomsCount()}`);
       return { room: newRoom, voter: newVoter };
     }
 
