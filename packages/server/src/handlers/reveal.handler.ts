@@ -1,50 +1,73 @@
 import { Socket } from 'socket.io';
 
-import { ClientEventsEnum, RevealPayload, ServerEventsEnum } from '@ee/lib';
+import { ClientEventsEnum, RevealPayload, RoomType, ServerEventsEnum } from '@ee/lib';
 
-import { io } from '..';
 import { ComputedVotesMapper } from '../mappers/computed-votes.mapper';
-import { LoggerHelper } from '../helpers/logger.helper';
-import { RoomHelper } from '../helpers/room.helper';
+import { EventHandler } from '../interfaces/event-handler';
+import { RoomService } from '../services/room.service';
+import { LoggerService } from '../services/logger.service';
+import { IO } from '../app/io';
 
-export const revealHandler = (socket: Socket, clientId: string, payload: RevealPayload) => {
-  LoggerHelper.clientEvent(ClientEventsEnum.REVEAL, `clientId: ${clientId}`);
+export class RevealHandler implements EventHandler {
+  private io: IO;
+  private roomService: RoomService;
+  private logger: LoggerService;
 
-  try {
-    const room = RoomHelper.getRoom(payload.roomId);
+  public event: ClientEventsEnum = ClientEventsEnum.REVEAL;
 
-    if (!room) {
-      socket.emit(ServerEventsEnum.ERROR, 'room not found');
-      LoggerHelper.serverEvent(ServerEventsEnum.ERROR, `room not found: ${payload.roomId}`);
-      return;
-    }
-
-    const voter = room.voters.find((voter) => voter.id === payload.voterId);
-
-    if (!voter) {
-      socket.emit(ServerEventsEnum.ERROR, 'room not found');
-      LoggerHelper.serverEvent(
-        ServerEventsEnum.ERROR,
-        `room not found: ${payload.roomId} - clientId: ${clientId}`
-      );
-      return;
-    }
-
-    if (!voter.clientId) {
-      voter.clientId = clientId;
-      socket.join(room.id);
-    }
-
-    if (!room.computedVotes) {
-      room.computedVotes = ComputedVotesMapper.mapFromVotes(room.votes);
-    }
-
-    io.to(room.id).emit(ServerEventsEnum.POINTS_REVEALED, {
-      computedVotes: room.computedVotes,
-    });
-
-    LoggerHelper.serverEvent(ServerEventsEnum.POINTS_REVEALED, `roomId: ${room.id}`);
-  } catch (error) {
-    LoggerHelper.unexpectedError(error);
+  public constructor({
+    io,
+    roomService,
+    loggerService,
+  }: {
+    io: IO;
+    roomService: RoomService;
+    loggerService: LoggerService;
+  }) {
+    this.io = io;
+    this.roomService = roomService;
+    this.logger = loggerService;
   }
-};
+
+  public handle(socket: Socket, clientId: string, payload: RevealPayload) {
+    this.logger.clientEvent(ClientEventsEnum.REVEAL, `clientId: ${clientId}`);
+
+    try {
+      const room: RoomType = this.roomService.getRoom(payload.roomId);
+
+      if (!room) {
+        socket.emit(ServerEventsEnum.ERROR, 'room not found');
+        this.logger.serverEvent(ServerEventsEnum.ERROR, `room not found: ${payload.roomId}`);
+        return;
+      }
+
+      const voter = room.voters.find((voter) => voter.id === payload.voterId);
+
+      if (!voter) {
+        socket.emit(ServerEventsEnum.ERROR, 'room not found');
+        this.logger.serverEvent(
+          ServerEventsEnum.ERROR,
+          `room not found: ${payload.roomId} - clientId: ${clientId}`
+        );
+        return;
+      }
+
+      if (!voter.clientId) {
+        voter.clientId = clientId;
+        socket.join(room.id);
+      }
+
+      if (!room.computedVotes) {
+        room.computedVotes = ComputedVotesMapper.mapFromVotes(room.votes);
+      }
+
+      this.io.to(room.id).emit(ServerEventsEnum.POINTS_REVEALED, {
+        computedVotes: room.computedVotes,
+      });
+
+      this.logger.serverEvent(ServerEventsEnum.POINTS_REVEALED, `roomId: ${room.id}`);
+    } catch (error) {
+      this.logger.unexpectedError(error);
+    }
+  }
+}

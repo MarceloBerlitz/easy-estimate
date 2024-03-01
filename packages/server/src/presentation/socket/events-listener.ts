@@ -1,0 +1,44 @@
+import { Socket } from 'socket.io';
+
+import { DisconnectedHandler } from '../../handlers/disconnected.handler';
+import { LoggerService } from '../../services/logger.service';
+import { EventHandler } from '../../interfaces/event-handler';
+import { IO } from '../../app/io';
+
+export class EventsListener {
+  private logger: LoggerService;
+  private io: IO;
+  private eventHandlers: EventHandler[];
+  private disconnectedHandler: DisconnectedHandler;
+
+  public constructor({
+    loggerService,
+    io,
+    eventHandlers,
+    disconnectedHandler,
+  }: {
+    loggerService: LoggerService;
+    io: IO;
+    eventHandlers: EventHandler[];
+    disconnectedHandler: DisconnectedHandler;
+  }) {
+    this.logger = loggerService;
+    this.io = io;
+    this.eventHandlers = eventHandlers;
+    this.disconnectedHandler = disconnectedHandler;
+  }
+
+  public listen(): void {
+    this.io.on('connection', (socket: Socket) => {
+      const clientId = socket.id;
+      this.logger.clientEvent('connection', `clientId: ${clientId}`);
+      this.logger.info('total clients', `${this.io.instance.sockets.sockets.size}`);
+
+      this.eventHandlers.forEach((handler) => {
+        socket.on(handler.event, (payload: any) => handler.handle(socket, clientId, payload));
+      });
+
+      socket.on('disconnect', () => this.disconnectedHandler.handle(clientId));
+    });
+  }
+}

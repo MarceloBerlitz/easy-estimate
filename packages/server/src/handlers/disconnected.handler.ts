@@ -1,52 +1,71 @@
-import { ServerEventsEnum } from '@ee/lib';
+import { RoomType, ServerEventsEnum } from '@ee/lib';
 
-import { rooms } from '../rooms';
-import { io } from '..';
-import { LoggerHelper } from '../helpers/logger.helper';
-import { RoomHelper } from '../helpers/room.helper';
+import { RoomService } from '../services/room.service';
+import { LoggerService } from '../services/logger.service';
+import { IO } from '../app/io';
 
-const getVoterAndRoomIndexes = (clientId: string) => {
-  let voterIndex: number;
-  const roomIndex = rooms.findIndex((room) => {
-    voterIndex = room.voters.findIndex((voter) => voter.clientId === clientId);
-    return voterIndex >= 0;
-  });
+export class DisconnectedHandler {
+  private logger: LoggerService;
+  private roomService: RoomService;
+  private io: IO;
 
-  return { voterIndex, roomIndex };
-};
+  public constructor({
+    loggerService,
+    roomService,
+    io,
+  }: {
+    loggerService: LoggerService;
+    roomService: RoomService;
+    io: IO;
+  }) {
+    this.logger = loggerService;
+    this.roomService = roomService;
+    this.io = io;
+  }
 
-export const disconnectedHandler = (clientId: string) => {
-  LoggerHelper.clientEvent('disconnect', `clientId: ${clientId}`);
-  LoggerHelper.info('total clients', `${io.sockets.sockets.size}`);
-
-  try {
-    const { voterIndex, roomIndex } = getVoterAndRoomIndexes(clientId);
-
-    if (roomIndex < 0) {
-      return;
-    }
-
-    const room = rooms[roomIndex];
-    const disconnectedVoter = room.voters[voterIndex];
-
-    disconnectedVoter.clientId = null;
-
-    if (RoomHelper.nobodyIsConnected(room)) {
-      RoomHelper.removeRoom(roomIndex);
-      LoggerHelper.info('total rooms', `${rooms.length}`);
-      return;
-    }
-
-    io.to(room.id).emit(ServerEventsEnum.VOTER_DISCONNECTED, {
-      voters: room.voters,
-      computedVotes: room.computedVotes,
+  private getVoterAndRoomIndexes(clientId: string) {
+    let voterIndex: number;
+    const roomIndex = this.roomService.getRooms().findIndex((room: RoomType) => {
+      voterIndex = room.voters.findIndex((voter) => voter.clientId === clientId);
+      return voterIndex >= 0;
     });
 
-    LoggerHelper.serverEvent(
-      ServerEventsEnum.VOTER_DISCONNECTED,
-      `clientId: ${disconnectedVoter.clientId}`
-    );
-  } catch (error) {
-    LoggerHelper.unexpectedError(error);
+    return { voterIndex, roomIndex };
   }
-};
+
+  public handle(clientId: string): void {
+    this.logger.clientEvent('disconnect', `clientId: ${clientId}`);
+    this.logger.info('total clients', `${this.io.instance.sockets.sockets.size}`);
+
+    try {
+      const { voterIndex, roomIndex } = this.getVoterAndRoomIndexes(clientId);
+
+      if (roomIndex < 0) {
+        return;
+      }
+
+      const room = this.roomService.getRooms()[roomIndex];
+      const disconnectedVoter = room.voters[voterIndex];
+
+      disconnectedVoter.clientId = null;
+
+      if (this.roomService.nobodyIsConnected(room)) {
+        this.roomService.removeRoom(roomIndex);
+        this.logger.info('total rooms', `${this.roomService.getRoomsCount()}`);
+        return;
+      }
+
+      this.io.to(room.id).emit(ServerEventsEnum.VOTER_DISCONNECTED, {
+        voters: room.voters,
+        computedVotes: room.computedVotes,
+      });
+
+      this.logger.serverEvent(
+        ServerEventsEnum.VOTER_DISCONNECTED,
+        `clientId: ${disconnectedVoter.clientId}`
+      );
+    } catch (error) {
+      this.logger.unexpectedError(error);
+    }
+  }
+}
