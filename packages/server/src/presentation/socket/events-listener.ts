@@ -35,7 +35,7 @@ export class EventsListener {
       this.logger.info('total clients', `${this.io.instance.sockets.sockets.size}`);
 
       this.eventHandlers.forEach((handler) => {
-        socket.on(handler.event, (payload: any) => {
+        socket.on(handler.event, (payload: unknown) => {
           this.logger.clientEvent(handler.event, `clientId: ${clientId}`);
           try {
             handler.handle(socket, clientId, payload);
