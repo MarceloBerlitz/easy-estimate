@@ -21,7 +21,7 @@ import { hideHandler } from '../../handlers/hide.handler';
 import { logoutHandler } from '../../handlers/logout.handler';
 import { LoggerHelper } from '../../helpers/logger.helper';
 
-export class EventListenner {
+export class EventListener {
   public static listen(io: Server): void {
     io.on('connection', (socket: Socket) => {
       const clientId = socket.id;

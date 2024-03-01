@@ -4,8 +4,8 @@ import { ClientEventsEnum, ServerEventsEnum, VotePayload, VoteType } from '@ee/l
 
 import { rooms } from '../rooms';
 import { io } from '..';
-import { ComputedVotesMapper } from '../mappers/computed-votes.mapper';
 import { LoggerHelper } from '../helpers/logger.helper';
+import { RoomHelper } from '../helpers/room.helper';
 
 export const voteHandler = (socket: Socket, clientId: string, payload: VotePayload) => {
   LoggerHelper.clientEvent(ClientEventsEnum.VOTE, `clientId: ${clientId}`);
@@ -47,9 +47,7 @@ export const voteHandler = (socket: Socket, clientId: string, payload: VotePaylo
 
     voter.hasVoted = true;
 
-    if (room.computedVotes) {
-      room.computedVotes = ComputedVotesMapper.mapFromVotes(room.votes);
-    }
+    RoomHelper.updateComputedVotes(room);
 
     io.to(room.id).emit(ServerEventsEnum.VOTE_MADE, {
       voters: room.voters,

@@ -8,7 +8,7 @@ export class LoggerHelper {
 
   public static createLogger(): void {
     this.logger = winston.createLogger({
-      level: process.env.LOG_LEVEL ?? 'info',
+      level: process.env.LOG_LEVEL ?? 'debug',
       exitOnError: true,
       transports: [],
     });
