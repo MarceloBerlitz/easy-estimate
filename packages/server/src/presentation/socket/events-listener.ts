@@ -5,23 +5,20 @@ import { LoggerService } from '../../services/logger.service';
 import { EventHandler } from '../../interfaces/event-handler';
 import { IO } from '../../app/io';
 
+type Dependencies = {
+  loggerService: LoggerService;
+  io: IO;
+  eventHandlers: EventHandler[];
+  disconnectedHandler: DisconnectedHandler;
+};
+
 export class EventsListener {
   private logger: LoggerService;
   private io: IO;
   private eventHandlers: EventHandler[];
   private disconnectedHandler: DisconnectedHandler;
 
-  public constructor({
-    loggerService,
-    io,
-    eventHandlers,
-    disconnectedHandler,
-  }: {
-    loggerService: LoggerService;
-    io: IO;
-    eventHandlers: EventHandler[];
-    disconnectedHandler: DisconnectedHandler;
-  }) {
+  public constructor({ loggerService, io, eventHandlers, disconnectedHandler }: Dependencies) {
     this.logger = loggerService;
     this.io = io;
     this.eventHandlers = eventHandlers;

@@ -1,10 +1,17 @@
 import { Socket } from 'socket.io';
 
 import { ClientEventsEnum, HidePayload, ServerEventsEnum } from '@ee/lib';
+
 import { EventHandler } from '../interfaces/event-handler';
 import { RoomService } from '../services/room.service';
 import { LoggerService } from '../services/logger.service';
 import { IO } from '../app/io';
+
+type Dependencies = {
+  io: IO;
+  roomService: RoomService;
+  loggerService: LoggerService;
+};
 
 export class HideHandler implements EventHandler {
   private io: IO;
@@ -13,15 +20,7 @@ export class HideHandler implements EventHandler {
 
   public event: ClientEventsEnum = ClientEventsEnum.HIDE;
 
-  public constructor({
-    io,
-    roomService,
-    loggerService,
-  }: {
-    io: IO;
-    roomService: RoomService;
-    loggerService: LoggerService;
-  }) {
+  public constructor({ io, roomService, loggerService }: Dependencies) {
     this.io = io;
     this.roomService = roomService;
     this.logger = loggerService;

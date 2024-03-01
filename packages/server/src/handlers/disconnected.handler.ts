@@ -4,33 +4,21 @@ import { RoomService } from '../services/room.service';
 import { LoggerService } from '../services/logger.service';
 import { IO } from '../app/io';
 
+type Dependencies = {
+  loggerService: LoggerService;
+  roomService: RoomService;
+  io: IO;
+};
+
 export class DisconnectedHandler {
   private logger: LoggerService;
   private roomService: RoomService;
   private io: IO;
 
-  public constructor({
-    loggerService,
-    roomService,
-    io,
-  }: {
-    loggerService: LoggerService;
-    roomService: RoomService;
-    io: IO;
-  }) {
+  public constructor({ loggerService, roomService, io }: Dependencies) {
     this.logger = loggerService;
     this.roomService = roomService;
     this.io = io;
-  }
-
-  private getVoterAndRoomIndexes(clientId: string) {
-    let voterIndex: number;
-    const roomIndex = this.roomService.getRooms().findIndex((room: RoomType) => {
-      voterIndex = room.voters.findIndex((voter) => voter.clientId === clientId);
-      return voterIndex >= 0;
-    });
-
-    return { voterIndex, roomIndex };
   }
 
   public handle(clientId: string): void {
@@ -67,5 +55,15 @@ export class DisconnectedHandler {
     } catch (error) {
       this.logger.unexpectedError(error);
     }
+  }
+
+  private getVoterAndRoomIndexes(clientId: string) {
+    let voterIndex: number;
+    const roomIndex = this.roomService.getRooms().findIndex((room: RoomType) => {
+      voterIndex = room.voters.findIndex((voter) => voter.clientId === clientId);
+      return voterIndex >= 0;
+    });
+
+    return { voterIndex, roomIndex };
   }
 }

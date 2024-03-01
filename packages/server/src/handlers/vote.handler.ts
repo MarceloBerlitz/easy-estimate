@@ -7,6 +7,12 @@ import { RoomService } from '../services/room.service';
 import { LoggerService } from '../services/logger.service';
 import { IO } from '../app/io';
 
+type Dependencies = {
+  io: IO;
+  roomService: RoomService;
+  loggerService: LoggerService;
+};
+
 export class VoteHandler implements EventHandler {
   private io: IO;
   private roomService: RoomService;
@@ -14,15 +20,7 @@ export class VoteHandler implements EventHandler {
 
   public event: ClientEventsEnum = ClientEventsEnum.VOTE;
 
-  public constructor({
-    io,
-    roomService,
-    loggerService,
-  }: {
-    io: IO;
-    roomService: RoomService;
-    loggerService: LoggerService;
-  }) {
+  public constructor({ io, roomService, loggerService }: Dependencies) {
     this.io = io;
     this.roomService = roomService;
     this.logger = loggerService;

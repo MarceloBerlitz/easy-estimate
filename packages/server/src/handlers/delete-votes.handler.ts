@@ -7,6 +7,12 @@ import { LoggerService } from '../services/logger.service';
 import { RoomService } from '../services/room.service';
 import { IO } from '../app/io';
 
+type Dependencies = {
+  loggerService: LoggerService;
+  roomService: RoomService;
+  io: IO;
+};
+
 export class DeleteVotesHandler implements EventHandler {
   private logger: LoggerService;
   private roomService: RoomService;
@@ -14,15 +20,7 @@ export class DeleteVotesHandler implements EventHandler {
 
   public event: ClientEventsEnum = ClientEventsEnum.DELETE_VOTES;
 
-  public constructor({
-    loggerService,
-    roomService,
-    io,
-  }: {
-    loggerService: LoggerService;
-    roomService: RoomService;
-    io: IO;
-  }) {
+  public constructor({ loggerService, roomService, io }: Dependencies) {
     this.logger = loggerService;
     this.roomService = roomService;
     this.io = io;

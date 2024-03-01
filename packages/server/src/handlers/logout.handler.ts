@@ -7,21 +7,20 @@ import { DefaultEventsMap } from 'socket.io/dist/typed-events';
 import { LoggerService } from '../services/logger.service';
 import { RoomService } from '../services/room.service';
 import { IO } from '../app/io';
+
+type Dependencies = {
+  io: IO;
+  roomService: RoomService;
+  loggerService: LoggerService;
+};
+
 export class LogoutHandler implements EventHandler {
   private logger: LoggerService;
   private roomService: RoomService;
   private io: IO;
   public event: ClientEventsEnum = ClientEventsEnum.LOGOUT;
 
-  public constructor({
-    io,
-    roomService,
-    loggerService,
-  }: {
-    io: IO;
-    roomService: RoomService;
-    loggerService: LoggerService;
-  }) {
+  public constructor({ io, roomService, loggerService }: Dependencies) {
     this.io = io;
     this.roomService = roomService;
     this.logger = loggerService;

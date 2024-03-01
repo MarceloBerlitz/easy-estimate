@@ -10,6 +10,12 @@ import { RoomService } from '../services/room.service';
 import { LoggerService } from '../services/logger.service';
 import { IO } from '../app/io';
 
+type Dependencies = {
+  io: IO;
+  roomService: RoomService;
+  loggerService: LoggerService;
+};
+
 export class JoinRoomHandler implements EventHandler {
   private logger: LoggerService;
   private io: IO;
@@ -17,15 +23,7 @@ export class JoinRoomHandler implements EventHandler {
 
   public event: ClientEventsEnum = ClientEventsEnum.JOIN_ROOM;
 
-  public constructor({
-    io,
-    loggerService,
-    roomService,
-  }: {
-    io: IO;
-    roomService: RoomService;
-    loggerService: LoggerService;
-  }) {
+  public constructor({ io, loggerService, roomService }: Dependencies) {
     this.io = io;
     this.roomService = roomService;
     this.logger = loggerService;

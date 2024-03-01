@@ -9,17 +9,16 @@ import { EventHandler } from '../interfaces/event-handler';
 import { RoomService } from '../services/room.service';
 import { LoggerService } from '../services/logger.service';
 
+type Dependencies = {
+  roomService: RoomService;
+  loggerService: LoggerService;
+};
+
 export class CreateRoomHandler implements EventHandler {
   private roomService: RoomService;
   private logger: LoggerService;
 
-  public constructor({
-    roomService,
-    loggerService,
-  }: {
-    roomService: RoomService;
-    loggerService: LoggerService;
-  }) {
+  public constructor({ roomService, loggerService }: Dependencies) {
     this.roomService = roomService;
     this.logger = loggerService;
   }
