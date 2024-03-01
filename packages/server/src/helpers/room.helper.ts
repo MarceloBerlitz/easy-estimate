@@ -11,7 +11,10 @@ export class RoomHelper {
     rooms.push(room);
   }
 
-  public static findVoter(room: RoomType, voterId: string): VoterType | undefined {
+  public static findVoter(room: RoomType, voterId?: string): VoterType | undefined {
+    if (!voterId) {
+      return;
+    }
     return room.voters.find((voter) => voter.id === voterId);
   }
   public static addVoter(room: RoomType, voter: VoterType): void {

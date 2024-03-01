@@ -1,13 +1,41 @@
 import { Socket } from 'socket.io';
 import { validate as validateUuid } from 'uuid';
 
-import { ClientEventsEnum, JoinRoomPayload, ServerEventsEnum } from '@ee/lib';
+import { ClientEventsEnum, JoinRoomPayload, RoomType, ServerEventsEnum, VoterType } from '@ee/lib';
 
 import { VoterFactory } from '../factories/voter.factory';
 import { io } from '..';
 import { LoggerHelper } from '../helpers/logger.helper';
 import { RoomFactory } from '../factories/room.factory';
 import { RoomHelper } from '../helpers/room.helper';
+
+const joinRoom = (
+  clientId: string,
+  payload: JoinRoomPayload
+): { room: RoomType; voter: VoterType } => {
+  const room = RoomHelper.getRoom(payload.roomId);
+
+  // Room does not exist, create a new room and a new voter
+  if (!room) {
+    LoggerHelper.getLogger().info('room not found. creating room.');
+    const newVoter = VoterFactory.create(clientId, payload.name, payload.voterId);
+    const newRoom = RoomFactory.create(newVoter, payload.roomId);
+    RoomHelper.addRoom(newRoom);
+    return { room: newRoom, voter: newVoter };
+  }
+
+  const voter = RoomHelper.findVoter(room, payload.voterId);
+  // Voter already exists in the room, update the clientId
+  if (voter) {
+    voter.clientId = clientId;
+    return { room, voter };
+  }
+
+  // Voter does not exist, add a new voter
+  const newVoter = VoterFactory.create(clientId, payload.name, payload.voterId);
+  RoomHelper.addVoter(room, newVoter);
+  return { room, voter: newVoter };
+};
 
 export const joinRoomHandler = (socket: Socket, clientId: string, payload: JoinRoomPayload) => {
   LoggerHelper.clientEvent(ClientEventsEnum.JOIN_ROOM, `clientId: ${clientId}`);
@@ -19,28 +47,7 @@ export const joinRoomHandler = (socket: Socket, clientId: string, payload: JoinR
       return;
     }
 
-    let room = RoomHelper.getRoom(payload.roomId);
-    let voter;
-
-    if (!room) {
-      LoggerHelper.getLogger().info('room not found. creating room.');
-      voter = VoterFactory.create(clientId, payload.name, payload.voterId);
-      room = RoomFactory.create(voter, payload.roomId);
-      RoomHelper.addRoom(room);
-    } else {
-      if (!payload.voterId) {
-        voter = VoterFactory.create(clientId, payload.name);
-        RoomHelper.addVoter(room, voter);
-      } else {
-        const currentVoter = RoomHelper.findVoter(room, payload.voterId);
-        if (currentVoter) {
-          currentVoter.clientId = clientId;
-        } else {
-          voter = VoterFactory.create(clientId, payload.name, payload.voterId);
-          RoomHelper.addVoter(room, voter);
-        }
-      }
-    }
+    const { voter, room } = joinRoom(clientId, payload);
 
     socket.join(room.id);
 
