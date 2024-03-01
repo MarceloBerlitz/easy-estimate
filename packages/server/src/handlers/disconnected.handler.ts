@@ -1,19 +1,26 @@
-import { ServerEventsEnum, VoterType } from '@ee/lib';
+import { ServerEventsEnum } from '@ee/lib';
 
 import { rooms } from '../rooms';
 import { io } from '..';
 import { LoggerHelper } from '../helpers/logger.helper';
+import { RoomHelper } from '../helpers/room.helper';
+
+const getVoterAndRoomIndexes = (clientId: string) => {
+  let voterIndex: number;
+  const roomIndex = rooms.findIndex((room) => {
+    voterIndex = room.voters.findIndex((voter) => voter.clientId === clientId);
+    return voterIndex >= 0;
+  });
+
+  return { voterIndex, roomIndex };
+};
 
 export const disconnectedHandler = (clientId: string) => {
   LoggerHelper.clientEvent('disconnect', `clientId: ${clientId}`);
   LoggerHelper.info('total clients', `${io.sockets.sockets.size}`);
 
   try {
-    let voterIndex: number;
-    const roomIndex = rooms.findIndex((room) => {
-      voterIndex = room.voters.findIndex((voter: VoterType) => voter.clientId === clientId);
-      return voterIndex >= 0;
-    });
+    const { voterIndex, roomIndex } = getVoterAndRoomIndexes(clientId);
 
     if (roomIndex < 0) {
       return;
@@ -24,8 +31,8 @@ export const disconnectedHandler = (clientId: string) => {
 
     disconnectedVoter.clientId = null;
 
-    if (room.voters.filter((voter) => !!voter.clientId).length < 1) {
-      rooms.splice(roomIndex, 1);
+    if (RoomHelper.nobodyIsConnected(room)) {
+      RoomHelper.removeRoom(roomIndex);
       LoggerHelper.info('total rooms', `${rooms.length}`);
       return;
     }

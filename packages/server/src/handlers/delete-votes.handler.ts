@@ -2,9 +2,9 @@ import { Socket } from 'socket.io';
 
 import { ClientEventsEnum, DeleteVotesPayload, ServerEventsEnum, VoterType } from '@ee/lib';
 
-import { rooms } from '../rooms';
 import { io } from '..';
 import { LoggerHelper } from '../helpers/logger.helper';
+import { RoomHelper } from '../helpers/room.helper';
 
 export const deleteVotesHandler = (
   socket: Socket,
@@ -14,16 +14,14 @@ export const deleteVotesHandler = (
   LoggerHelper.clientEvent(ClientEventsEnum.DELETE_VOTES, `clientId: ${clientId}`);
 
   try {
-    const room = rooms.find((room) => room.id === payload.roomId);
-
+    const room = RoomHelper.getRoom(payload.roomId);
     if (!room) {
       socket.emit(ServerEventsEnum.ERROR, 'room not found');
       LoggerHelper.serverEvent(ServerEventsEnum.ERROR, `room not found: ${payload.roomId}`);
       return;
     }
 
-    const voter = room.voters.find((voter: VoterType) => voter.id === payload.voterId);
-
+    const voter = RoomHelper.getVoter(room, payload.voterId);
     if (!voter) {
       socket.emit(ServerEventsEnum.ERROR, 'room not found');
       LoggerHelper.serverEvent(

@@ -5,19 +5,25 @@ import { ClientEventsEnum, LogoutPayload, ServerEventsEnum } from '@ee/lib';
 import { LoggerHelper } from '../helpers/logger.helper';
 import { rooms } from '../rooms';
 import { io } from '..';
-import { ComputedVotesMapper } from '../mappers/computed-votes.mapper';
+import { RoomHelper } from '../helpers/room.helper';
+
+const getVoterAndRoomIndexes = (clientId: string, voterId: string) => {
+  let voterIndex: number;
+  const roomIndex = rooms.findIndex((room) => {
+    voterIndex = room.voters.findIndex(
+      (voter) => voter.id === voterId || voter.clientId === clientId
+    );
+    return voterIndex >= 0;
+  });
+
+  return { voterIndex, roomIndex };
+};
 
 export const logoutHandler = (socket: Socket, clientId: string, payload: LogoutPayload) => {
   LoggerHelper.clientEvent(ClientEventsEnum.LOGOUT, `clientId: ${clientId}`);
 
   try {
-    let voterIndex: number;
-    const roomIndex = rooms.findIndex((room) => {
-      voterIndex = room.voters.findIndex(
-        (voter) => voter.id === payload.voterId || voter.clientId === clientId
-      );
-      return voterIndex >= 0;
-    });
+    const { roomIndex, voterIndex } = getVoterAndRoomIndexes(clientId, payload.voterId);
 
     if (roomIndex < 0) {
       return;
@@ -25,14 +31,17 @@ export const logoutHandler = (socket: Socket, clientId: string, payload: LogoutP
 
     const room = rooms[roomIndex];
     const logoutVoter = room.voters[voterIndex];
-
-    room.voters.splice(voterIndex, 1);
-    room.votes = room.votes.filter((vote) => vote.voter.id !== payload.voterId);
-    if (room.computedVotes) {
-      room.computedVotes = ComputedVotesMapper.mapFromVotes(room.votes);
-    }
+    RoomHelper.removeVoter(room, voterIndex);
 
     socket.leave(room.id);
+
+    if (room.voters.length === 0) {
+      RoomHelper.removeRoom(roomIndex);
+      LoggerHelper.info('total rooms', `${rooms.length}`);
+      return;
+    }
+
+    RoomHelper.removeVotersVotes(room, payload.voterId);
 
     io.to(room.id).emit(ServerEventsEnum.LOGGED_OUT, {
       logoutVoter,

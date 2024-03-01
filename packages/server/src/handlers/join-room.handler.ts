@@ -24,7 +24,7 @@ const joinRoom = (
     return { room: newRoom, voter: newVoter };
   }
 
-  const voter = RoomHelper.findVoter(room, payload.voterId);
+  const voter = RoomHelper.getVoter(room, payload.voterId);
   // Voter already exists in the room, update the clientId
   if (voter) {
     voter.clientId = clientId;
