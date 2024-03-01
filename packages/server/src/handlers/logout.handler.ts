@@ -32,39 +32,33 @@ export class LogoutHandler implements EventHandler {
     clientId: string,
     payload: LogoutPayload
   ): void {
-    this.logger.clientEvent(ClientEventsEnum.LOGOUT, `clientId: ${clientId}`);
+    const { roomIndex, voterIndex } = this.getVoterAndRoomIndexes(clientId, payload.voterId);
 
-    try {
-      const { roomIndex, voterIndex } = this.getVoterAndRoomIndexes(clientId, payload.voterId);
-
-      if (roomIndex < 0) {
-        return;
-      }
-
-      const room = this.roomService.getRooms()[roomIndex];
-      const logoutVoter = room.voters[voterIndex];
-      this.roomService.removeVoter(room, voterIndex);
-
-      socket.leave(room.id);
-
-      if (room.voters.length === 0) {
-        this.roomService.removeRoom(roomIndex);
-        this.logger.info('total rooms', `${this.roomService.getRoomsCount()}`);
-        return;
-      }
-
-      this.roomService.removeVotersVotes(room, payload.voterId);
-
-      this.io.to(room.id).emit(ServerEventsEnum.LOGGED_OUT, {
-        logoutVoter,
-        voters: room.voters,
-        computedVotes: room.computedVotes,
-      });
-
-      this.logger.serverEvent(ServerEventsEnum.LOGGED_OUT, `roomId: ${room.id}`);
-    } catch (error) {
-      this.logger.unexpectedError(error);
+    if (roomIndex < 0) {
+      return;
     }
+
+    const room = this.roomService.getRooms()[roomIndex];
+    const logoutVoter = room.voters[voterIndex];
+    this.roomService.removeVoter(room, voterIndex);
+
+    socket.leave(room.id);
+
+    if (room.voters.length === 0) {
+      this.roomService.removeRoom(roomIndex);
+      this.logger.info('total rooms', `${this.roomService.getRoomsCount()}`);
+      return;
+    }
+
+    this.roomService.removeVotersVotes(room, payload.voterId);
+
+    this.io.to(room.id).emit(ServerEventsEnum.LOGGED_OUT, {
+      logoutVoter,
+      voters: room.voters,
+      computedVotes: room.computedVotes,
+    });
+
+    this.logger.serverEvent(ServerEventsEnum.LOGGED_OUT, `roomId: ${room.id}`);
   }
 
   private getVoterAndRoomIndexes(clientId: string, voterId: string) {

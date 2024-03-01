@@ -30,44 +30,38 @@ export class RevealHandler implements EventHandler {
   }
 
   public handle(socket: Socket, clientId: string, payload: RevealPayload) {
-    this.logger.clientEvent(ClientEventsEnum.REVEAL, `clientId: ${clientId}`);
+    const room: RoomType = this.roomService.getRoom(payload.roomId);
 
-    try {
-      const room: RoomType = this.roomService.getRoom(payload.roomId);
-
-      if (!room) {
-        socket.emit(ServerEventsEnum.ERROR, 'room not found');
-        this.logger.serverEvent(ServerEventsEnum.ERROR, `room not found: ${payload.roomId}`);
-        return;
-      }
-
-      const voter = room.voters.find((voter) => voter.id === payload.voterId);
-
-      if (!voter) {
-        socket.emit(ServerEventsEnum.ERROR, 'room not found');
-        this.logger.serverEvent(
-          ServerEventsEnum.ERROR,
-          `room not found: ${payload.roomId} - clientId: ${clientId}`
-        );
-        return;
-      }
-
-      if (!voter.clientId) {
-        voter.clientId = clientId;
-        socket.join(room.id);
-      }
-
-      if (!room.computedVotes) {
-        room.computedVotes = ComputedVotesMapper.mapFromVotes(room.votes);
-      }
-
-      this.io.to(room.id).emit(ServerEventsEnum.POINTS_REVEALED, {
-        computedVotes: room.computedVotes,
-      });
-
-      this.logger.serverEvent(ServerEventsEnum.POINTS_REVEALED, `roomId: ${room.id}`);
-    } catch (error) {
-      this.logger.unexpectedError(error);
+    if (!room) {
+      socket.emit(ServerEventsEnum.ERROR, 'room not found');
+      this.logger.serverEvent(ServerEventsEnum.ERROR, `room not found: ${payload.roomId}`);
+      return;
     }
+
+    const voter = room.voters.find((voter) => voter.id === payload.voterId);
+
+    if (!voter) {
+      socket.emit(ServerEventsEnum.ERROR, 'room not found');
+      this.logger.serverEvent(
+        ServerEventsEnum.ERROR,
+        `room not found: ${payload.roomId} - clientId: ${clientId}`
+      );
+      return;
+    }
+
+    if (!voter.clientId) {
+      voter.clientId = clientId;
+      socket.join(room.id);
+    }
+
+    if (!room.computedVotes) {
+      room.computedVotes = ComputedVotesMapper.mapFromVotes(room.votes);
+    }
+
+    this.io.to(room.id).emit(ServerEventsEnum.POINTS_REVEALED, {
+      computedVotes: room.computedVotes,
+    });
+
+    this.logger.serverEvent(ServerEventsEnum.POINTS_REVEALED, `roomId: ${room.id}`);
   }
 }

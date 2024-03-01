@@ -32,29 +32,23 @@ export class JoinRoomHandler implements EventHandler {
   }
 
   public handle(socket: Socket, clientId: string, payload: JoinRoomPayload): void {
-    this.logger.clientEvent(ClientEventsEnum.JOIN_ROOM, `clientId: ${clientId}`);
-
-    try {
-      if (!validateUuid(payload.roomId)) {
-        socket.emit(ServerEventsEnum.ERROR, 'room not found');
-        this.logger.serverEvent(ServerEventsEnum.ERROR, `room not found: ${payload.roomId}`);
-        return;
-      }
-
-      const { voter, room } = this.joinRoom(clientId, payload);
-
-      socket.join(room.id);
-
-      this.io.to(room.id).emit(ServerEventsEnum.VOTER_JOINED, {
-        voter,
-        voters: room.voters,
-        computedVotes: room.computedVotes,
-      });
-
-      this.logger.serverEvent(ServerEventsEnum.VOTER_JOINED, `roomId: ${room.id}`);
-    } catch (error) {
-      this.logger.unexpectedError(error);
+    if (!validateUuid(payload.roomId)) {
+      socket.emit(ServerEventsEnum.ERROR, 'room not found');
+      this.logger.serverEvent(ServerEventsEnum.ERROR, `room not found: ${payload.roomId}`);
+      return;
     }
+
+    const { voter, room } = this.joinRoom(clientId, payload);
+
+    socket.join(room.id);
+
+    this.io.to(room.id).emit(ServerEventsEnum.VOTER_JOINED, {
+      voter,
+      voters: room.voters,
+      computedVotes: room.computedVotes,
+    });
+
+    this.logger.serverEvent(ServerEventsEnum.VOTER_JOINED, `roomId: ${room.id}`);
   }
 
   private joinRoom(

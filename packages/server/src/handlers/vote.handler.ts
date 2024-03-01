@@ -29,55 +29,49 @@ export class VoteHandler implements EventHandler {
   }
 
   public handle(socket: Socket, clientId: string, payload: VotePayload): void {
-    this.logger.clientEvent(ClientEventsEnum.VOTE, `clientId: ${clientId}`);
+    const room = this.roomService.getRoom(payload.roomId);
 
-    try {
-      const room = this.roomService.getRoom(payload.roomId);
-
-      if (!room) {
-        socket.emit(ServerEventsEnum.ERROR, 'room not found');
-        this.logger.serverEvent(ServerEventsEnum.ERROR, `room not found: ${payload.roomId}`);
-        return;
-      }
-
-      const voter = this.roomService.getVoter(room, payload.voterId);
-
-      if (!voter) {
-        socket.emit(ServerEventsEnum.ERROR, 'room not found');
-        this.logger.serverEvent(
-          ServerEventsEnum.ERROR,
-          `room not found: ${payload.roomId} - clientId: ${clientId}`
-        );
-        return;
-      }
-
-      if (!voter.clientId) {
-        voter.clientId = clientId;
-        socket.join(room.id);
-      }
-
-      const currentVoteIndex = room.votes.findIndex(
-        (vote: VoteType) => vote.voter.id === payload.voterId
-      );
-
-      if (currentVoteIndex >= 0) {
-        room.votes.splice(currentVoteIndex, 1);
-      }
-
-      room.votes.push({ ...payload.vote, voter });
-
-      voter.hasVoted = true;
-
-      this.roomService.updateComputedVotes(room);
-
-      this.io.to(room.id).emit(ServerEventsEnum.VOTE_MADE, {
-        voters: room.voters,
-        ...(room.computedVotes ? { computedVotes: room.computedVotes } : {}),
-      });
-
-      this.logger.serverEvent(ServerEventsEnum.VOTE_MADE, `roomId: ${room.id}`);
-    } catch (error) {
-      this.logger.unexpectedError(error);
+    if (!room) {
+      socket.emit(ServerEventsEnum.ERROR, 'room not found');
+      this.logger.serverEvent(ServerEventsEnum.ERROR, `room not found: ${payload.roomId}`);
+      return;
     }
+
+    const voter = this.roomService.getVoter(room, payload.voterId);
+
+    if (!voter) {
+      socket.emit(ServerEventsEnum.ERROR, 'room not found');
+      this.logger.serverEvent(
+        ServerEventsEnum.ERROR,
+        `room not found: ${payload.roomId} - clientId: ${clientId}`
+      );
+      return;
+    }
+
+    if (!voter.clientId) {
+      voter.clientId = clientId;
+      socket.join(room.id);
+    }
+
+    const currentVoteIndex = room.votes.findIndex(
+      (vote: VoteType) => vote.voter.id === payload.voterId
+    );
+
+    if (currentVoteIndex >= 0) {
+      room.votes.splice(currentVoteIndex, 1);
+    }
+
+    room.votes.push({ ...payload.vote, voter });
+
+    voter.hasVoted = true;
+
+    this.roomService.updateComputedVotes(room);
+
+    this.io.to(room.id).emit(ServerEventsEnum.VOTE_MADE, {
+      voters: room.voters,
+      ...(room.computedVotes ? { computedVotes: room.computedVotes } : {}),
+    });
+
+    this.logger.serverEvent(ServerEventsEnum.VOTE_MADE, `roomId: ${room.id}`);
   }
 }

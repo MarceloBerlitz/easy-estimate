@@ -35,7 +35,14 @@ export class EventsListener {
       this.logger.info('total clients', `${this.io.instance.sockets.sockets.size}`);
 
       this.eventHandlers.forEach((handler) => {
-        socket.on(handler.event, (payload: any) => handler.handle(socket, clientId, payload));
+        socket.on(handler.event, (payload: any) => {
+          this.logger.clientEvent(handler.event, `clientId: ${clientId}`);
+          try {
+            handler.handle(socket, clientId, payload);
+          } catch (error) {
+            this.logger.unexpectedError(error);
+          }
+        });
       });
 
       socket.on('disconnect', () => this.disconnectedHandler.handle(clientId));

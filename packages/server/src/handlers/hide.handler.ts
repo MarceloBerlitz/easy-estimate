@@ -28,40 +28,34 @@ export class HideHandler implements EventHandler {
   }
 
   handle(socket: Socket, clientId: string, payload: HidePayload): void {
-    this.logger.clientEvent(ClientEventsEnum.HIDE, `clientId: ${clientId}`);
+    const room = this.roomService.getRoom(payload.roomId);
 
-    try {
-      const room = this.roomService.getRoom(payload.roomId);
-
-      if (!room) {
-        socket.emit(ServerEventsEnum.ERROR, 'room not found');
-        this.logger.serverEvent(ServerEventsEnum.ERROR, `room not found: ${payload.roomId}`);
-        return;
-      }
-
-      const voter = this.roomService.getVoter(room, payload.voterId);
-
-      if (!voter) {
-        socket.emit(ServerEventsEnum.ERROR, 'room not found');
-        this.logger.serverEvent(
-          ServerEventsEnum.ERROR,
-          `room not found: ${payload.roomId} - clientId: ${clientId}`
-        );
-        return;
-      }
-
-      if (!voter.clientId) {
-        voter.clientId = clientId;
-        socket.join(room.id);
-      }
-
-      delete room.computedVotes;
-
-      this.io.to(room.id).emit(ServerEventsEnum.POINTS_HIDDEN);
-
-      this.logger.serverEvent(ServerEventsEnum.POINTS_HIDDEN, `roomId: ${room.id}`);
-    } catch (error) {
-      this.logger.unexpectedError(error);
+    if (!room) {
+      socket.emit(ServerEventsEnum.ERROR, 'room not found');
+      this.logger.serverEvent(ServerEventsEnum.ERROR, `room not found: ${payload.roomId}`);
+      return;
     }
+
+    const voter = this.roomService.getVoter(room, payload.voterId);
+
+    if (!voter) {
+      socket.emit(ServerEventsEnum.ERROR, 'room not found');
+      this.logger.serverEvent(
+        ServerEventsEnum.ERROR,
+        `room not found: ${payload.roomId} - clientId: ${clientId}`
+      );
+      return;
+    }
+
+    if (!voter.clientId) {
+      voter.clientId = clientId;
+      socket.join(room.id);
+    }
+
+    delete room.computedVotes;
+
+    this.io.to(room.id).emit(ServerEventsEnum.POINTS_HIDDEN);
+
+    this.logger.serverEvent(ServerEventsEnum.POINTS_HIDDEN, `roomId: ${room.id}`);
   }
 }

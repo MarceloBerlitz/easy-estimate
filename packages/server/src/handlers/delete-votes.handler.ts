@@ -29,43 +29,37 @@ export class DeleteVotesHandler implements EventHandler {
   }
 
   public handle(socket: Socket, clientId: string, payload: DeleteVotesPayload): void {
-    this.logger.clientEvent(ClientEventsEnum.DELETE_VOTES, `clientId: ${clientId}`);
-
-    try {
-      const room = this.roomService.getRoom(payload.roomId);
-      if (!room) {
-        socket.emit(ServerEventsEnum.ERROR, 'room not found');
-        this.logger.serverEvent(ServerEventsEnum.ERROR, `room not found: ${payload.roomId}`);
-        return;
-      }
-
-      const voter = this.roomService.getVoter(room, payload.voterId);
-      if (!voter) {
-        socket.emit(ServerEventsEnum.ERROR, 'room not found');
-        this.logger.serverEvent(
-          ServerEventsEnum.ERROR,
-          `room not found: ${payload.roomId} - clientId: ${clientId}`
-        );
-        return;
-      }
-
-      if (!voter.clientId) {
-        voter.clientId = clientId;
-        socket.join(room.id);
-      }
-
-      room.votes = [];
-      room.voters.forEach((voter: VoterType) => {
-        voter.hasVoted = false;
-      });
-
-      delete room.computedVotes;
-
-      this.io.to(room.id).emit(ServerEventsEnum.VOTES_DELETED);
-
-      this.logger.serverEvent(ServerEventsEnum.VOTES_DELETED, `roomId: ${room.id}`);
-    } catch (error) {
-      this.logger.unexpectedError(error);
+    const room = this.roomService.getRoom(payload.roomId);
+    if (!room) {
+      socket.emit(ServerEventsEnum.ERROR, 'room not found');
+      this.logger.serverEvent(ServerEventsEnum.ERROR, `room not found: ${payload.roomId}`);
+      return;
     }
+
+    const voter = this.roomService.getVoter(room, payload.voterId);
+    if (!voter) {
+      socket.emit(ServerEventsEnum.ERROR, 'room not found');
+      this.logger.serverEvent(
+        ServerEventsEnum.ERROR,
+        `room not found: ${payload.roomId} - clientId: ${clientId}`
+      );
+      return;
+    }
+
+    if (!voter.clientId) {
+      voter.clientId = clientId;
+      socket.join(room.id);
+    }
+
+    room.votes = [];
+    room.voters.forEach((voter: VoterType) => {
+      voter.hasVoted = false;
+    });
+
+    delete room.computedVotes;
+
+    this.io.to(room.id).emit(ServerEventsEnum.VOTES_DELETED);
+
+    this.logger.serverEvent(ServerEventsEnum.VOTES_DELETED, `roomId: ${room.id}`);
   }
 }
