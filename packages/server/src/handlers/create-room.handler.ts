@@ -18,12 +18,12 @@ export class CreateRoomHandler implements EventHandler {
   private roomService: RoomService;
   private logger: LoggerService;
 
+  public event: ClientEventsEnum = ClientEventsEnum.CREATE_ROOM;
+
   public constructor({ roomService, loggerService }: Dependencies) {
     this.roomService = roomService;
     this.logger = loggerService;
   }
-
-  public event: ClientEventsEnum = ClientEventsEnum.CREATE_ROOM;
 
   public handle(socket: Socket, clientId: string, payload: CreateRoomPayload): void {
     if (!payload.name) {
