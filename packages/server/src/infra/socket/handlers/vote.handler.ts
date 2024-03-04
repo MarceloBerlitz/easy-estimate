@@ -3,73 +3,34 @@ import { Socket } from 'socket.io';
 import { ClientEventsEnum, ServerEventsEnum, VotePayload, VoteType } from '@ee/lib';
 
 import { EventHandler } from '../interfaces/event-handler';
-import { RoomService } from '../services/room.service';
-import { LoggerService } from '../services/logger.service';
-import { IO } from '../infra/io';
+import { IO } from '../../io';
+import { LoggerService } from '../../logging/logger.service';
+import { VoteUseCase } from '../../../app/useCases/vote.use-case';
 
 type Dependencies = {
   io: IO;
-  roomService: RoomService;
   loggerService: LoggerService;
+  voteUseCase: VoteUseCase;
 };
 
 export class VoteHandler implements EventHandler {
   private io: IO;
-  private roomService: RoomService;
   private logger: LoggerService;
+  private voteUseCase: VoteUseCase;
 
   public event: ClientEventsEnum = ClientEventsEnum.VOTE;
 
-  public constructor({ io, roomService, loggerService }: Dependencies) {
+  public constructor({ io, loggerService, voteUseCase }: Dependencies) {
     this.io = io;
-    this.roomService = roomService;
     this.logger = loggerService;
+    this.voteUseCase = voteUseCase;
   }
 
-  public handle(socket: Socket, clientId: string, payload: VotePayload): void {
-    const room = this.roomService.getRoom(payload.roomId);
+  public handle(payload: VotePayload): void {
+    const { roomId, voteMadePayload } = this.voteUseCase.execute(payload);
 
-    if (!room) {
-      socket.emit(ServerEventsEnum.ERROR, 'room not found');
-      this.logger.serverEvent(ServerEventsEnum.ERROR, `room not found: ${payload.roomId}`);
-      return;
-    }
+    this.io.to(roomId).emit(ServerEventsEnum.VOTE_MADE, voteMadePayload);
 
-    const voter = this.roomService.getVoter(room, payload.voterId);
-
-    if (!voter) {
-      socket.emit(ServerEventsEnum.ERROR, 'room not found');
-      this.logger.serverEvent(
-        ServerEventsEnum.ERROR,
-        `room not found: ${payload.roomId} - clientId: ${clientId}`
-      );
-      return;
-    }
-
-    if (!voter.clientId) {
-      voter.clientId = clientId;
-      socket.join(room.id);
-    }
-
-    const currentVoteIndex = room.votes.findIndex(
-      (vote: VoteType) => vote.voter.id === payload.voterId
-    );
-
-    if (currentVoteIndex >= 0) {
-      room.votes.splice(currentVoteIndex, 1);
-    }
-
-    room.votes.push({ ...payload.vote, voter });
-
-    voter.hasVoted = true;
-
-    this.roomService.updateComputedVotes(room);
-
-    this.io.to(room.id).emit(ServerEventsEnum.VOTE_MADE, {
-      voters: room.voters,
-      ...(room.computedVotes ? { computedVotes: room.computedVotes } : {}),
-    });
-
-    this.logger.serverEvent(ServerEventsEnum.VOTE_MADE, `roomId: ${room.id}`);
+    this.logger.serverEvent(ServerEventsEnum.VOTE_MADE, `roomId: ${roomId}`);
   }
 }

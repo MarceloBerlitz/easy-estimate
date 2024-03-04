@@ -1,10 +1,10 @@
 import { JoinRoomPayload, RoomType, VoterType } from '@ee/lib';
 
-import { UseCase } from '../../interfaces/use-case';
-import { JoinRoomService } from './join-room-service';
-import { Logger } from '../../interfaces/logger';
-import { VoterFactory } from '../../factories/voter.factory';
-import { RoomFactory } from '../../factories/room.factory';
+import { UseCase } from '../interfaces/use-case';
+import { Logger } from '../interfaces/logger';
+import { VoterFactory } from '../factories/voter.factory';
+import { RoomFactory } from '../factories/room.factory';
+import { RoomService } from '../services/room.service';
 
 type JoinRoomUseCaseResult = {
   room: RoomType;
@@ -13,7 +13,7 @@ type JoinRoomUseCaseResult = {
 
 export class JoinRoomUseCase implements UseCase<JoinRoomPayload, JoinRoomUseCaseResult> {
   private clientId: string;
-  private service: JoinRoomService;
+  private service: RoomService;
   private logger: Logger;
 
   public constructor({
@@ -22,7 +22,7 @@ export class JoinRoomUseCase implements UseCase<JoinRoomPayload, JoinRoomUseCase
     logger,
   }: {
     clientId: string;
-    roomService: JoinRoomService;
+    roomService: RoomService;
     logger: Logger;
   }) {
     this.clientId = clientId;

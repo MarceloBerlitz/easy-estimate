@@ -1,23 +1,27 @@
-import { RoomType, ServerEventsEnum } from '@ee/lib';
+import { ServerEventsEnum } from '@ee/lib';
 
-import { RoomService } from '../services/room.service';
-import { LoggerService } from '../services/logger.service';
-import { IO } from '../infra/io';
+import { DisconnectedUseCase } from '../../../app/useCases/disconnected.use-case';
+import { RoomService } from '../../../app/services/room.service';
+import { IO } from '../../io';
+import { LoggerService } from '../../logging/logger.service';
 
 type Dependencies = {
   loggerService: LoggerService;
-  roomService: RoomService;
+  disconnectedUseCase: DisconnectedUseCase;
+  clientId: string;
   io: IO;
 };
 
 export class DisconnectedHandler {
   private logger: LoggerService;
-  private roomService: RoomService;
+  private disconnectedUseCase: DisconnectedUseCase;
+  private clientId: string;
   private io: IO;
 
-  public constructor({ loggerService, roomService, io }: Dependencies) {
+  public constructor({ loggerService, disconnectedUseCase, clientId, io }: Dependencies) {
     this.logger = loggerService;
-    this.roomService = roomService;
+    this.disconnectedUseCase = disconnectedUseCase;
+    this.clientId = clientId;
     this.io = io;
   }
 
@@ -26,20 +30,9 @@ export class DisconnectedHandler {
     this.logger.info('total clients', `${this.io.instance.sockets.sockets.size}`);
 
     try {
-      const { voterIndex, roomIndex } = this.getVoterAndRoomIndexes(clientId);
+      const { roomDeleted, room } = this.disconnectedUseCase.execute();
 
-      if (roomIndex < 0) {
-        return;
-      }
-
-      const room = this.roomService.getRooms()[roomIndex];
-      const disconnectedVoter = room.voters[voterIndex];
-
-      disconnectedVoter.clientId = null;
-
-      if (this.roomService.nobodyIsConnected(room)) {
-        this.roomService.removeRoom(roomIndex);
-        this.logger.info('total rooms', `${this.roomService.getRoomsCount()}`);
+      if (roomDeleted) {
         return;
       }
 
@@ -48,22 +41,9 @@ export class DisconnectedHandler {
         computedVotes: room.computedVotes,
       });
 
-      this.logger.serverEvent(
-        ServerEventsEnum.VOTER_DISCONNECTED,
-        `clientId: ${disconnectedVoter.clientId}`
-      );
+      this.logger.serverEvent(ServerEventsEnum.VOTER_DISCONNECTED, `clientId: ${this.clientId}`);
     } catch (error) {
       this.logger.unexpectedError(error);
     }
-  }
-
-  private getVoterAndRoomIndexes(clientId: string) {
-    let voterIndex: number;
-    const roomIndex = this.roomService.getRooms().findIndex((room: RoomType) => {
-      voterIndex = room.voters.findIndex((voter) => voter.clientId === clientId);
-      return voterIndex >= 0;
-    });
-
-    return { voterIndex, roomIndex };
   }
 }

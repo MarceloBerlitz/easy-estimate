@@ -1,17 +1,17 @@
 import { CreateRoomPayload, RoomCreatedPayload } from '@ee/lib';
 
-import { UseCase } from '../../interfaces/use-case';
-import { CreateRoomService } from './create-room-service';
-import { VoterFactory } from '../../factories/voter.factory';
-import { RoomFactory } from '../../factories/room.factory';
+import { UseCase } from '../interfaces/use-case';
+import { VoterFactory } from '../factories/voter.factory';
+import { RoomFactory } from '../factories/room.factory';
+import { RoomService } from '../services/room.service';
 
 type Dependencies = {
-  roomService: CreateRoomService;
+  roomService: RoomService;
   clientId: string;
 };
 
 export class CreateRoomUseCase implements UseCase<CreateRoomPayload, RoomCreatedPayload> {
-  private service: CreateRoomService;
+  private service: RoomService;
   private clientId: string;
 
   public constructor({ roomService, clientId }: Dependencies) {
@@ -23,7 +23,7 @@ export class CreateRoomUseCase implements UseCase<CreateRoomPayload, RoomCreated
     const voter = VoterFactory.create(this.clientId, payload.name);
     const room = RoomFactory.create(voter);
 
-    this.service.createRoom(room);
+    this.service.addRoom(room);
 
     return { room, voter };
   }

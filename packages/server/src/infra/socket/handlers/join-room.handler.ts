@@ -6,13 +6,13 @@ import { ClientEventsEnum, JoinRoomPayload, ServerEventsEnum } from '@ee/lib';
 import { LoggerService } from '../../logging/logger.service';
 import { IO } from '../../io';
 import { EventHandler } from '../interfaces/event-handler';
-import { RoomService } from '../../../app/services/room.service';
-import { JoinRoomUseCase } from '../../../app/useCases/join-room/join-room.usecase';
+import { RoomServiceImpl } from '../../../app/services/room.service-impl';
+import { JoinRoomUseCase } from '../../../app/useCases/join-room.use-case';
 
 type Dependencies = {
   io: IO;
   loggerService: LoggerService;
-  roomService: RoomService;
+  roomService: RoomServiceImpl;
   joinRoomUseCase: JoinRoomUseCase;
   socket: Socket;
 };

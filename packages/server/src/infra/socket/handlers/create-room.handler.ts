@@ -2,29 +2,29 @@ import { Socket } from 'socket.io';
 
 import { ClientEventsEnum, ServerEventsEnum, CreateRoomPayload } from '@ee/lib';
 import { EventHandler } from '../interfaces/event-handler';
-import { CreateRoomUseCase } from '../../../app/useCases/create-room/create-room.usecase';
+import { CreateRoomUseCase } from '../../../app/useCases/create-room.use-case';
 import { LoggerService } from '../../logging/logger.service';
-import { RoomService } from '../../../app/services/room.service';
+import { RoomServiceImpl } from '../../../app/services/room.service-impl';
 
 export class CreateRoomHandler implements EventHandler {
-  private useCase: CreateRoomUseCase;
+  private createRoomUseCase: CreateRoomUseCase;
   private logger: LoggerService;
-  private roomService: RoomService;
+  private roomService: RoomServiceImpl;
   private socket: Socket;
   private clientId: string;
 
   public event: ClientEventsEnum = ClientEventsEnum.CREATE_ROOM;
 
   public constructor({
-    useCase,
+    createRoomUseCase,
     socket,
     clientId,
   }: {
-    useCase: CreateRoomUseCase;
+    createRoomUseCase: CreateRoomUseCase;
     socket: Socket;
     clientId: string;
   }) {
-    this.useCase = useCase;
+    this.createRoomUseCase = createRoomUseCase;
     this.socket = socket;
     this.clientId = clientId;
   }
@@ -35,7 +35,7 @@ export class CreateRoomHandler implements EventHandler {
       return;
     }
 
-    const { room, voter } = this.useCase.execute(payload);
+    const { room, voter } = this.createRoomUseCase.execute(payload);
 
     this.socket.join(room.id);
 

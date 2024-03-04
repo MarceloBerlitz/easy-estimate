@@ -1,74 +1,42 @@
-import { Socket } from 'socket.io';
-
-import { ClientEventsEnum, LogoutPayload, RoomType, ServerEventsEnum } from '@ee/lib';
+import { ClientEventsEnum, LogoutPayload, ServerEventsEnum } from '@ee/lib';
 
 import { EventHandler } from '../interfaces/event-handler';
-import { DefaultEventsMap } from 'socket.io/dist/typed-events';
-import { LoggerService } from '../services/logger.service';
-import { RoomService } from '../services/room.service';
-import { IO } from '../infra/io';
+
+import { LogoutUseCase } from '../../../app/useCases/logout.use-case';
+import { IO } from '../../io';
+import { LoggerService } from '../../logging/logger.service';
 
 type Dependencies = {
   io: IO;
-  roomService: RoomService;
+  logoutUseCase: LogoutUseCase;
   loggerService: LoggerService;
 };
 
 export class LogoutHandler implements EventHandler {
   private logger: LoggerService;
-  private roomService: RoomService;
+  private logoutUseCase: LogoutUseCase;
   private io: IO;
   public event: ClientEventsEnum = ClientEventsEnum.LOGOUT;
 
-  public constructor({ io, roomService, loggerService }: Dependencies) {
+  public constructor({ io, logoutUseCase, loggerService }: Dependencies) {
     this.io = io;
-    this.roomService = roomService;
+    this.logoutUseCase = logoutUseCase;
     this.logger = loggerService;
   }
 
-  handle(
-    socket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>,
-    clientId: string,
-    payload: LogoutPayload
-  ): void {
-    const { roomIndex, voterIndex } = this.getVoterAndRoomIndexes(clientId, payload.voterId);
-
-    if (roomIndex < 0) {
+  handle(payload: LogoutPayload): void {
+    const { roomDeleted, room, logoutVoter } = this.logoutUseCase.execute(payload);
+    if (roomDeleted) {
+      // this.logger.info('total rooms', `${this.roomService.getRoomsCount()}`);
       return;
     }
 
-    const room = this.roomService.getRooms()[roomIndex];
-    const logoutVoter = room.voters[voterIndex];
-    this.roomService.removeVoter(room, voterIndex);
-
-    socket.leave(room.id);
-
-    if (room.voters.length === 0) {
-      this.roomService.removeRoom(roomIndex);
-      this.logger.info('total rooms', `${this.roomService.getRoomsCount()}`);
-      return;
-    }
-
-    this.roomService.removeVotersVotes(room, payload.voterId);
-
-    this.io.to(room.id).emit(ServerEventsEnum.LOGGED_OUT, {
+    this.io.to(payload.roomId).emit(ServerEventsEnum.LOGGED_OUT, {
       logoutVoter,
       voters: room.voters,
       computedVotes: room.computedVotes,
     });
 
     this.logger.serverEvent(ServerEventsEnum.LOGGED_OUT, `roomId: ${room.id}`);
-  }
-
-  private getVoterAndRoomIndexes(clientId: string, voterId: string) {
-    let voterIndex: number;
-    const roomIndex = this.roomService.getRooms().findIndex((room: RoomType) => {
-      voterIndex = room.voters.findIndex(
-        (voter) => voter.id === voterId || voter.clientId === clientId
-      );
-      return voterIndex >= 0;
-    });
-
-    return { voterIndex, roomIndex };
   }
 }
