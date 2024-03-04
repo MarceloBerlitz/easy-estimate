@@ -1,14 +1,12 @@
 import { CreateRoomPayload, RoomCreatedPayload } from '@ee/lib';
 
 import { UseCase } from '../../interfaces/use-case';
-import { CreateRoomService } from './interfaces/create-room-service';
-import { LoggerService } from '../../interfaces/logger-service';
+import { CreateRoomService } from './create-room-service';
 import { VoterFactory } from '../../factories/voter.factory';
 import { RoomFactory } from '../../factories/room.factory';
 
 type Dependencies = {
   roomService: CreateRoomService;
-  loggerService: LoggerService;
   clientId: string;
 };
 
