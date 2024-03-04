@@ -6,7 +6,7 @@ import { EventHandler } from '../interfaces/event-handler';
 import { DefaultEventsMap } from 'socket.io/dist/typed-events';
 import { LoggerService } from '../services/logger.service';
 import { RoomService } from '../services/room.service';
-import { IO } from '../app/io';
+import { IO } from '../infra/io';
 
 type Dependencies = {
   io: IO;

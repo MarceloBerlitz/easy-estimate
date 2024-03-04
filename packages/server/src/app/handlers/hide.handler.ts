@@ -1,12 +1,11 @@
 import { Socket } from 'socket.io';
 
-import { ClientEventsEnum, RevealPayload, RoomType, ServerEventsEnum } from '@ee/lib';
+import { ClientEventsEnum, HidePayload, ServerEventsEnum } from '@ee/lib';
 
-import { ComputedVotesMapper } from '../mappers/computed-votes.mapper';
 import { EventHandler } from '../interfaces/event-handler';
 import { RoomService } from '../services/room.service';
 import { LoggerService } from '../services/logger.service';
-import { IO } from '../app/io';
+import { IO } from '../infra/io';
 
 type Dependencies = {
   io: IO;
@@ -14,12 +13,12 @@ type Dependencies = {
   loggerService: LoggerService;
 };
 
-export class RevealHandler implements EventHandler {
+export class HideHandler implements EventHandler {
   private io: IO;
   private roomService: RoomService;
   private logger: LoggerService;
 
-  public event: ClientEventsEnum = ClientEventsEnum.REVEAL;
+  public event: ClientEventsEnum = ClientEventsEnum.HIDE;
 
   public constructor({ io, roomService, loggerService }: Dependencies) {
     this.io = io;
@@ -27,8 +26,8 @@ export class RevealHandler implements EventHandler {
     this.logger = loggerService;
   }
 
-  public handle(socket: Socket, clientId: string, payload: RevealPayload) {
-    const room: RoomType = this.roomService.getRoom(payload.roomId);
+  handle(socket: Socket, clientId: string, payload: HidePayload): void {
+    const room = this.roomService.getRoom(payload.roomId);
 
     if (!room) {
       socket.emit(ServerEventsEnum.ERROR, 'room not found');
@@ -36,7 +35,7 @@ export class RevealHandler implements EventHandler {
       return;
     }
 
-    const voter = room.voters.find((voter) => voter.id === payload.voterId);
+    const voter = this.roomService.getVoter(room, payload.voterId);
 
     if (!voter) {
       socket.emit(ServerEventsEnum.ERROR, 'room not found');
@@ -52,14 +51,10 @@ export class RevealHandler implements EventHandler {
       socket.join(room.id);
     }
 
-    if (!room.computedVotes) {
-      room.computedVotes = ComputedVotesMapper.mapFromVotes(room.votes);
-    }
+    delete room.computedVotes;
 
-    this.io.to(room.id).emit(ServerEventsEnum.POINTS_REVEALED, {
-      computedVotes: room.computedVotes,
-    });
+    this.io.to(room.id).emit(ServerEventsEnum.POINTS_HIDDEN);
 
-    this.logger.serverEvent(ServerEventsEnum.POINTS_REVEALED, `roomId: ${room.id}`);
+    this.logger.serverEvent(ServerEventsEnum.POINTS_HIDDEN, `roomId: ${room.id}`);
   }
 }

@@ -5,7 +5,7 @@ import { ClientEventsEnum, ServerEventsEnum, VotePayload, VoteType } from '@ee/l
 import { EventHandler } from '../interfaces/event-handler';
 import { RoomService } from '../services/room.service';
 import { LoggerService } from '../services/logger.service';
-import { IO } from '../app/io';
+import { IO } from '../infra/io';
 
 type Dependencies = {
   io: IO;

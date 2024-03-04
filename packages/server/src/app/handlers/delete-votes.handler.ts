@@ -1,34 +1,33 @@
 import { Socket } from 'socket.io';
 
-import { ClientEventsEnum, HidePayload, ServerEventsEnum } from '@ee/lib';
+import { ClientEventsEnum, DeleteVotesPayload, ServerEventsEnum, VoterType } from '@ee/lib';
 
 import { EventHandler } from '../interfaces/event-handler';
-import { RoomService } from '../services/room.service';
 import { LoggerService } from '../services/logger.service';
-import { IO } from '../app/io';
+import { RoomService } from '../services/room.service';
+import { IO } from '../infra/io';
 
 type Dependencies = {
-  io: IO;
-  roomService: RoomService;
   loggerService: LoggerService;
+  roomService: RoomService;
+  io: IO;
 };
 
-export class HideHandler implements EventHandler {
-  private io: IO;
-  private roomService: RoomService;
+export class DeleteVotesHandler implements EventHandler {
   private logger: LoggerService;
+  private roomService: RoomService;
+  private io: IO;
 
-  public event: ClientEventsEnum = ClientEventsEnum.HIDE;
+  public event: ClientEventsEnum = ClientEventsEnum.DELETE_VOTES;
 
-  public constructor({ io, roomService, loggerService }: Dependencies) {
-    this.io = io;
-    this.roomService = roomService;
+  public constructor({ loggerService, roomService, io }: Dependencies) {
     this.logger = loggerService;
+    this.roomService = roomService;
+    this.io = io;
   }
 
-  handle(socket: Socket, clientId: string, payload: HidePayload): void {
+  public handle(socket: Socket, clientId: string, payload: DeleteVotesPayload): void {
     const room = this.roomService.getRoom(payload.roomId);
-
     if (!room) {
       socket.emit(ServerEventsEnum.ERROR, 'room not found');
       this.logger.serverEvent(ServerEventsEnum.ERROR, `room not found: ${payload.roomId}`);
@@ -36,7 +35,6 @@ export class HideHandler implements EventHandler {
     }
 
     const voter = this.roomService.getVoter(room, payload.voterId);
-
     if (!voter) {
       socket.emit(ServerEventsEnum.ERROR, 'room not found');
       this.logger.serverEvent(
@@ -51,10 +49,15 @@ export class HideHandler implements EventHandler {
       socket.join(room.id);
     }
 
+    room.votes = [];
+    room.voters.forEach((voter: VoterType) => {
+      voter.hasVoted = false;
+    });
+
     delete room.computedVotes;
 
-    this.io.to(room.id).emit(ServerEventsEnum.POINTS_HIDDEN);
+    this.io.to(room.id).emit(ServerEventsEnum.VOTES_DELETED);
 
-    this.logger.serverEvent(ServerEventsEnum.POINTS_HIDDEN, `roomId: ${room.id}`);
+    this.logger.serverEvent(ServerEventsEnum.VOTES_DELETED, `roomId: ${room.id}`);
   }
 }

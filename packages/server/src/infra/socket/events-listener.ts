@@ -1,9 +1,9 @@
 import { Socket } from 'socket.io';
 
-import { DisconnectedHandler } from '../../handlers/disconnected.handler';
-import { LoggerService } from '../../services/logger.service';
-import { EventHandler } from '../../interfaces/event-handler';
-import { IO } from '../../app/io';
+import { IO } from '../io';
+import { DisconnectedHandler } from '../../app/handlers/disconnected.handler';
+import { EventHandler } from '../../app/interfaces/event-handler';
+import { LoggerService } from '../../app/services/logger.service';
 
 type Dependencies = {
   loggerService: LoggerService;
