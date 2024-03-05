@@ -78,8 +78,4 @@ export class LoggerService implements Logger {
   public unexpectedError(error: any): void {
     this.logger.error({ message: 'Unexpected Error', error });
   }
-
-  public getLogger(): WinstonLogger {
-    return this.logger;
-  }
 }
