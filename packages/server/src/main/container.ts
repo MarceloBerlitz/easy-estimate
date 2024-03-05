@@ -41,7 +41,7 @@ export const configureContainer = () => {
   const container = createContainer();
   container
     .register({
-      loggerService: asClass(LoggerService),
+      loggerService: asClass(LoggerService).singleton(),
       roomService: asClass(RoomServiceImpl).singleton(),
       server: asClass(Server).singleton(),
       io: asClass(IO).singleton(),
