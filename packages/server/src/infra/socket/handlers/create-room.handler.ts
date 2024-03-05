@@ -1,15 +1,16 @@
 import { Socket } from 'socket.io';
 
 import { ClientEventsEnum, ServerEventsEnum, CreateRoomPayload } from '@ee/lib';
+
 import { EventHandler } from '../interfaces/event-handler';
 import { CreateRoomUseCase } from '../../../app/useCases/create-room.use-case';
 import { LoggerService } from '../../logging/logger.service';
-import { RoomServiceImpl } from '../../../app/services/room.service-impl';
+import { RoomService } from '../../../app/services/room.service';
 
 export class CreateRoomHandler implements EventHandler {
   private createRoomUseCase: CreateRoomUseCase;
   private logger: LoggerService;
-  private roomService: RoomServiceImpl;
+  private roomService: RoomService;
   private socket: Socket;
   private clientId: string;
 
