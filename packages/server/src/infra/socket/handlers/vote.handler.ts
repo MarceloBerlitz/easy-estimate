@@ -1,11 +1,9 @@
-import { Socket } from 'socket.io';
+import { ClientEventsEnum, ServerEventsEnum, VotePayload } from '@ee/lib';
 
-import { ClientEventsEnum, ServerEventsEnum, VotePayload, VoteType } from '@ee/lib';
-
-import { EventHandler } from '../interfaces/event-handler';
+import { VoteUseCase } from '../../../app/useCases/vote.use-case';
 import { IO } from '../../io';
 import { LoggerService } from '../../logging/logger.service';
-import { VoteUseCase } from '../../../app/useCases/vote.use-case';
+import { EventHandler } from '../interfaces/event-handler';
 
 type Dependencies = {
   io: IO;
