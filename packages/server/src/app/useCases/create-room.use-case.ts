@@ -1,8 +1,6 @@
-import { CreateRoomPayload, RoomCreatedPayload } from '@ee/lib';
+import { CreateRoomPayload, RoomCreatedPayload, RoomFactory, VoterFactory } from '@ee/lib';
 
 import { UseCase } from '../interfaces/use-case';
-import { VoterFactory } from '../factories/voter.factory';
-import { RoomFactory } from '../factories/room.factory';
 import { RoomService } from '../services/room.service';
 
 type Dependencies = {

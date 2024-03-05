@@ -19,7 +19,6 @@ import { LoggerService } from '../infra/logging/logger.service';
 // presentation
 import { IO } from '../presentation/socket/io';
 import { EventsListener } from '../presentation/socket/events-listener';
-
 // event handlers
 import { CreateRoomHandler } from '../presentation/socket/handlers/create-room.handler';
 import { DeleteVotesHandler } from '../presentation/socket/handlers/delete-votes.handler';

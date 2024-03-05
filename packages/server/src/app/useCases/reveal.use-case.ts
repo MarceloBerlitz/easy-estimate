@@ -1,8 +1,7 @@
-import { PointsRevealedPayload, RevealPayload, RoomType } from '@ee/lib';
+import { ComputedVotesMapper, PointsRevealedPayload, RevealPayload, RoomType } from '@ee/lib';
 
 import { UseCase } from '../interfaces/use-case';
 import { RoomService } from '../services/room.service';
-import { ComputedVotesMapper } from '../mappers/computed-votes.mapper';
 
 export class RevealUseCase implements UseCase<RevealPayload, PointsRevealedPayload> {
   private service: RoomService;

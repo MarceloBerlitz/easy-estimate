@@ -1,8 +1,6 @@
-import { JoinRoomPayload, RoomType, VoterType } from '@ee/lib';
+import { JoinRoomPayload, RoomFactory, RoomType, VoterFactory, VoterType } from '@ee/lib';
 
 import { UseCase } from '../interfaces/use-case';
-import { VoterFactory } from '../factories/voter.factory';
-import { RoomFactory } from '../factories/room.factory';
 import { RoomService } from '../services/room.service';
 import { LoggerService } from '../../infra/logging/logger.service';
 import { Logger } from '../interfaces/logger';
