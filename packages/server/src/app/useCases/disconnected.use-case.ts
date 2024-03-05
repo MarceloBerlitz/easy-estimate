@@ -11,15 +11,9 @@ export class DisconnectedUseCase implements UseCase<void, DisconnectedUseCaseRes
   private service: RoomService;
   private clientId: string;
 
-  public constructor({
-    roomService,
-    clientEvent,
-  }: {
-    roomService: RoomService;
-    clientEvent: string;
-  }) {
+  public constructor({ roomService, clientId }: { roomService: RoomService; clientId: string }) {
     this.service = roomService;
-    this.clientId = clientEvent;
+    this.clientId = clientId;
   }
 
   execute(): DisconnectedUseCaseResult {

@@ -1,23 +1,9 @@
+import { AwilixContainer, Resolver, asValue } from 'awilix';
 import { Socket } from 'socket.io';
-import { AwilixContainer, Resolver, asClass, asValue } from 'awilix';
 
 import { IO } from '../io';
-import { EventHandler } from './interfaces/event-handler';
 import { LoggerService } from '../logging/logger.service';
-import { CreateRoomHandler } from './handlers/create-room.handler';
-import { JoinRoomHandler } from './handlers/join-room.handler';
-import { DeleteVotesHandler } from './handlers/delete-votes.handler';
-import { HideHandler } from './handlers/hide.handler';
-import { LogoutHandler } from './handlers/logout.handler';
-import { RevealHandler } from './handlers/reveal.handler';
-import { VoteHandler } from './handlers/vote.handler';
-import { DisconnectedHandler } from './handlers/disconnected.handler';
-
-function asArray<T>(resolvers: Resolver<T>[]): Resolver<T[]> {
-  return {
-    resolve: (c) => resolvers.map((r) => r.resolve(c)),
-  };
-}
+import { EventHandler } from './interfaces/event-handler';
 
 type Dependencies = {
   loggerService: LoggerService;
@@ -44,16 +30,6 @@ export class EventsListener {
       scope.register({
         clientId: asValue(socket.id),
         socket: asValue(socket),
-        eventHandlers: asArray<EventHandler>([
-          asClass(CreateRoomHandler),
-          asClass(JoinRoomHandler),
-          asClass(DeleteVotesHandler),
-          asClass(HideHandler),
-          asClass(LogoutHandler),
-          asClass(RevealHandler),
-          asClass(VoteHandler),
-        ]),
-        disconnectedHandler: asClass(DisconnectedHandler),
       });
 
       this.logger.clientEvent('connection', `clientId: ${socket.id}`);
@@ -62,7 +38,7 @@ export class EventsListener {
       const { eventHandlers } = scope.cradle as { eventHandlers: EventHandler[] };
 
       eventHandlers.forEach((handler) => {
-        socket.on(handler.event, (payload: unknown) => {
+        socket.on(handler.event, (payload) => {
           this.logger.clientEvent(handler.event, `clientId: ${socket.id}`);
           try {
             handler.handle(payload);
