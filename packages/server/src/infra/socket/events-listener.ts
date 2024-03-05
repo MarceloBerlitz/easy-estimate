@@ -33,7 +33,7 @@ export class EventsListener {
       });
 
       this.logger.clientEvent('connection', `clientId: ${socket.id}`);
-      this.logger.info('total clients', `${this.io.instance.sockets.sockets.size}`);
+      this.logger.info(`${this.io.instance.sockets.sockets.size}`, 'total clients');
 
       const { eventHandlers } = scope.cradle as { eventHandlers: EventHandler[] };
 
