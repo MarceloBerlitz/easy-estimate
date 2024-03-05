@@ -90,7 +90,7 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
     const loggedOutHandler = ({ logoutVoter, voters, computedVotes }: LoggedOutPayload) => {
       setRoom((prev) => ({
         ...prev,
-        votes: prev!.votes!.filter((vote) => vote.voter.id !== logoutVoter.id),
+        votes: (prev.votes ?? []).filter((vote) => vote.voter.id !== logoutVoter.id),
         voters,
         computedVotes,
       }));
