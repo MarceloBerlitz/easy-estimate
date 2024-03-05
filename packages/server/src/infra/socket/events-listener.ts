@@ -43,6 +43,7 @@ export class EventsListener {
 
       scope.register({
         clientId: asValue(socket.id),
+        socket: asValue(socket),
         eventHandlers: asArray<EventHandler>([
           asClass(CreateRoomHandler),
           asClass(JoinRoomHandler),
