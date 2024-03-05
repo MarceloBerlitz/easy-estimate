@@ -17,15 +17,15 @@ export class LogoutUseCase implements UseCase<LogoutPayload, LogoutResult> {
   public constructor({
     roomService,
     clientId,
-    logger,
+    loggerService,
   }: {
     roomService: RoomService;
     clientId: string;
-    logger: Logger;
+    loggerService: Logger;
   }) {
     this.service = roomService;
     this.clientId = clientId;
-    this.logger = logger;
+    this.logger = loggerService;
   }
 
   execute(payload: LogoutPayload): LogoutResult {

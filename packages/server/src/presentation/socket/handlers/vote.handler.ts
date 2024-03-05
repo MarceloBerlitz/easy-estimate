@@ -1,9 +1,9 @@
 import { ClientEventsEnum, ServerEventsEnum, VotePayload } from '@ee/lib';
 
 import { VoteUseCase } from '../../../app/useCases/vote.use-case';
-import { IO } from '../../io';
-import { LoggerService } from '../../logging/logger.service';
+import { IO } from '../io';
 import { EventHandler } from '../interfaces/event-handler';
+import { LoggerService } from '../../../infra/logging/logger.service';
 
 type Dependencies = {
   io: IO;

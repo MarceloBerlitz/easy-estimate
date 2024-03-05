@@ -4,8 +4,8 @@ import {
   DefaultEventsMap,
 } from 'socket.io/dist/typed-events';
 
-import { EnvironmentHelper } from '../app/helpers/environment.helper';
-import { Server } from './server';
+import { EnvironmentHelper } from '../../app/helpers/environment.helper';
+import { Server } from '../../infra/server';
 
 export class IO {
   private server: Server;

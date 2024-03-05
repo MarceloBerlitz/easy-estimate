@@ -4,7 +4,7 @@ import { ClientEventsEnum, ServerEventsEnum, CreateRoomPayload } from '@ee/lib';
 
 import { EventHandler } from '../interfaces/event-handler';
 import { CreateRoomUseCase } from '../../../app/useCases/create-room.use-case';
-import { LoggerService } from '../../logging/logger.service';
+import { LoggerService } from '../../../infra/logging/logger.service';
 import { RoomService } from '../../../app/services/room.service';
 
 export class CreateRoomHandler implements EventHandler {

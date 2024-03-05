@@ -3,8 +3,8 @@ import { validate as validateUuid } from 'uuid';
 
 import { ClientEventsEnum, JoinRoomPayload, ServerEventsEnum } from '@ee/lib';
 
-import { LoggerService } from '../../logging/logger.service';
-import { IO } from '../../io';
+import { LoggerService } from '../../../infra/logging/logger.service';
+import { IO } from '../io';
 import { EventHandler } from '../interfaces/event-handler';
 import { JoinRoomUseCase } from '../../../app/useCases/join-room.use-case';
 import { RoomService } from '../../../app/services/room.service';

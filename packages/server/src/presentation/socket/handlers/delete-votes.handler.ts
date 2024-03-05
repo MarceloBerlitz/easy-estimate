@@ -1,8 +1,8 @@
 import { ClientEventsEnum, DeleteVotesPayload, ServerEventsEnum } from '@ee/lib';
 
 import { DeleteVotesUseCase } from '../../../app/useCases/delete-votes.use-case';
-import { IO } from '../../io';
-import { LoggerService } from '../../logging/logger.service';
+import { IO } from '../io';
+import { LoggerService } from '../../../infra/logging/logger.service';
 import { EventHandler } from '../interfaces/event-handler';
 
 type Dependencies = {

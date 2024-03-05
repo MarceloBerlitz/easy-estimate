@@ -1,8 +1,8 @@
 import { AwilixContainer, Resolver, asValue } from 'awilix';
 import { Socket } from 'socket.io';
 
-import { IO } from '../io';
-import { LoggerService } from '../logging/logger.service';
+import { IO } from './io';
+import { LoggerService } from '../../infra/logging/logger.service';
 import { EventHandler } from './interfaces/event-handler';
 
 type Dependencies = {

@@ -1,9 +1,8 @@
 import { ServerEventsEnum } from '@ee/lib';
 
 import { DisconnectedUseCase } from '../../../app/useCases/disconnected.use-case';
-import { RoomService } from '../../../app/services/room.service';
-import { IO } from '../../io';
-import { LoggerService } from '../../logging/logger.service';
+import { LoggerService } from '../../../infra/logging/logger.service';
+import { IO } from '../io';
 
 type Dependencies = {
   loggerService: LoggerService;

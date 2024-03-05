@@ -3,8 +3,8 @@ import { ClientEventsEnum, RevealPayload, ServerEventsEnum } from '@ee/lib';
 import { EventHandler } from '../interfaces/event-handler';
 
 import { RevealUseCase } from '../../../app/useCases/reveal.use-case';
-import { IO } from '../../io';
-import { LoggerService } from '../../logging/logger.service';
+import { IO } from '../io';
+import { LoggerService } from '../../../infra/logging/logger.service';
 
 type Dependencies = {
   io: IO;

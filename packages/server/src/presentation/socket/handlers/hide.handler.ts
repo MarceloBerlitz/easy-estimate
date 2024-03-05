@@ -2,8 +2,8 @@ import { ClientEventsEnum, HidePayload, ServerEventsEnum } from '@ee/lib';
 
 import { EventHandler } from '../interfaces/event-handler';
 import { HideUseCase } from '../../../app/useCases/hide.use-case';
-import { LoggerService } from '../../logging/logger.service';
-import { IO } from '../../io';
+import { LoggerService } from '../../../infra/logging/logger.service';
+import { IO } from '../io';
 
 type Dependencies = {
   io: IO;

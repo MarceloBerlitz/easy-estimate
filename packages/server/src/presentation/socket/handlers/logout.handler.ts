@@ -3,8 +3,8 @@ import { ClientEventsEnum, LogoutPayload, ServerEventsEnum } from '@ee/lib';
 import { EventHandler } from '../interfaces/event-handler';
 
 import { LogoutUseCase } from '../../../app/useCases/logout.use-case';
-import { IO } from '../../io';
-import { LoggerService } from '../../logging/logger.service';
+import { IO } from '../io';
+import { LoggerService } from '../../../infra/logging/logger.service';
 
 type Dependencies = {
   io: IO;
