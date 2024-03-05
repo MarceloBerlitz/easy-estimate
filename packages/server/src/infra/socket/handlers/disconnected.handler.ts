@@ -27,7 +27,7 @@ export class DisconnectedHandler {
 
   public handle(clientId: string): void {
     this.logger.clientEvent('disconnect', `clientId: ${clientId}`);
-    this.logger.info('total clients', `${this.io.instance.sockets.sockets.size}`);
+    this.logger.info(`${this.io.instance.sockets.sockets.size}`, 'total clients');
 
     try {
       const { roomDeleted, room } = this.disconnectedUseCase.execute();

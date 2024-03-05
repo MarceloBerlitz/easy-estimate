@@ -1,6 +1,7 @@
 import { LogoutPayload, RoomType, VoterType } from '@ee/lib';
 import { RoomService } from '../services/room.service';
 import { UseCase } from '../interfaces/use-case';
+import { Logger } from '../interfaces/logger';
 
 type LogoutResult = {
   roomDeleted: boolean;
@@ -11,10 +12,20 @@ type LogoutResult = {
 export class LogoutUseCase implements UseCase<LogoutPayload, LogoutResult> {
   private service: RoomService;
   private clientId: string;
+  private logger: Logger;
 
-  public constructor({ roomService, clientId }: { roomService: RoomService; clientId: string }) {
+  public constructor({
+    roomService,
+    clientId,
+    logger,
+  }: {
+    roomService: RoomService;
+    clientId: string;
+    logger: Logger;
+  }) {
     this.service = roomService;
     this.clientId = clientId;
+    this.logger = logger;
   }
 
   execute(payload: LogoutPayload): LogoutResult {
@@ -30,7 +41,7 @@ export class LogoutUseCase implements UseCase<LogoutPayload, LogoutResult> {
 
     if (room.voters.length === 0) {
       this.service.removeRoom(roomIndex);
-      //   this.logger.info('total rooms', `${this.service.getRoomsCount()}`);
+      this.logger.info(`${this.service.getRoomsCount()}`, 'total rooms');
       return { roomDeleted: true };
     }
 

@@ -5,6 +5,7 @@ import { VoterFactory } from '../factories/voter.factory';
 import { RoomFactory } from '../factories/room.factory';
 import { RoomService } from '../services/room.service';
 import { LoggerService } from '../../infra/logging/logger.service';
+import { Logger } from '../interfaces/logger';
 
 type JoinRoomUseCaseResult = {
   room: RoomType;
@@ -14,7 +15,7 @@ type JoinRoomUseCaseResult = {
 export class JoinRoomUseCase implements UseCase<JoinRoomPayload, JoinRoomUseCaseResult> {
   private clientId: string;
   private service: RoomService;
-  private logger: LoggerService;
+  private logger: Logger;
 
   public constructor({
     clientId,
@@ -35,7 +36,7 @@ export class JoinRoomUseCase implements UseCase<JoinRoomPayload, JoinRoomUseCase
 
     // Room does not exist, create a new room and a new voter
     if (!room) {
-      this.logger.getLogger().info('room not found. creating room.');
+      this.logger.info('room not found. creating room.');
       const newVoter = VoterFactory.create(this.clientId, payload.name, payload.voterId);
       const newRoom = RoomFactory.create(newVoter, payload.roomId);
       this.service.addRoom(newRoom);

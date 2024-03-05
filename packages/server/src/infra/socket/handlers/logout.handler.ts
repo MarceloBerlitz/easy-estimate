@@ -27,7 +27,6 @@ export class LogoutHandler implements EventHandler {
   handle(payload: LogoutPayload): void {
     const { roomDeleted, room, logoutVoter } = this.logoutUseCase.execute(payload);
     if (roomDeleted) {
-      // this.logger.info('total rooms', `${this.roomService.getRoomsCount()}`);
       return;
     }
 

@@ -1,6 +1,7 @@
 import { RoomType } from '@ee/lib';
 import { UseCase } from '../interfaces/use-case';
 import { RoomService } from '../services/room.service';
+import { Logger } from '../interfaces/logger';
 
 type DisconnectedUseCaseResult = {
   roomDeleted: boolean;
@@ -10,10 +11,20 @@ type DisconnectedUseCaseResult = {
 export class DisconnectedUseCase implements UseCase<void, DisconnectedUseCaseResult> {
   private service: RoomService;
   private clientId: string;
+  private logger: Logger;
 
-  public constructor({ roomService, clientId }: { roomService: RoomService; clientId: string }) {
+  public constructor({
+    roomService,
+    clientId,
+    logger,
+  }: {
+    roomService: RoomService;
+    clientId: string;
+    logger: Logger;
+  }) {
     this.service = roomService;
     this.clientId = clientId;
+    this.logger = logger;
   }
 
   execute(): DisconnectedUseCaseResult {
@@ -30,7 +41,7 @@ export class DisconnectedUseCase implements UseCase<void, DisconnectedUseCaseRes
 
     if (this.service.nobodyIsConnected(room)) {
       this.service.removeRoom(roomIndex);
-      // this.logger.info('total rooms', `${this.service.getRoomsCount()}`);
+      this.logger.info(`${this.service.getRoomsCount()}`, 'total rooms');
       return { roomDeleted: true };
     }
     return { roomDeleted: false, room };

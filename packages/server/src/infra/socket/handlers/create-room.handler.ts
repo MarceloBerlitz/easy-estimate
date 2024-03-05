@@ -41,7 +41,7 @@ export class CreateRoomHandler implements EventHandler {
     this.socket.join(room.id);
 
     this.socket.emit(ServerEventsEnum.ROOM_CREATED, { room, voter });
-    this.logger.info('total rooms', `${this.roomService.getRoomsCount()}`);
+    this.logger.info(`${this.roomService.getRoomsCount()}`, 'total rooms');
     this.logger.serverEvent(ServerEventsEnum.ROOM_CREATED, `clientId: ${this.clientId}`);
   }
 }
