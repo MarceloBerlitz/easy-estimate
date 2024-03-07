@@ -1,8 +1,6 @@
-import { RoomType, VoterType } from '@ee/lib';
+import { ComputedVotesMapper, RoomType, VoterType } from '@ee/lib';
 
-import { ComputedVotesMapper } from '../mappers/computed-votes.mapper';
-
-export class RoomService {
+export class RoomServiceImpl {
   private rooms: RoomType[] = [];
 
   public constructor() {}

@@ -1,7 +1,7 @@
 import { AwilixContainer } from 'awilix';
 
 import { configureContainer } from '../container';
-import { Server } from './server';
+import { Server } from '../infra/server';
 import { EventsListener } from '../presentation/socket/events-listener';
 
 export class Application {

@@ -1,14 +1,12 @@
+import { VOTE_PARAMETERS_OPTIONS, VoteOptionEnum } from '../enums';
+import { ComputedVotesFactory } from '../factories';
 import {
   ComputedVotesParameterType,
   ComputedVotesParametersType,
   ComputedVotesType,
-  VoteMapper,
-  VoteOptionEnum,
-  VOTE_PARAMETERS_OPTIONS,
   VoteType,
-} from '@ee/lib';
-
-import { ComputedVotesFactory } from '../factories/computed-votes.factory';
+} from '../types';
+import { VoteMapper } from './vote.mapper';
 
 export class ComputedVotesMapper {
   private static sumParameterVote(

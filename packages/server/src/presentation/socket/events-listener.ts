@@ -1,48 +1,57 @@
+import { AwilixContainer, asValue } from 'awilix';
 import { Socket } from 'socket.io';
 
-import { DisconnectedHandler } from '../../handlers/disconnected.handler';
-import { LoggerService } from '../../services/logger.service';
-import { EventHandler } from '../../interfaces/event-handler';
-import { IO } from '../../app/io';
+import { UseCase } from '../../app/interfaces/use-case';
+import { LoggerService } from '../../infra/logging/logger.service';
+import { EventHandlers } from './event-handlers';
+import { IO } from './io';
 
 type Dependencies = {
-  loggerService: LoggerService;
+  logger: LoggerService;
   io: IO;
-  eventHandlers: EventHandler[];
-  disconnectedHandler: DisconnectedHandler;
+  container: AwilixContainer;
 };
 
 export class EventsListener {
   private logger: LoggerService;
   private io: IO;
-  private eventHandlers: EventHandler[];
-  private disconnectedHandler: DisconnectedHandler;
+  private container: AwilixContainer;
 
-  public constructor({ loggerService, io, eventHandlers, disconnectedHandler }: Dependencies) {
-    this.logger = loggerService;
+  public constructor({ logger, io, container }: Dependencies) {
+    this.logger = logger;
     this.io = io;
-    this.eventHandlers = eventHandlers;
-    this.disconnectedHandler = disconnectedHandler;
+    this.container = container;
   }
 
   public listen(): void {
     this.io.on('connection', (socket: Socket) => {
-      const clientId = socket.id;
-      this.logger.clientEvent('connection', `clientId: ${clientId}`);
-      this.logger.info('total clients', `${this.io.instance.sockets.sockets.size}`);
+      const scope = this.container.createScope();
 
-      this.eventHandlers.forEach((handler) => {
-        socket.on(handler.event, (payload: unknown) => {
-          this.logger.clientEvent(handler.event, `clientId: ${clientId}`);
+      scope.register({
+        clientId: asValue(socket.id),
+        socket: asValue(socket),
+      });
+
+      socket.on('disconnect', () => {
+        scope.dispose();
+      });
+
+      this.logger.clientEvent('connection', `clientId: ${socket.id}`);
+      this.logger.info(`${this.io.instance.sockets.sockets.size}`, 'total clients');
+
+      socket.onAny((event, payload) => {
+        const handlerName = EventHandlers.getHandlerName(event);
+        if (handlerName) {
           try {
-            handler.handle(socket, clientId, payload);
+            this.logger.clientEvent(event, `clientId: ${socket.id}`);
+
+            const handler = scope.resolve<UseCase<unknown, unknown>>(handlerName);
+            handler.execute(payload);
           } catch (error) {
             this.logger.unexpectedError(error);
           }
-        });
+        }
       });
-
-      socket.on('disconnect', () => this.disconnectedHandler.handle(clientId));
     });
   }
 }

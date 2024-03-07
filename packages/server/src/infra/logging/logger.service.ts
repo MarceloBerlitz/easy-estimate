@@ -1,10 +1,12 @@
-import winston, { Logger } from 'winston';
+import winston, { Logger as WinstonLogger } from 'winston';
 import LokiTransport from 'winston-loki';
 
 import { ClientEventsEnum, ServerEventsEnum } from '@ee/lib';
 
-export class LoggerService {
-  private logger: Logger;
+import { Logger } from '../../app/interfaces/logger';
+
+export class LoggerService implements Logger {
+  private logger: WinstonLogger;
 
   public constructor() {
     this.logger = winston.createLogger({
@@ -59,7 +61,7 @@ export class LoggerService {
     });
   }
 
-  public info(name: 'total rooms' | 'total clients', message: string): void {
+  public info(message: string, name?: 'total rooms' | 'total clients'): void {
     this.logger.info({
       message,
       labels: {
@@ -75,9 +77,5 @@ export class LoggerService {
 
   public unexpectedError(error: any): void {
     this.logger.error({ message: 'Unexpected Error', error });
-  }
-
-  public getLogger(): Logger {
-    return this.logger;
   }
 }

@@ -1,9 +1,5 @@
-import {
-  ComputedVotesParametersType,
-  ComputedVotesType,
-  VOTE_OPTIONS,
-  VOTE_PARAMETERS_OPTIONS,
-} from '@ee/lib';
+import { VOTE_OPTIONS, VOTE_PARAMETERS_OPTIONS } from '../enums';
+import { ComputedVotesType, ComputedVotesParametersType } from '../types';
 
 const createParameter = () => {
   return VOTE_OPTIONS.reduce((acc, cur) => ({ ...acc, [cur]: 0 }), {});
