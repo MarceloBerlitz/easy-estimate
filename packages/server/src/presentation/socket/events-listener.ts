@@ -36,6 +36,9 @@ export class EventsListener {
       });
 
       socket.on('disconnect', () => {
+        const handlerName = EventHandlers.getHandlerName('disconnect');
+        const handler = scope.resolve<UseCase<void, void>>(handlerName);
+        handler.execute();
         scope.dispose();
       });
 

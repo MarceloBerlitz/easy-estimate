@@ -12,7 +12,7 @@ export const eventHandlers = {
 };
 
 export class EventHandlers {
-  public static getHandlerName(event: ClientEventsEnum): string {
+  public static getHandlerName(event: keyof typeof eventHandlers): string {
     return eventHandlers[event];
   }
 }
