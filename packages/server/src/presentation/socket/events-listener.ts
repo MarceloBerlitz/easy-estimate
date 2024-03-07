@@ -1,10 +1,13 @@
 import { AwilixContainer, asValue } from 'awilix';
 import { Socket } from 'socket.io';
 
+import { ServerEventsEnum } from '@ee/lib';
+
 import { UseCase } from '../../app/interfaces/use-case';
 import { LoggerService } from '../../infra/logging/logger.service';
 import { EventHandlers } from './event-handlers';
 import { IO } from './io';
+import { FlowError } from '../../app/errors/flow.error';
 
 type Dependencies = {
   logger: LoggerService;
@@ -47,7 +50,14 @@ export class EventsListener {
             const handler = scope.resolve<UseCase<unknown, unknown>>(handlerName);
             handler.execute(payload);
           } catch (error) {
-            this.logger.unexpectedError(error.message);
+            const eventManager = scope.resolve('eventManager');
+            if (error instanceof FlowError) {
+              eventManager.emit(ServerEventsEnum.ERROR, error.message);
+              this.logger.serverEvent(ServerEventsEnum.ERROR, error.message);
+            } else {
+              eventManager.emit(ServerEventsEnum.ERROR, 'Unexpected error');
+              this.logger.unexpectedError({ message: 'Unexpected error', details: error.message });
+            }
           }
         }
       });
