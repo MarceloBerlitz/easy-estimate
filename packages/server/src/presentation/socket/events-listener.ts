@@ -1,14 +1,14 @@
-import { AwilixContainer, Resolver, asValue } from 'awilix';
+import { AwilixContainer, asValue } from 'awilix';
 import { Socket } from 'socket.io';
 
-import { IO } from './io';
+import { UseCase } from '../../app/interfaces/use-case';
 import { LoggerService } from '../../infra/logging/logger.service';
-import { EventHandler } from './interfaces/event-handler';
+import { EventHandlers } from './event-handlers';
+import { IO } from './io';
 
 type Dependencies = {
-  loggerService: LoggerService;
+  logger: LoggerService;
   io: IO;
-  eventHandlers: EventHandler[];
   container: AwilixContainer;
 };
 
@@ -17,8 +17,8 @@ export class EventsListener {
   private io: IO;
   private container: AwilixContainer;
 
-  public constructor({ loggerService, io, container }: Dependencies) {
-    this.logger = loggerService;
+  public constructor({ logger, io, container }: Dependencies) {
+    this.logger = logger;
     this.io = io;
     this.container = container;
   }
@@ -32,23 +32,26 @@ export class EventsListener {
         socket: asValue(socket),
       });
 
+      socket.on('disconnect', () => {
+        scope.dispose();
+      });
+
       this.logger.clientEvent('connection', `clientId: ${socket.id}`);
       this.logger.info(`${this.io.instance.sockets.sockets.size}`, 'total clients');
 
-      const { eventHandlers } = scope.cradle as { eventHandlers: EventHandler[] };
-
-      eventHandlers.forEach((handler) => {
-        socket.on(handler.event, (payload) => {
-          this.logger.clientEvent(handler.event, `clientId: ${socket.id}`);
+      socket.onAny((event, payload) => {
+        const handlerName = EventHandlers.getHandlerName(event);
+        if (handlerName) {
           try {
-            handler.handle(payload);
+            this.logger.clientEvent(event, `clientId: ${socket.id}`);
+
+            const handler = scope.resolve<UseCase<unknown, unknown>>(handlerName);
+            handler.execute(payload);
           } catch (error) {
             this.logger.unexpectedError(error);
           }
-        });
+        }
       });
-
-      socket.on('disconnect', () => scope.cradle.disconnectedHandler.handle(socket.id));
     });
   }
 }

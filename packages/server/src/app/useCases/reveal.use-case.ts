@@ -1,16 +1,35 @@
-import { ComputedVotesMapper, PointsRevealedPayload, RevealPayload, RoomType } from '@ee/lib';
+import {
+  ComputedVotesMapper,
+  PointsRevealedPayload,
+  RevealPayload,
+  RoomType,
+  ServerEventsEnum,
+} from '@ee/lib';
 
 import { UseCase } from '../interfaces/use-case';
-import { RoomService } from '../services/room.service';
+import { RoomService } from '../interfaces/room.service';
+import { RoomEventManager } from '../interfaces/room-event-manager';
 
-export class RevealUseCase implements UseCase<RevealPayload, PointsRevealedPayload> {
+export default class RevealUseCase implements UseCase<RevealPayload, void> {
   private service: RoomService;
+  private clientId: string;
+  private eventManager: RoomEventManager;
 
-  public constructor({ roomService }: { roomService: RoomService }) {
+  public constructor({
+    roomService,
+    clientId,
+    eventManager,
+  }: {
+    roomService: RoomService;
+    clientId: string;
+    eventManager: RoomEventManager;
+  }) {
     this.service = roomService;
+    this.clientId = clientId;
+    this.eventManager = eventManager;
   }
 
-  public execute(payload: RevealPayload): PointsRevealedPayload {
+  public execute(payload: RevealPayload): void {
     const room: RoomType = this.service.getRoom(payload.roomId);
 
     if (!room) {
@@ -23,15 +42,17 @@ export class RevealUseCase implements UseCase<RevealPayload, PointsRevealedPaylo
       throw new Error('voter not found');
     }
 
-    // if (!voter.clientId) {
-    //   voter.clientId = clientId;
-    //   socket.join(room.id);
-    // }
+    if (!voter.clientId) {
+      voter.clientId = this.clientId;
+      this.eventManager.join(room.id);
+    }
 
     if (!room.computedVotes) {
       room.computedVotes = ComputedVotesMapper.mapFromVotes(room.votes);
     }
 
-    return { computedVotes: room.computedVotes };
+    this.eventManager.to(payload.roomId).emit(ServerEventsEnum.POINTS_REVEALED, {
+      computedVotes: room.computedVotes,
+    });
   }
 }

@@ -1,34 +1,33 @@
-import { LogoutPayload, RoomType, VoterType } from '@ee/lib';
-import { RoomService } from '../services/room.service';
+import { LogoutPayload, RoomType, ServerEventsEnum } from '@ee/lib';
+import { RoomService } from '../interfaces/room.service';
 import { UseCase } from '../interfaces/use-case';
 import { Logger } from '../interfaces/logger';
+import { RoomEventManager } from '../interfaces/room-event-manager';
 
-type LogoutResult = {
-  roomDeleted: boolean;
-  room?: RoomType;
-  logoutVoter?: VoterType;
-};
-
-export class LogoutUseCase implements UseCase<LogoutPayload, LogoutResult> {
+export default class LogoutUseCase implements UseCase<LogoutPayload, void> {
   private service: RoomService;
   private clientId: string;
   private logger: Logger;
+  private eventManager: RoomEventManager;
 
   public constructor({
     roomService,
     clientId,
-    loggerService,
+    logger,
+    eventManager,
   }: {
     roomService: RoomService;
     clientId: string;
-    loggerService: Logger;
+    logger: Logger;
+    eventManager: RoomEventManager;
   }) {
     this.service = roomService;
     this.clientId = clientId;
-    this.logger = loggerService;
+    this.logger = logger;
+    this.eventManager = eventManager;
   }
 
-  execute(payload: LogoutPayload): LogoutResult {
+  execute(payload: LogoutPayload): void {
     const { roomIndex, voterIndex } = this.getVoterAndRoomIndexes(payload.voterId);
 
     if (roomIndex < 0) {
@@ -39,14 +38,21 @@ export class LogoutUseCase implements UseCase<LogoutPayload, LogoutResult> {
     const logoutVoter = room.voters[voterIndex];
     this.service.removeVoter(room, voterIndex);
 
+    this.eventManager.leave(payload.roomId);
+
     if (room.voters.length === 0) {
       this.service.removeRoom(roomIndex);
       this.logger.info(`${this.service.getRoomsCount()}`, 'total rooms');
-      return { roomDeleted: true };
+      return;
     }
 
     this.service.removeVotersVotes(room, payload.voterId);
-    return { roomDeleted: false, room, logoutVoter };
+
+    this.eventManager.to(payload.roomId).emit(ServerEventsEnum.LOGGED_OUT, {
+      logoutVoter,
+      voters: room.voters,
+      computedVotes: room.computedVotes,
+    });
   }
 
   private getVoterAndRoomIndexes(voterId: string) {

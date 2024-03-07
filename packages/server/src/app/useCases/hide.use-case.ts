@@ -1,12 +1,26 @@
-import { HidePayload } from '@ee/lib';
+import { HidePayload, ServerEventsEnum } from '@ee/lib';
+
 import { UseCase } from '../interfaces/use-case';
-import { RoomService } from '../services/room.service';
+import { RoomService } from '../interfaces/room.service';
+import { RoomEventManager } from '../interfaces/room-event-manager';
 
-export class HideUseCase implements UseCase<HidePayload, void> {
+export default class HideUseCase implements UseCase<HidePayload, void> {
   private service: RoomService;
+  private eventManager: RoomEventManager;
+  private clientId: string;
 
-  public constructor({ roomService }: { roomService: RoomService }) {
+  public constructor({
+    roomService,
+    eventManager,
+    clientId,
+  }: {
+    roomService: RoomService;
+    eventManager: RoomEventManager;
+    clientId: string;
+  }) {
     this.service = roomService;
+    this.eventManager = eventManager;
+    this.clientId = clientId;
   }
 
   execute(payload: HidePayload): void {
@@ -22,11 +36,13 @@ export class HideUseCase implements UseCase<HidePayload, void> {
       throw new Error('voter not found');
     }
 
-    // if (!voter.clientId) {
-    //   voter.clientId = clientId;
-    //   socket.join(room.id);
-    // }
+    if (!voter.clientId) {
+      voter.clientId = this.clientId;
+      this.eventManager.join(room.id);
+    }
 
     delete room.computedVotes;
+
+    this.eventManager.to(payload.roomId).emit(ServerEventsEnum.POINTS_HIDDEN);
   }
 }

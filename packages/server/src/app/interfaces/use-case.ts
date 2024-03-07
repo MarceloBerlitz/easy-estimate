@@ -1,3 +1,3 @@
-export interface UseCase<T, Y> {
-  execute(payload: T): Y;
+export interface UseCase<TIn, TOut> {
+  execute(payload: TIn): TOut;
 }

@@ -1,33 +1,34 @@
-import { RoomType } from '@ee/lib';
-import { UseCase } from '../interfaces/use-case';
-import { RoomService } from '../services/room.service';
+import { RoomType, ServerEventsEnum } from '@ee/lib';
+
 import { Logger } from '../interfaces/logger';
+import { RoomEventManager } from '../interfaces/room-event-manager';
+import { UseCase } from '../interfaces/use-case';
+import { RoomService } from '../interfaces/room.service';
 
-type DisconnectedUseCaseResult = {
-  roomDeleted: boolean;
-  room?: RoomType;
-};
-
-export class DisconnectedUseCase implements UseCase<void, DisconnectedUseCaseResult> {
+export default class DisconnectedUseCase implements UseCase<void, void> {
   private service: RoomService;
   private clientId: string;
   private logger: Logger;
+  private eventManager: RoomEventManager;
 
   public constructor({
     roomService,
     clientId,
-    loggerService,
+    logger,
+    eventManager: RoomEventManager,
   }: {
     roomService: RoomService;
     clientId: string;
-    loggerService: Logger;
+    logger: Logger;
+    eventManager: RoomEventManager;
   }) {
     this.service = roomService;
     this.clientId = clientId;
-    this.logger = loggerService;
+    this.logger = logger;
+    this.eventManager = RoomEventManager;
   }
 
-  execute(): DisconnectedUseCaseResult {
+  execute(): void {
     const { voterIndex, roomIndex } = this.getVoterAndRoomIndexes();
 
     if (roomIndex < 0) {
@@ -42,9 +43,13 @@ export class DisconnectedUseCase implements UseCase<void, DisconnectedUseCaseRes
     if (this.service.nobodyIsConnected(room)) {
       this.service.removeRoom(roomIndex);
       this.logger.info(`${this.service.getRoomsCount()}`, 'total rooms');
-      return { roomDeleted: true };
+      return;
     }
-    return { roomDeleted: false, room };
+
+    this.eventManager.to(room.id).emit(ServerEventsEnum.VOTER_DISCONNECTED, {
+      voters: room.voters,
+      computedVotes: room.computedVotes,
+    });
   }
 
   private getVoterAndRoomIndexes() {

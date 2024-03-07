@@ -1,11 +1,9 @@
-import { v4 as uuid } from 'uuid';
-
 import { VoterType } from '../types';
 
 export class VoterFactory {
-  public static create(clientId: string, name: string, id?: string): VoterType {
+  public static create(clientId: string, name: string, id: string): VoterType {
     return {
-      id: id ?? uuid(),
+      id,
       clientId,
       name,
     };
