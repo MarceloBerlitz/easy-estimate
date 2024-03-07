@@ -44,7 +44,6 @@ export class EventsListener {
         if (handlerName) {
           try {
             this.logger.clientEvent(event, `clientId: ${socket.id}`);
-
             const handler = scope.resolve<UseCase<unknown, unknown>>(handlerName);
             handler.execute(payload);
           } catch (error) {
