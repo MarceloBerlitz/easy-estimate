@@ -50,17 +50,21 @@ export class EventsListener {
             const handler = scope.resolve<UseCase<unknown, unknown>>(handlerName);
             handler.execute(payload);
           } catch (error) {
-            const eventManager = scope.resolve('eventManager');
-            if (error instanceof FlowError) {
-              eventManager.emit(ServerEventsEnum.ERROR, error.message);
-              this.logger.serverEvent(ServerEventsEnum.ERROR, error.message);
-            } else {
-              eventManager.emit(ServerEventsEnum.ERROR, 'Unexpected error');
-              this.logger.unexpectedError({ message: 'Unexpected error', details: error.message });
-            }
+            this.handleError(scope, error);
           }
         }
       });
     });
+  }
+
+  private handleError(scope: AwilixContainer, error: Error): void {
+    const eventManager = scope.resolve('eventManager');
+    if (error instanceof FlowError) {
+      eventManager.emit(ServerEventsEnum.ERROR, error.message);
+      this.logger.serverEvent(ServerEventsEnum.ERROR, error.message);
+    } else {
+      eventManager.emit(ServerEventsEnum.ERROR, 'Unexpected error');
+      this.logger.unexpectedError(error);
+    }
   }
 }
