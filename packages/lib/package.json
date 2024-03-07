@@ -6,7 +6,7 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "build": "tsc --declaration",
+    "build": "tsc",
     "clean": "rm -rf ./dist"
   },
   "dependencies": {

@@ -26,7 +26,7 @@ export const configureContainer = () => {
       idService: asClass(IdServiceImpl).singleton(),
       eventManager: asClass(RoomEventManagerImpl).scoped(),
     })
-    .loadModules(['app/useCases/*.ts'], {
+    .loadModules(['app/useCases/*.use-case.*'], {
       formatName: 'camelCase',
       cwd: __dirname,
       resolverOptions: {

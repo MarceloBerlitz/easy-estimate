@@ -24,7 +24,7 @@ export class RoomEventManagerImpl implements RoomEventManager {
   to(roomId: string): { emit: <T>(event: ServerEventsEnum, data: T) => void } {
     return {
       emit: (event, data) => {
-        this.io.to(roomId).emit(event, data);
+        this.io.instance.to(roomId).emit(event, data);
         this.logger.serverEvent(event, `clientId: ${this.socket.id}`);
       },
     };

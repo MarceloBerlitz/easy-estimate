@@ -47,7 +47,7 @@ export class EventsListener {
             const handler = scope.resolve<UseCase<unknown, unknown>>(handlerName);
             handler.execute(payload);
           } catch (error) {
-            this.logger.unexpectedError(error);
+            this.logger.unexpectedError(error.message);
           }
         }
       });
