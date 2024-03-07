@@ -1,26 +1,26 @@
 import { RoomType, ServerEventsEnum } from '@ee/lib';
 
-import { RoomEventManager } from '../interfaces/room-event-manager';
+import { ClientEventManager } from '../interfaces/client-event-manager';
 import { RoomService } from '../interfaces/room.service';
 import { UseCase } from '../interfaces/use-case';
 
 export default class DisconnectedUseCase implements UseCase<void, void> {
   private service: RoomService;
   private clientId: string;
-  private eventManager: RoomEventManager;
+  private eventManager: ClientEventManager;
 
   public constructor({
     roomService,
     clientId,
-    eventManager: RoomEventManager,
+    eventManager,
   }: {
     roomService: RoomService;
     clientId: string;
-    eventManager: RoomEventManager;
+    eventManager: ClientEventManager;
   }) {
     this.service = roomService;
     this.clientId = clientId;
-    this.eventManager = RoomEventManager;
+    this.eventManager = eventManager;
   }
 
   execute(): void {

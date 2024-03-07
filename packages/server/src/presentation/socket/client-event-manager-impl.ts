@@ -2,11 +2,11 @@ import { Socket } from 'socket.io';
 
 import { ServerEventsEnum } from '@ee/lib';
 
-import { RoomEventManager } from '../../app/interfaces/room-event-manager';
-import { IO } from './io';
+import { ClientEventManager } from '../../app/interfaces/client-event-manager';
 import { Logger } from '../../app/interfaces/logger';
+import { IO } from './io';
 
-export class RoomEventManagerImpl implements RoomEventManager {
+export class ClientEventManagerImpl implements ClientEventManager {
   private socket: Socket;
   private io: IO;
   private logger: Logger;

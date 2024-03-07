@@ -7,8 +7,8 @@ import {
 } from '@ee/lib';
 
 import { ValidationError } from '../errors/validation.error';
+import { ClientEventManager } from '../interfaces/client-event-manager';
 import { IdService } from '../interfaces/id.service';
-import { RoomEventManager } from '../interfaces/room-event-manager';
 import { RoomService } from '../interfaces/room.service';
 import { UseCase } from '../interfaces/use-case';
 
@@ -16,14 +16,14 @@ type Dependencies = {
   roomService: RoomService;
   clientId: string;
   idService: IdService;
-  eventManager: RoomEventManager;
+  eventManager: ClientEventManager;
 };
 
 export default class CreateRoomUseCase implements UseCase<CreateRoomPayload, void> {
   private service: RoomService;
   private clientId: string;
   private idService: IdService;
-  private eventManager: RoomEventManager;
+  private eventManager: ClientEventManager;
 
   public constructor({ roomService, clientId, idService, eventManager }: Dependencies) {
     this.service = roomService;

@@ -1,6 +1,6 @@
 import { ServerEventsEnum } from '@ee/lib';
 
-export interface RoomEventManager {
+export interface ClientEventManager {
   emit<T>(event: ServerEventsEnum, data: T): void;
 
   to(roomId: string): { emit: <T>(event: ServerEventsEnum, data?: T) => void };

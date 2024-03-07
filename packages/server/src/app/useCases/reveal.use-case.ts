@@ -1,19 +1,13 @@
-import {
-  ComputedVotesMapper,
-  PointsRevealedPayload,
-  RevealPayload,
-  RoomType,
-  ServerEventsEnum,
-} from '@ee/lib';
+import { ComputedVotesMapper, RevealPayload, RoomType, ServerEventsEnum } from '@ee/lib';
 
-import { UseCase } from '../interfaces/use-case';
+import { ClientEventManager } from '../interfaces/client-event-manager';
 import { RoomService } from '../interfaces/room.service';
-import { RoomEventManager } from '../interfaces/room-event-manager';
+import { UseCase } from '../interfaces/use-case';
 
 export default class RevealUseCase implements UseCase<RevealPayload, void> {
   private service: RoomService;
   private clientId: string;
-  private eventManager: RoomEventManager;
+  private eventManager: ClientEventManager;
 
   public constructor({
     roomService,
@@ -22,7 +16,7 @@ export default class RevealUseCase implements UseCase<RevealPayload, void> {
   }: {
     roomService: RoomService;
     clientId: string;
-    eventManager: RoomEventManager;
+    eventManager: ClientEventManager;
   }) {
     this.service = roomService;
     this.clientId = clientId;

@@ -9,18 +9,18 @@ import {
 
 import { LoggerService } from '../../infra/logging/logger.service';
 import { ValidationError } from '../errors/validation.error';
+import { ClientEventManager } from '../interfaces/client-event-manager';
+import { IdService } from '../interfaces/id.service';
 import { Logger } from '../interfaces/logger';
-import { RoomEventManager } from '../interfaces/room-event-manager';
 import { RoomService } from '../interfaces/room.service';
 import { UseCase } from '../interfaces/use-case';
-import { IdService } from '../interfaces/id.service';
 
 export default class JoinRoomUseCase implements UseCase<JoinRoomPayload, void> {
   private clientId: string;
   private service: RoomService;
   private logger: Logger;
   private idService: IdService;
-  private eventManager: RoomEventManager;
+  private eventManager: ClientEventManager;
 
   public constructor({
     clientId,
@@ -33,7 +33,7 @@ export default class JoinRoomUseCase implements UseCase<JoinRoomPayload, void> {
     roomService: RoomService;
     logger: LoggerService;
     idService: IdService;
-    eventManager: RoomEventManager;
+    eventManager: ClientEventManager;
   }) {
     this.clientId = clientId;
     this.service = roomService;

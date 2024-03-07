@@ -1,12 +1,13 @@
 import { DeleteVotesPayload, ServerEventsEnum, VoterType } from '@ee/lib';
 
-import { UseCase } from '../interfaces/use-case';
-import { RoomService } from '../interfaces/room.service';
 import { NotFoundError } from '../errors/not-found.error';
-import { RoomEventManager } from '../interfaces/room-event-manager';
+import { ClientEventManager } from '../interfaces/client-event-manager';
+import { RoomService } from '../interfaces/room.service';
+import { UseCase } from '../interfaces/use-case';
+
 export default class DeleteVotesUseCase implements UseCase<DeleteVotesPayload, void> {
   private service: RoomService;
-  private eventManager: RoomEventManager;
+  private eventManager: ClientEventManager;
   private clientId: string;
 
   public constructor({
@@ -15,7 +16,7 @@ export default class DeleteVotesUseCase implements UseCase<DeleteVotesPayload, v
     clientId,
   }: {
     roomService: RoomService;
-    eventManager: RoomEventManager;
+    eventManager: ClientEventManager;
     clientId: string;
   }) {
     this.service = roomService;

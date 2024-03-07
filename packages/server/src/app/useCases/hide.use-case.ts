@@ -1,12 +1,12 @@
 import { HidePayload, ServerEventsEnum } from '@ee/lib';
 
-import { UseCase } from '../interfaces/use-case';
+import { ClientEventManager } from '../interfaces/client-event-manager';
 import { RoomService } from '../interfaces/room.service';
-import { RoomEventManager } from '../interfaces/room-event-manager';
+import { UseCase } from '../interfaces/use-case';
 
 export default class HideUseCase implements UseCase<HidePayload, void> {
   private service: RoomService;
-  private eventManager: RoomEventManager;
+  private eventManager: ClientEventManager;
   private clientId: string;
 
   public constructor({
@@ -15,7 +15,7 @@ export default class HideUseCase implements UseCase<HidePayload, void> {
     clientId,
   }: {
     roomService: RoomService;
-    eventManager: RoomEventManager;
+    eventManager: ClientEventManager;
     clientId: string;
   }) {
     this.service = roomService;
