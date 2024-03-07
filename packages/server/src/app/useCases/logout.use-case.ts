@@ -1,29 +1,25 @@
 import { LogoutPayload, RoomType, ServerEventsEnum } from '@ee/lib';
+
+import { RoomEventManager } from '../interfaces/room-event-manager';
 import { RoomService } from '../interfaces/room.service';
 import { UseCase } from '../interfaces/use-case';
-import { Logger } from '../interfaces/logger';
-import { RoomEventManager } from '../interfaces/room-event-manager';
 
 export default class LogoutUseCase implements UseCase<LogoutPayload, void> {
   private service: RoomService;
   private clientId: string;
-  private logger: Logger;
   private eventManager: RoomEventManager;
 
   public constructor({
     roomService,
     clientId,
-    logger,
     eventManager,
   }: {
     roomService: RoomService;
     clientId: string;
-    logger: Logger;
     eventManager: RoomEventManager;
   }) {
     this.service = roomService;
     this.clientId = clientId;
-    this.logger = logger;
     this.eventManager = eventManager;
   }
 
@@ -40,9 +36,8 @@ export default class LogoutUseCase implements UseCase<LogoutPayload, void> {
 
     this.eventManager.leave(payload.roomId);
 
-    if (room.voters.length === 0) {
+    if (this.service.nobodyIsConnected(room)) {
       this.service.removeRoom(roomIndex);
-      this.logger.info(`${this.service.getRoomsCount()}`, 'total rooms');
       return;
     }
 

@@ -7,10 +7,10 @@ import {
 } from '@ee/lib';
 
 import { ValidationError } from '../errors/validation.error';
+import { IdService } from '../interfaces/id.service';
 import { RoomEventManager } from '../interfaces/room-event-manager';
 import { RoomService } from '../interfaces/room.service';
 import { UseCase } from '../interfaces/use-case';
-import { IdService } from '../interfaces/id.service';
 
 type Dependencies = {
   roomService: RoomService;

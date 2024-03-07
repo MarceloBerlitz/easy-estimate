@@ -1,13 +1,13 @@
 import { AwilixContainer, asValue } from 'awilix';
 import { Socket } from 'socket.io';
 
-import { ServerEventsEnum } from '@ee/lib';
+import { ClientEventsEnum, ServerEventsEnum } from '@ee/lib';
 
+import { FlowError } from '../../app/errors/flow.error';
 import { UseCase } from '../../app/interfaces/use-case';
 import { LoggerService } from '../../infra/logging/logger.service';
 import { EventHandlers } from './event-handlers';
 import { IO } from './io';
-import { FlowError } from '../../app/errors/flow.error';
 
 type Dependencies = {
   logger: LoggerService;
@@ -28,36 +28,48 @@ export class EventsListener {
 
   public listen(): void {
     this.io.on('connection', (socket: Socket) => {
-      const scope = this.container.createScope();
+      this.logger.clientEvent('connection', `clientId: ${socket.id}`);
+      this.logger.info(`${this.io.instance.sockets.sockets.size}`, 'total clients');
 
-      scope.register({
-        clientId: asValue(socket.id),
-        socket: asValue(socket),
-      });
+      const scope = this.createScope(socket);
 
       socket.on('disconnect', () => {
-        const handlerName = EventHandlers.getHandlerName('disconnect');
-        const handler = scope.resolve<UseCase<void, void>>(handlerName);
+        this.logger.clientEvent('disconnect', `clientId: ${socket.id}`);
+        const handler = this.resolveHandler(scope, 'disconnect');
         handler.execute();
         scope.dispose();
       });
 
-      this.logger.clientEvent('connection', `clientId: ${socket.id}`);
-      this.logger.info(`${this.io.instance.sockets.sockets.size}`, 'total clients');
-
       socket.onAny((event, payload) => {
-        const handlerName = EventHandlers.getHandlerName(event);
-        if (handlerName) {
-          try {
-            this.logger.clientEvent(event, `clientId: ${socket.id}`);
-            const handler = scope.resolve<UseCase<unknown, unknown>>(handlerName);
-            handler.execute(payload);
-          } catch (error) {
-            this.handleError(scope, error);
-          }
+        try {
+          const handler = this.resolveHandler(scope, event);
+          this.logger.clientEvent(event, `clientId: ${socket.id}`);
+          handler.execute(payload);
+        } catch (error) {
+          this.handleError(scope, error);
         }
       });
     });
+  }
+
+  private createScope(socket: Socket): AwilixContainer {
+    const scope = this.container.createScope();
+    scope.register({
+      clientId: asValue(socket.id),
+      socket: asValue(socket),
+    });
+    return scope;
+  }
+
+  private resolveHandler(
+    scope: AwilixContainer,
+    event: ClientEventsEnum | 'disconnect'
+  ): UseCase<unknown, unknown> {
+    const handlerName = EventHandlers.getHandlerName(event);
+    if (!handlerName) {
+      throw new Error('Invalid event');
+    }
+    return scope.resolve<UseCase<unknown, unknown>>(handlerName);
   }
 
   private handleError(scope: AwilixContainer, error: Error): void {
@@ -65,9 +77,9 @@ export class EventsListener {
     if (error instanceof FlowError) {
       eventManager.emit(ServerEventsEnum.ERROR, error.message);
       this.logger.serverEvent(ServerEventsEnum.ERROR, error.message);
-    } else {
-      eventManager.emit(ServerEventsEnum.ERROR, 'Unexpected error');
-      this.logger.unexpectedError(error);
+      return;
     }
+    eventManager.emit(ServerEventsEnum.ERROR, 'Unexpected error');
+    this.logger.unexpectedError(error);
   }
 }

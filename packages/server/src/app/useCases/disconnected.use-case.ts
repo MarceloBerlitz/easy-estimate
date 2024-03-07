@@ -1,30 +1,25 @@
 import { RoomType, ServerEventsEnum } from '@ee/lib';
 
-import { Logger } from '../interfaces/logger';
 import { RoomEventManager } from '../interfaces/room-event-manager';
-import { UseCase } from '../interfaces/use-case';
 import { RoomService } from '../interfaces/room.service';
+import { UseCase } from '../interfaces/use-case';
 
 export default class DisconnectedUseCase implements UseCase<void, void> {
   private service: RoomService;
   private clientId: string;
-  private logger: Logger;
   private eventManager: RoomEventManager;
 
   public constructor({
     roomService,
     clientId,
-    logger,
     eventManager: RoomEventManager,
   }: {
     roomService: RoomService;
     clientId: string;
-    logger: Logger;
     eventManager: RoomEventManager;
   }) {
     this.service = roomService;
     this.clientId = clientId;
-    this.logger = logger;
     this.eventManager = RoomEventManager;
   }
 
@@ -42,7 +37,6 @@ export default class DisconnectedUseCase implements UseCase<void, void> {
 
     if (this.service.nobodyIsConnected(room)) {
       this.service.removeRoom(roomIndex);
-      this.logger.info(`${this.service.getRoomsCount()}`, 'total rooms');
       return;
     }
 

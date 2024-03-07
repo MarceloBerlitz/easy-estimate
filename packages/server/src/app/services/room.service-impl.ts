@@ -1,9 +1,14 @@
 import { ComputedVotesMapper, RoomType, VoterType } from '@ee/lib';
 
+import { Logger } from '../interfaces/logger';
+
 export class RoomServiceImpl {
   private rooms: RoomType[] = [];
+  private logger: Logger;
 
-  public constructor() {}
+  public constructor({ logger }: { logger: Logger }) {
+    this.logger = logger;
+  }
 
   public getRooms(): RoomType[] {
     return this.rooms;
@@ -15,10 +20,12 @@ export class RoomServiceImpl {
 
   public addRoom(room: RoomType): void {
     this.rooms.push(room);
+    this.logger.info(`${this.rooms.length}`, 'total rooms');
   }
 
   public removeRoom(roomIndex: number): void {
     this.rooms.splice(roomIndex, 1);
+    this.logger.info(`${this.rooms.length}`, 'total rooms');
   }
 
   public getVoter(room: RoomType, voterId?: string): VoterType | undefined {
@@ -44,10 +51,6 @@ export class RoomServiceImpl {
     if (room.computedVotes) {
       room.computedVotes = ComputedVotesMapper.mapFromVotes(room.votes);
     }
-  }
-
-  public getRoomsCount(): number {
-    return this.rooms.length;
   }
 
   public nobodyIsConnected(room: RoomType): boolean {
