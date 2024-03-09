@@ -6,7 +6,8 @@
     "removeComments": true,
     "preserveConstEnums": true,
     "esModuleInterop": true,
-    "outDir": "./dist",
+    "outDir": "dist",
+    "declaration": true,
     "sourceMap": true
   },
   "include": ["src"],

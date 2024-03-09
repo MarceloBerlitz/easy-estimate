@@ -52,7 +52,7 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
     };
 
     const errorHandler = (payload: any) => {
-      Modal.error({ title: JSON.stringify(payload) });
+      Modal.error({ title: payload });
     };
 
     const roomCreatedHandler = ({ room, voter }: RoomCreatedPayload) => {
@@ -90,7 +90,7 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
     const loggedOutHandler = ({ logoutVoter, voters, computedVotes }: LoggedOutPayload) => {
       setRoom((prev) => ({
         ...prev,
-        votes: prev!.votes!.filter((vote) => vote.voter.id !== logoutVoter.id),
+        votes: (prev.votes ?? []).filter((vote) => vote.voter.id !== logoutVoter.id),
         voters,
         computedVotes,
       }));

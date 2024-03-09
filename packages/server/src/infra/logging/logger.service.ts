@@ -1,12 +1,14 @@
-import winston, { Logger } from 'winston';
+import winston, { Logger as WinstonLogger } from 'winston';
 import LokiTransport from 'winston-loki';
 
 import { ClientEventsEnum, ServerEventsEnum } from '@ee/lib';
 
-export class LoggerHelper {
-  private static logger: Logger;
+import { Logger } from '../../app/interfaces/logger';
 
-  public static createLogger(): void {
+export class LoggerService implements Logger {
+  private logger: WinstonLogger;
+
+  public constructor() {
     this.logger = winston.createLogger({
       level: process.env.LOG_LEVEL ?? 'debug',
       exitOnError: true,
@@ -37,10 +39,7 @@ export class LoggerHelper {
     }
   }
 
-  public static clientEvent(
-    event: ClientEventsEnum | 'connection' | 'disconnect',
-    message: string
-  ): void {
+  public clientEvent(event: ClientEventsEnum | 'connection' | 'disconnect', message: string): void {
     this.logger.debug({
       message,
       labels: {
@@ -51,7 +50,7 @@ export class LoggerHelper {
     });
   }
 
-  public static serverEvent(event: ServerEventsEnum, message: string): void {
+  public serverEvent(event: ServerEventsEnum, message: string): void {
     this.logger.debug({
       message,
       labels: {
@@ -62,7 +61,7 @@ export class LoggerHelper {
     });
   }
 
-  public static info(name: 'total rooms' | 'total clients', message: string): void {
+  public info(message: string, name?: 'total rooms' | 'total clients'): void {
     this.logger.info({
       message,
       labels: {
@@ -72,15 +71,11 @@ export class LoggerHelper {
     });
   }
 
-  public static error(message: string, error: any): void {
+  public error(message: string, error: any): void {
     this.logger.error({ message, error });
   }
 
-  public static unexpectedError(error: any): void {
+  public unexpectedError(error: any): void {
     this.logger.error({ message: 'Unexpected Error', error });
-  }
-
-  public static getLogger(): Logger {
-    return this.logger;
   }
 }

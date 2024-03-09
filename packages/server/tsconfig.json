@@ -6,8 +6,7 @@
     "removeComments": true,
     "preserveConstEnums": true,
     "esModuleInterop": true,
-    "outDir": "./dist",
-    "sourceMap": true
+    "outDir": "./dist"
   },
   "include": ["src"],
   "exclude": ["**/*.spec.ts"]
