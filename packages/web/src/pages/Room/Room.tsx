@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
-import { Avatar, Button, Card, Col, Modal, Row, Space, Spin, Switch, Typography } from 'antd';
 import {
   CopyOutlined,
   DeleteOutlined,
@@ -12,19 +11,20 @@ import {
   SaveOutlined,
   SunOutlined,
 } from '@ant-design/icons';
+import { Avatar, Button, Col, Modal, Row, Space, Spin, Switch, Typography } from 'antd';
 
 import { ClientEventsEnum, ServerEventsEnum, VOTE_PARAMETERS_OPTIONS, VoteType } from '@ee/lib';
 
+import { ButtonsGroup } from '../../components/ButtonsGroup';
+import { CenteredWrapper } from '../../components/CenteredWrapper';
+import { RoutesEnum } from '../../enums/routes.enum';
 import { useRoom } from '../../hooks/Room/useRoom';
 import { useSocket } from '../../hooks/Socket/useSocket';
-import { VoteHelper } from './partials/VoteHelper/VoteHelper';
-import { Results } from './partials/Results/Results';
 import { DisplayNameInput } from './partials/DisplayNameInput/DisplayNameInput';
-import { CenteredWrapper } from '../../components/CenteredWrapper';
-import { ButtonsGroup } from '../../components/ButtonsGroup';
-import { CustomHeader } from './styles';
 import { ParamsCharts } from './partials/ParamsCharts/ParamsCharts';
-import { RoutesEnum } from '../../enums/routes.enum';
+import { Results } from './partials/Results/Results';
+import { VoteHelper } from './partials/VoteHelper/VoteHelper';
+import { CustomCard, CustomHeader } from './styles';
 
 type Props = {
   isDarkMode: boolean;
@@ -155,7 +155,7 @@ export const Room: React.FC<Props> = ({ isDarkMode, onDarkModeChange }) => {
                 unCheckedChildren={<SunOutlined />}
                 onChange={(checked) => onDarkModeChange(String(checked))}
               />
-              <Button onClick={leaveHandler} danger>
+              <Button onClick={leaveHandler}>
                 Leave
                 <LogoutOutlined />
               </Button>
@@ -178,7 +178,7 @@ export const Room: React.FC<Props> = ({ isDarkMode, onDarkModeChange }) => {
         </Col>
 
         <Col xs={24} sm={24} md={12}>
-          <Card
+          <CustomCard
             title={
               <Typography.Title level={2} style={{ margin: 'auto' }}>
                 Vote
@@ -200,17 +200,17 @@ export const Room: React.FC<Props> = ({ isDarkMode, onDarkModeChange }) => {
                 Vote
               </Button>
             </ButtonsGroup>
-          </Card>
+          </CustomCard>
         </Col>
         <Col xs={24} sm={24} md={12}>
-          <Card
+          <CustomCard
             title={
               <Typography.Title level={2} style={{ margin: 'auto' }}>
                 Results
               </Typography.Title>
             }
           >
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
               <Results />
               <ButtonsGroup>
                 {!room?.computedVotes ? (
@@ -227,20 +227,15 @@ export const Room: React.FC<Props> = ({ isDarkMode, onDarkModeChange }) => {
                     Hide
                   </Button>
                 )}
-                <Button
-                  onClick={deleteVotesHandler}
-                  danger
-                  type="primary"
-                  icon={<DeleteOutlined />}
-                >
+                <Button onClick={deleteVotesHandler} type="link" icon={<DeleteOutlined />}>
                   Clear all votes
                 </Button>
               </ButtonsGroup>
             </div>
-          </Card>
+          </CustomCard>
         </Col>
         <Col xs={24} sm={24} md={12}>
-          <Card
+          <CustomCard
             title={
               <Typography.Title level={2} style={{ margin: 'auto' }}>
                 Details
@@ -248,7 +243,7 @@ export const Room: React.FC<Props> = ({ isDarkMode, onDarkModeChange }) => {
             }
           >
             <ParamsCharts computedVotes={room.computedVotes} />
-          </Card>
+          </CustomCard>
         </Col>
       </Row>
       {/* <h3>DEBUG</h3>

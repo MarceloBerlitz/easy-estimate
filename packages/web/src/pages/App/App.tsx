@@ -27,7 +27,9 @@ const App: React.FC = () => {
       theme={{
         algorithm: isDarkMode === 'true' ? darkAlgorithm : defaultAlgorithm,
         token: {
-          borderRadius: 3,
+          borderRadius: 2,
+          colorPrimary: '#5636ff',
+          colorInfo: '#5636ff',
         },
       }}
     >
