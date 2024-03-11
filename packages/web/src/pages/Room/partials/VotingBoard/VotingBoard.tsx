@@ -43,6 +43,9 @@ export const VotingBoard = ({ currentVote, hasVoted, onVoteChange, onVote }: Pro
         >
           {hasVoted ? 'Update Vote' : 'Vote'}
         </Button>
+        <Button disabled={false} type="link" onClick={() => onVoteChange({})}>
+          Reset
+        </Button>
       </ButtonsGroup>
     </CustomCard>
   );

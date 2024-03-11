@@ -24,7 +24,7 @@ export const PointsPreviewLeft = styled.div`
     align-items: center;
   }
 
-  & > article {
+  & > div > article {
     color: #8c8c8c;
     font-size: 12px;
   }
