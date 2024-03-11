@@ -1,29 +1,20 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
-import {
-  CopyOutlined,
-  DeleteOutlined,
-  EyeInvisibleOutlined,
-  EyeOutlined,
-  LogoutOutlined,
-  MoonOutlined,
-  SunOutlined,
-} from '@ant-design/icons';
+import { CopyOutlined, LogoutOutlined, MoonOutlined, SunOutlined } from '@ant-design/icons';
 import { Avatar, Button, Col, Modal, Row, Space, Spin, Switch, Typography } from 'antd';
 
 import { ClientEventsEnum, ServerEventsEnum, VoteType } from '@ee/lib';
 
-import { ButtonsGroup } from '../../components/ButtonsGroup';
 import { CenteredWrapper } from '../../components/CenteredWrapper';
 import { RoutesEnum } from '../../enums/routes.enum';
 import { useRoom } from '../../hooks/Room/useRoom';
 import { useSocket } from '../../hooks/Socket/useSocket';
+import { Details } from './partials/Details/Details';
 import { DisplayNameInput } from './partials/DisplayNameInput/DisplayNameInput';
-import { ParamsCharts } from './partials/ParamsCharts/ParamsCharts';
 import { Results } from './partials/Results/Results';
 import { VotingBoard } from './partials/VotingBoard/VotingBoard';
-import { CustomCard, CustomHeader } from './styles';
+import { CustomHeader } from './styles';
 
 type Props = {
   isDarkMode: boolean;
@@ -89,7 +80,7 @@ export const Room: React.FC<Props> = ({ isDarkMode, onDarkModeChange }) => {
   }, []);
 
   const hasVotes = useMemo(() => {
-    return room?.voters?.some((voter) => voter.hasVoted);
+    return room?.voters?.some((voter) => voter.hasVoted) ?? false;
   }, [room?.voters]);
 
   const voteChangeHandler = useCallback((vote: Partial<VoteType>) => {
@@ -180,47 +171,15 @@ export const Room: React.FC<Props> = ({ isDarkMode, onDarkModeChange }) => {
           />
         </Col>
         <Col xs={24} sm={24} md={12}>
-          <CustomCard
-            title={
-              <Typography.Title level={2} style={{ margin: 'auto' }}>
-                Results
-              </Typography.Title>
-            }
-          >
-            <div style={{ display: 'flex', flexDirection: 'column' }}>
-              <Results />
-              <ButtonsGroup>
-                {!room?.computedVotes ? (
-                  <Button
-                    disabled={!hasVotes}
-                    onClick={revealHandler}
-                    type="primary"
-                    icon={<EyeOutlined />}
-                  >
-                    Reveal
-                  </Button>
-                ) : (
-                  <Button onClick={hideHandler} icon={<EyeInvisibleOutlined />}>
-                    Hide
-                  </Button>
-                )}
-                <Button onClick={deleteVotesHandler} type="link" icon={<DeleteOutlined />}>
-                  Clear all votes
-                </Button>
-              </ButtonsGroup>
-            </div>
-          </CustomCard>
+          <Results
+            hasVotes={hasVotes}
+            onReveal={revealHandler}
+            onHide={hideHandler}
+            onDelete={deleteVotesHandler}
+          />
         </Col>
         <Col xs={24} sm={24} md={12}>
-          <CustomCard
-            title={
-              <Typography.Title level={2} style={{ margin: 'auto' }}>
-                Details
-              </Typography.Title>
-            }
-          >
-            <ParamsCharts computedVotes={room.computedVotes} />
-          </CustomCard>
+          <Details computedVotes={room.computedVotes} />
         </Col>
       </Row>
       {/* <h3>DEBUG</h3>
