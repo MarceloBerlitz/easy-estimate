@@ -3,13 +3,14 @@ import { Radio } from 'antd';
 import styled from 'styled-components';
 
 export const StyledRadioGroup = styled(Radio.Group)`
-  display: flex;
-  flex-direction: row;
+  display: flex !important;
+  flex-direction: row !important;
+  width: 100% !important;
 `;
 
 export const StyledRadioButton = styled(Radio.Button)`
   min-width: 5.6rem;
-  /* flex: 1 1 0px; */
+  flex: 1 1;
   text-align: center;
   text-transform: capitalize;
   /* background-color: #f5f5f5; */

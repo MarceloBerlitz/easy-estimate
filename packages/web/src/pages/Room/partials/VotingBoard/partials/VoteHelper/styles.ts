@@ -7,13 +7,17 @@ export const VotesHelperWrapper = styled.div`
 `;
 
 export const ParameterWrapper = styled.div`
-  flex: 1;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
   gap: 1rem;
   padding: 0 0 1rem 0;
+
+  > * {
+    flex: 1 1;
+  }
+
   @media (max-width: 1200px) {
     flex-direction: column;
     align-items: start;

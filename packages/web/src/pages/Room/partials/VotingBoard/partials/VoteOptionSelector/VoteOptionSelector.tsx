@@ -1,8 +1,6 @@
-import { Radio } from 'antd';
-
 import { VOTE_OPTIONS, VOTE_OPTIONS_LABELS, VoteOptionEnum, VoteParametersEnum } from '@ee/lib';
 
-import { StyledRadioButton } from './styles';
+import { StyledRadioButton, StyledRadioGroup } from './styles';
 
 type Props = {
   parameter: VoteParametersEnum;
@@ -12,7 +10,7 @@ type Props = {
 
 export const VoteOptionSelector = ({ parameter, checked, onChange }: Props) => {
   return (
-    <Radio.Group
+    <StyledRadioGroup
       buttonStyle="solid"
       size="large"
       value={checked}
@@ -30,6 +28,6 @@ export const VoteOptionSelector = ({ parameter, checked, onChange }: Props) => {
           </StyledRadioButton>
         );
       })}
-    </Radio.Group>
+    </StyledRadioGroup>
   );
 };
