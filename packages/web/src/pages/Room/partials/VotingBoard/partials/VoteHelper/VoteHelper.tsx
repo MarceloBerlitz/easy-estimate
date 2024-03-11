@@ -1,8 +1,10 @@
 import React from 'react';
 
 import { Typography } from 'antd';
+import * as Icons from '@ant-design/icons';
 
 import {
+  VOTE_PARAMETERS_ICONS,
   VOTE_PARAMETERS_OPTIONS,
   VOTE_PARAMETERS_TOOLTIPS,
   VoteOptionEnum,
@@ -11,7 +13,7 @@ import {
 
 import { PointsPreview } from '../PointsPreview/PointsPreview';
 import { VoteOptionSelector } from '../VoteOptionSelector/VoteOptionSelector';
-import { ParameterTitleWrapper, ParameterWrapper, VotesHelperWrapper } from './styles';
+import { IconWrapper, ParameterTitleWrapper, ParameterWrapper, VotesHelperWrapper } from './styles';
 
 type Props = {
   currentVote: Partial<VoteType>;
@@ -28,10 +30,16 @@ export const VoteHelper: React.FC<Props> = ({
     <span>
       <VotesHelperWrapper>
         {VOTE_PARAMETERS_OPTIONS.map((parameter) => {
+          const Icon = (Icons as any)[VOTE_PARAMETERS_ICONS[parameter] as any] as any;
           return (
             <ParameterWrapper key={parameter}>
               <ParameterTitleWrapper>
-                <Typography.Title level={5}>{parameter}</Typography.Title>
+                <Typography.Title level={5}>
+                  <IconWrapper>
+                    <Icon color="primary" />
+                  </IconWrapper>
+                  {parameter}
+                </Typography.Title>
                 <Typography>{VOTE_PARAMETERS_TOOLTIPS[parameter]}</Typography>
               </ParameterTitleWrapper>
               <VoteOptionSelector

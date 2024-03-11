@@ -9,13 +9,16 @@ export const VotesHelperWrapper = styled.div`
 export const ParameterWrapper = styled.div`
   flex: 1;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
 `;
 
 export const ParameterTitleWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 0.3rem;
+  gap: 0.5rem;
   /* align-items: baseline; */
   justify-content: start;
   padding: 0 0 1rem 0;
@@ -23,10 +26,27 @@ export const ParameterTitleWrapper = styled.div`
   & > h5 {
     margin: 0;
     text-transform: capitalize;
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+    align-items: center;
   }
 
   & > article {
     color: #8c8c8c;
     font-size: 12px;
+  }
+`;
+
+export const IconWrapper = styled.span`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 2rem;
+  width: 2rem;
+  border-radius: 50%;
+  background-color: #efecfe;
+  > * {
+    color: #5636ff;
   }
 `;

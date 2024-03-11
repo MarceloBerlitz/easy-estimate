@@ -11,3 +11,9 @@ export const VOTE_PARAMETERS_TOOLTIPS = {
   [VoteParametersEnum.EFFORT]: 'Volume of work, number of components involved.',
   [VoteParametersEnum.RISK]: 'Doubts, technical or business uncertainties.',
 };
+
+export const VOTE_PARAMETERS_ICONS = {
+  [VoteParametersEnum.COMPLEXITY]: 'ApartmentOutlined',
+  [VoteParametersEnum.EFFORT]: 'ColumnWidthOutlined',
+  [VoteParametersEnum.RISK]: 'RiseOutlined',
+};
