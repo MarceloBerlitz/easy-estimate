@@ -1,8 +1,8 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
-import { CopyOutlined, LogoutOutlined, MoonOutlined, SunOutlined } from '@ant-design/icons';
-import { Avatar, Button, Col, Modal, Row, Space, Spin, Switch, Typography } from 'antd';
+import { CopyOutlined } from '@ant-design/icons';
+import { Button, Col, Modal, Row, Spin, Typography } from 'antd';
 
 import { ClientEventsEnum, ServerEventsEnum, VoteType } from '@ee/lib';
 
@@ -10,11 +10,11 @@ import { CenteredWrapper } from '../../components/CenteredWrapper';
 import { RoutesEnum } from '../../enums/routes.enum';
 import { useRoom } from '../../hooks/Room/useRoom';
 import { useSocket } from '../../hooks/Socket/useSocket';
-import { Details } from './partials/Details/Details';
+import { VoteDetails } from './partials/VoteDetails/VoteDetails';
 import { DisplayNameInput } from './partials/DisplayNameInput/DisplayNameInput';
+import { Header } from './partials/Header/Header';
 import { Results } from './partials/Results/Results';
 import { VotingBoard } from './partials/VotingBoard/VotingBoard';
-import { CustomHeader } from './styles';
 
 type Props = {
   isDarkMode: boolean;
@@ -123,65 +123,43 @@ export const Room: React.FC<Props> = ({ isDarkMode, onDarkModeChange }) => {
     </CenteredWrapper>
   ) : (
     <Spin spinning={isLoading}>
-      <Row gutter={[16, 16]}>
-        <Col span={24}>
-          <CustomHeader>
-            <Space>
-              <Avatar style={{ backgroundColor: '#1c6ed2', verticalAlign: 'middle' }} size="large">
-                {voter?.name.substring(0, 1)}{' '}
-              </Avatar>
-              <Typography.Title level={2} style={{ margin: 'auto' }}>
-                {voter?.name}
-              </Typography.Title>
-            </Space>
-            <Space>
-              <Switch
-                defaultValue={isDarkMode}
-                checkedChildren={<MoonOutlined />}
-                unCheckedChildren={<SunOutlined />}
-                onChange={(checked) => onDarkModeChange(String(checked))}
-              />
-              <Button onClick={leaveHandler}>
-                Leave
-                <LogoutOutlined />
+      <Header name={voter.name} isDarkMode={isDarkMode} onDarkModeChange={onDarkModeChange} />
+      <div style={{ maxWidth: 1200, margin: '0 auto', padding: '1rem 0', minHeight: '90vh' }}>
+        <Row gutter={[16, 16]}>
+          <Col span={24}>
+            <Typography>
+              Room ID: {roomIdParam}{' '}
+              <Button
+                size="small"
+                type="dashed"
+                onClick={() => navigator.clipboard.writeText(window.location.href)}
+              >
+                Copy room link
+                <CopyOutlined />
               </Button>
-            </Space>
-          </CustomHeader>
-        </Col>
+            </Typography>
+          </Col>
 
-        <Col span={24}>
-          <Typography>
-            Room ID: {roomIdParam}{' '}
-            <Button
-              size="small"
-              type="dashed"
-              onClick={() => navigator.clipboard.writeText(window.location.href)}
-            >
-              Copy room link
-              <CopyOutlined />
-            </Button>
-          </Typography>
-        </Col>
-
-        <Col xs={24} sm={24} md={12}>
-          <VotingBoard
-            currentVote={currentVote}
-            onVoteChange={voteChangeHandler}
-            onVote={voteHandler}
-          />
-        </Col>
-        <Col xs={24} sm={24} md={12}>
-          <Results
-            hasVotes={hasVotes}
-            onReveal={revealHandler}
-            onHide={hideHandler}
-            onDelete={deleteVotesHandler}
-          />
-        </Col>
-        <Col xs={24} sm={24} md={12}>
-          <Details computedVotes={room.computedVotes} />
-        </Col>
-      </Row>
+          <Col xs={24} sm={24} md={12}>
+            <VotingBoard
+              currentVote={currentVote}
+              onVoteChange={voteChangeHandler}
+              onVote={voteHandler}
+            />
+          </Col>
+          <Col xs={24} sm={24} md={12}>
+            <Results
+              hasVotes={hasVotes}
+              onReveal={revealHandler}
+              onHide={hideHandler}
+              onDelete={deleteVotesHandler}
+            />
+          </Col>
+          <Col xs={24} sm={24} md={12}>
+            <VoteDetails computedVotes={room.computedVotes} />
+          </Col>
+        </Row>
+      </div>
       {/* <h3>DEBUG</h3>
       <div style={{ maxWidth: 600 }}>{JSON.stringify(room)}</div> */}
     </Spin>

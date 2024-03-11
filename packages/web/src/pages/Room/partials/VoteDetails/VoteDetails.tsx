@@ -9,7 +9,7 @@ type Props = {
   computedVotes?: ComputedVotesType;
 };
 
-export const Details = ({ computedVotes }: Props) => {
+export const VoteDetails = ({ computedVotes }: Props) => {
   return (
     <CustomCard
       title={
