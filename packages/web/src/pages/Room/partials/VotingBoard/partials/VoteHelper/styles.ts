@@ -13,6 +13,11 @@ export const ParameterWrapper = styled.div`
   justify-content: space-between;
   align-items: center;
   gap: 1rem;
+  padding: 0 0 1rem 0;
+  @media (max-width: 1200px) {
+    flex-direction: column;
+    align-items: start;
+  }
 `;
 
 export const ParameterTitleWrapper = styled.div`
@@ -21,7 +26,7 @@ export const ParameterTitleWrapper = styled.div`
   gap: 0.5rem;
   /* align-items: baseline; */
   justify-content: start;
-  padding: 0 0 1rem 0;
+  padding: 0;
 
   & > h5 {
     margin: 0;
