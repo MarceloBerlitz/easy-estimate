@@ -11,8 +11,8 @@ export const StyledRadioButton = styled(Radio.Button)`
   min-width: 5.6rem;
   /* flex: 1 1 0px; */
   text-align: center;
+  text-transform: capitalize;
   background-color: #f5f5f5;
-
   border: 1px solid #f0f0f0;
   border-left: 1px solid #d9d9d9;
 

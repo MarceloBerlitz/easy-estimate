@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Typography } from 'antd';
+import { Divider, Typography } from 'antd';
 import * as Icons from '@ant-design/icons';
 
 import {
@@ -30,7 +30,7 @@ export const VoteHelper: React.FC<Props> = ({
     <span>
       <VotesHelperWrapper>
         {VOTE_PARAMETERS_OPTIONS.map((parameter) => {
-          const Icon = (Icons as any)[VOTE_PARAMETERS_ICONS[parameter] as any] as any;
+          const Icon = (Icons as any)[VOTE_PARAMETERS_ICONS[parameter]];
           return (
             <ParameterWrapper key={parameter}>
               <ParameterTitleWrapper>
@@ -53,6 +53,7 @@ export const VoteHelper: React.FC<Props> = ({
           );
         })}
       </VotesHelperWrapper>
+      <Divider />
       <PointsPreview vote={currentVote as VoteType} areAllSelected={allParametersSelected} />
     </span>
   );

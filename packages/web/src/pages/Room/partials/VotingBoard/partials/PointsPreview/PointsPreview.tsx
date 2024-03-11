@@ -1,9 +1,9 @@
-import { Space, Typography } from 'antd';
+import { Typography } from 'antd';
 
-import { VoteMapper, VoteType } from '@ee/lib';
+import { VoteType } from '@ee/lib';
 
-import { PointsPreviewWrapper } from './styles';
-import { ResultCard } from '../../../../../../components/ResultCard/ResultCard';
+import { BulbOutlined } from '@ant-design/icons';
+import { IconWrapper, PointsPreviewWrapper } from './styles';
 
 type Props = {
   vote: VoteType;
@@ -13,7 +13,18 @@ type Props = {
 export const PointsPreview = ({ vote, areAllSelected }: Props) => {
   return (
     <PointsPreviewWrapper>
-      {!areAllSelected ? (
+      <Typography.Title level={5}>
+        <IconWrapper>
+          <BulbOutlined />
+        </IconWrapper>
+        Your Estimative
+      </Typography.Title>
+      <Typography>
+        Total sum of your votes based on this criteria board. <br />
+        You can update your vote anytime.
+      </Typography>
+
+      {/* {!areAllSelected ? (
         <Typography>
           <strong>Select all parameters to see your estimative</strong>
         </Typography>
@@ -24,7 +35,7 @@ export const PointsPreview = ({ vote, areAllSelected }: Props) => {
           </Typography>
           <ResultCard visible={!!vote}>{VoteMapper.mapVoteToStoryPoints(vote)}</ResultCard>
         </Space>
-      )}
+      )} */}
     </PointsPreviewWrapper>
   );
 };
