@@ -129,23 +129,27 @@ export const Room: React.FC<Props> = ({ isDarkMode, onDarkModeChange }) => {
           <Col span={24}>
             <SubHeader roomId={room.id} onLeave={leaveHandler} />
           </Col>
-          <Col xs={24} sm={24} md={12}>
-            <VotingBoard
-              currentVote={currentVote}
-              onVoteChange={voteChangeHandler}
-              onVote={voteHandler}
-            />
+          <Col xs={24} sm={24} md={12} lg={14}>
+            <Row gutter={[16, 16]}>
+              <Col xs={24}>
+                <VotingBoard
+                  currentVote={currentVote}
+                  onVoteChange={voteChangeHandler}
+                  onVote={voteHandler}
+                />
+              </Col>
+              <Col xs={24}>
+                <VoteDetails computedVotes={room.computedVotes} />
+              </Col>
+            </Row>
           </Col>
-          <Col xs={24} sm={24} md={12}>
+          <Col xs={24} sm={24} md={12} lg={10}>
             <Results
               hasVotes={hasVotes}
               onReveal={revealHandler}
               onHide={hideHandler}
               onDelete={deleteVotesHandler}
             />
-          </Col>
-          <Col xs={24} sm={24} md={12}>
-            <VoteDetails computedVotes={room.computedVotes} />
           </Col>
         </Row>
       </div>
