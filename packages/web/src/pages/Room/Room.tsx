@@ -28,6 +28,10 @@ export const Room: React.FC<Props> = ({ isDarkMode, onDarkModeChange }) => {
   const { roomId: roomIdParam } = useParams();
   const navigate = useNavigate();
 
+  const hasVoted = useMemo(() => {
+    return room?.voters?.find((v) => v.id === voter.id)?.hasVoted ?? false;
+  }, [room, voter]);
+
   const emptyVote: Partial<VoteType> = useMemo(
     () => ({
       voter: {
@@ -135,6 +139,7 @@ export const Room: React.FC<Props> = ({ isDarkMode, onDarkModeChange }) => {
               <Col xs={24}>
                 <VotingBoard
                   currentVote={currentVote}
+                  hasVoted={hasVoted}
                   onVoteChange={voteChangeHandler}
                   onVote={voteHandler}
                 />

@@ -11,11 +11,12 @@ import { ButtonsGroup } from '../../../../components/ButtonsGroup';
 
 type Props = {
   currentVote: Partial<VoteType>;
+  hasVoted: boolean;
   onVoteChange: (vote: Partial<VoteType>) => void;
   onVote: () => void;
 };
 
-export const VotingBoard = ({ currentVote, onVoteChange, onVote }: Props) => {
+export const VotingBoard = ({ currentVote, hasVoted, onVoteChange, onVote }: Props) => {
   const allParametersSelected = useMemo(() => {
     return VOTE_PARAMETERS_OPTIONS.every((param) => !!currentVote[param]);
   }, [currentVote]);
@@ -40,7 +41,7 @@ export const VotingBoard = ({ currentVote, onVoteChange, onVote }: Props) => {
           type="primary"
           icon={<SaveOutlined />}
         >
-          Vote
+          {hasVoted ? 'Update Vote' : 'Vote'}
         </Button>
       </ButtonsGroup>
     </CustomCard>
