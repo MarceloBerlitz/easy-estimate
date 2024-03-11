@@ -8,12 +8,11 @@ import {
   EyeOutlined,
   LogoutOutlined,
   MoonOutlined,
-  SaveOutlined,
   SunOutlined,
 } from '@ant-design/icons';
 import { Avatar, Button, Col, Modal, Row, Space, Spin, Switch, Typography } from 'antd';
 
-import { ClientEventsEnum, ServerEventsEnum, VOTE_PARAMETERS_OPTIONS, VoteType } from '@ee/lib';
+import { ClientEventsEnum, ServerEventsEnum, VoteType } from '@ee/lib';
 
 import { ButtonsGroup } from '../../components/ButtonsGroup';
 import { CenteredWrapper } from '../../components/CenteredWrapper';
@@ -23,7 +22,7 @@ import { useSocket } from '../../hooks/Socket/useSocket';
 import { DisplayNameInput } from './partials/DisplayNameInput/DisplayNameInput';
 import { ParamsCharts } from './partials/ParamsCharts/ParamsCharts';
 import { Results } from './partials/Results/Results';
-import { VoteHelper } from './partials/VoteHelper/VoteHelper';
+import { VotingBoard } from './partials/VotingBoard/VotingBoard';
 import { CustomCard, CustomHeader } from './styles';
 
 type Props = {
@@ -88,10 +87,6 @@ export const Room: React.FC<Props> = ({ isDarkMode, onDarkModeChange }) => {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  const allParametersSelected = useMemo(() => {
-    return VOTE_PARAMETERS_OPTIONS.every((param) => !!currentVote[param]);
-  }, [currentVote]);
 
   const hasVotes = useMemo(() => {
     return room?.voters?.some((voter) => voter.hasVoted);
@@ -178,29 +173,11 @@ export const Room: React.FC<Props> = ({ isDarkMode, onDarkModeChange }) => {
         </Col>
 
         <Col xs={24} sm={24} md={12}>
-          <CustomCard
-            title={
-              <Typography.Title level={2} style={{ margin: 'auto' }}>
-                Vote
-              </Typography.Title>
-            }
-          >
-            <VoteHelper
-              currentVote={currentVote}
-              onVoteChange={voteChangeHandler}
-              allParametersSelected={allParametersSelected}
-            />
-            <ButtonsGroup>
-              <Button
-                disabled={!allParametersSelected}
-                onClick={voteHandler}
-                type="primary"
-                icon={<SaveOutlined />}
-              >
-                Vote
-              </Button>
-            </ButtonsGroup>
-          </CustomCard>
+          <VotingBoard
+            currentVote={currentVote}
+            onVoteChange={voteChangeHandler}
+            onVote={voteHandler}
+          />
         </Col>
         <Col xs={24} sm={24} md={12}>
           <CustomCard

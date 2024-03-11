@@ -10,9 +10,9 @@ import {
   VOTE_PARAMETERS_TOOLTIPS,
 } from '@ee/lib';
 
+import { ParameterTitleWrapper, ParameterWrapper, VotesHelperWrapper } from './styles';
 import { VoteOptionSelector } from '../VoteOptionSelector/VoteOptionSelector';
 import { PointsPreview } from '../PointsPreview/PointsPreview';
-import { ParameterTitleWrapper, ParameterWrapper, VotesHelperWrapper } from './styles';
 
 type Props = {
   currentVote: Partial<VoteType>;

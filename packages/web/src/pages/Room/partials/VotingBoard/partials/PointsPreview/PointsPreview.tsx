@@ -1,8 +1,9 @@
+import { Space, Typography } from 'antd';
+
 import { VoteMapper, VoteType } from '@ee/lib';
 
 import { PointsPreviewWrapper } from './styles';
-import { ResultCard } from '../../../../components/ResultCard/ResultCard';
-import { Space, Typography } from 'antd';
+import { ResultCard } from '../../../../../../components/ResultCard/ResultCard';
 
 type Props = {
   vote: VoteType;
