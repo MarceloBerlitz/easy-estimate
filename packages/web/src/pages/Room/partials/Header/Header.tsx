@@ -13,7 +13,7 @@ export const Header = ({ name, isDarkMode, onDarkModeChange }: Props) => {
     <CustomHeader>
       <div>
         <Space>
-          <Typography.Title level={3} style={{ margin: 'auto' }}>
+          <Typography.Title level={4} style={{ margin: 'auto' }}>
             Easy Estimate
           </Typography.Title>
         </Space>
@@ -28,7 +28,7 @@ export const Header = ({ name, isDarkMode, onDarkModeChange }: Props) => {
             <Avatar style={{ backgroundColor: '#1c6ed2', verticalAlign: 'middle' }} size="large">
               {name?.substring(0, 1)}{' '}
             </Avatar>
-            <Typography.Title level={3} style={{ margin: 'auto' }}>
+            <Typography.Title level={4} style={{ margin: 'auto' }}>
               {name}
             </Typography.Title>
           </Space>

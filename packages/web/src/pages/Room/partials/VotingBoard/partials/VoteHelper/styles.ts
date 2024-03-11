@@ -14,13 +14,19 @@ export const ParameterWrapper = styled.div`
 
 export const ParameterTitleWrapper = styled.div`
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   gap: 0.3rem;
-  align-items: baseline;
+  /* align-items: baseline; */
   justify-content: start;
   padding: 0 0 1rem 0;
 
-  & > h3 {
+  & > h5 {
     margin: 0;
+    text-transform: capitalize;
+  }
+
+  & > article {
+    color: #8c8c8c;
+    font-size: 12px;
   }
 `;

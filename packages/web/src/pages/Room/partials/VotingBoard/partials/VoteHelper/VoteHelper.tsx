@@ -1,18 +1,17 @@
 import React from 'react';
 
-import { Tooltip, Typography } from 'antd';
-import { InfoCircleOutlined } from '@ant-design/icons';
+import { Typography } from 'antd';
 
 import {
-  VoteType,
-  VoteOptionEnum,
   VOTE_PARAMETERS_OPTIONS,
   VOTE_PARAMETERS_TOOLTIPS,
+  VoteOptionEnum,
+  VoteType,
 } from '@ee/lib';
 
-import { ParameterTitleWrapper, ParameterWrapper, VotesHelperWrapper } from './styles';
-import { VoteOptionSelector } from '../VoteOptionSelector/VoteOptionSelector';
 import { PointsPreview } from '../PointsPreview/PointsPreview';
+import { VoteOptionSelector } from '../VoteOptionSelector/VoteOptionSelector';
+import { ParameterTitleWrapper, ParameterWrapper, VotesHelperWrapper } from './styles';
 
 type Props = {
   currentVote: Partial<VoteType>;
@@ -32,10 +31,8 @@ export const VoteHelper: React.FC<Props> = ({
           return (
             <ParameterWrapper key={parameter}>
               <ParameterTitleWrapper>
-                <Typography.Title level={3}>{parameter}</Typography.Title>
-                <Tooltip title={VOTE_PARAMETERS_TOOLTIPS[parameter]}>
-                  <InfoCircleOutlined />
-                </Tooltip>
+                <Typography.Title level={5}>{parameter}</Typography.Title>
+                <Typography>{VOTE_PARAMETERS_TOOLTIPS[parameter]}</Typography>
               </ParameterTitleWrapper>
               <VoteOptionSelector
                 parameter={parameter}

@@ -60,7 +60,7 @@ export const Results: React.FC<Props> = ({ hasVotes, onReveal, onHide, onDelete 
   return (
     <CustomCard
       title={
-        <Typography.Title level={2} style={{ margin: 'auto' }}>
+        <Typography.Title level={4} style={{ margin: 'auto' }}>
           Results
         </Typography.Title>
       }

@@ -23,7 +23,7 @@ export const VotingBoard = ({ currentVote, onVoteChange, onVote }: Props) => {
   return (
     <CustomCard
       title={
-        <Typography.Title level={2} style={{ margin: 'auto' }}>
+        <Typography.Title level={4} style={{ margin: 'auto' }}>
           Voting Board
         </Typography.Title>
       }
