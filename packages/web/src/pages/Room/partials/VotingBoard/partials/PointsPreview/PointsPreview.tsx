@@ -26,7 +26,9 @@ export const PointsPreview = ({ vote, areAllSelected }: Props) => {
           You can update your vote anytime.
         </Typography>
       </PointsPreviewLeft>
-      <ResultCard visible={!!vote}>{VoteMapper.mapVoteToStoryPoints(vote)}</ResultCard>
+      <ResultCard visible={!!areAllSelected}>
+        {areAllSelected ? VoteMapper.mapVoteToStoryPoints(vote) : '-'}
+      </ResultCard>
     </PointsPreviewWrapper>
   );
 };
