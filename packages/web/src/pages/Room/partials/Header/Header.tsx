@@ -1,5 +1,6 @@
 import { MoonOutlined, SunOutlined } from '@ant-design/icons';
-import { Avatar, Space, Switch, Typography } from 'antd';
+import { Space, Switch, Typography } from 'antd';
+import { Voter } from '../../../../components/Voter/Voter';
 import { CustomHeader } from '../../styles';
 
 type Props = {
@@ -24,14 +25,7 @@ export const Header = ({ name, isDarkMode, onDarkModeChange }: Props) => {
             unCheckedChildren={<SunOutlined />}
             onChange={(checked) => onDarkModeChange(String(checked))}
           />
-          <Space>
-            <Avatar style={{ backgroundColor: '#1c6ed2', verticalAlign: 'middle' }} size="large">
-              {name?.substring(0, 1)}{' '}
-            </Avatar>
-            <Typography.Title level={4} style={{ margin: 'auto' }}>
-              {name}
-            </Typography.Title>
-          </Space>
+          <Voter name={name} />
         </Space>
       </div>
     </CustomHeader>

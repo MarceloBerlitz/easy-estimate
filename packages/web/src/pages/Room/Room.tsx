@@ -15,6 +15,7 @@ import { Results } from './partials/Results/Results';
 import { SubHeader } from './partials/SubHeader/SubHeader';
 import { VoteDetails } from './partials/VoteDetails/VoteDetails';
 import { VotingBoard } from './partials/VotingBoard/VotingBoard';
+import { RoomWrapper } from './styles';
 
 type Props = {
   isDarkMode: boolean;
@@ -124,7 +125,7 @@ export const Room: React.FC<Props> = ({ isDarkMode, onDarkModeChange }) => {
   ) : (
     <Spin spinning={isLoading}>
       <Header name={voter.name} isDarkMode={isDarkMode} onDarkModeChange={onDarkModeChange} />
-      <div style={{ maxWidth: 1200, margin: '0 auto', padding: '1rem 0', minHeight: '90vh' }}>
+      <RoomWrapper>
         <Row gutter={[16, 16]}>
           <Col span={24}>
             <SubHeader roomId={room.id} onLeave={leaveHandler} />
@@ -152,7 +153,7 @@ export const Room: React.FC<Props> = ({ isDarkMode, onDarkModeChange }) => {
             />
           </Col>
         </Row>
-      </div>
+      </RoomWrapper>
       {/* <h3>DEBUG</h3>
       <div style={{ maxWidth: 600 }}>{JSON.stringify(room)}</div> */}
     </Spin>

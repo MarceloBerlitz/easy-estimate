@@ -11,6 +11,7 @@ export const ResultCardWrapper = styled.div`
   align-items: center;
   justify-content: space-between;
   background-color: white;
+  float: right;
 
   > * * {
     color: #2e1a7b !important;
@@ -21,7 +22,9 @@ export const ResultCardContentWrapper = styled.div`
   display: flex;
   align-self: center;
   font-weight: bold;
-  font-size: 14px;
+  > * {
+    font-size: 20px;
+  }
 `;
 
 export const TopDot = styled.div<{ $visible: boolean }>`

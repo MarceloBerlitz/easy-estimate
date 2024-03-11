@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 export const CustomHeader = styled(Card)`
   display: block;
-  padding: 0.8rem 0;
+  padding: 1rem;
   top: 0;
   left: 0;
   right: 0;
@@ -36,5 +36,15 @@ export const CustomCard = styled(Card)`
 
   > .ant-card-body {
     padding: 2rem 0 0 0;
+  }
+`;
+
+export const RoomWrapper = styled.div`
+  max-width: 1200px;
+  margin: 0 auto;
+  min-height: 90vh;
+  padding: 1rem 0;
+  @media (max-width: 1230px) {
+    padding: 1rem;
   }
 `;

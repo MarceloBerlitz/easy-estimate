@@ -6,29 +6,31 @@ import {
   EyeInvisibleOutlined,
   EyeOutlined,
 } from '@ant-design/icons';
-import { Button, Table, Typography } from 'antd';
+import { Button, Typography } from 'antd';
 
 import { VoterType } from '@ee/lib';
 
 import { ButtonsGroup } from '../../../../components/ButtonsGroup';
 import { ResultCard } from '../../../../components/ResultCard/ResultCard';
+import { Voter } from '../../../../components/Voter/Voter';
 import { useRoom } from '../../../../hooks/Room/useRoom';
 import { CustomCard } from '../../styles';
-import { OnlineIndicator } from './partials/OnlineIndicator/OnlineIndicator';
+import { StyledTable } from './styles';
 
 const columns = [
   {
-    title: 'Name',
+    title: 'Participant Name',
     dataIndex: 'name',
     key: 'name',
     render: (name: string, other: VoterType) => (
-      <OnlineIndicator isOnline={!!other.clientId}> {name}</OnlineIndicator>
+      <Voter name={name} isOnline={!!other.clientId} showStatus={true} />
     ),
   },
   {
-    title: 'Story points',
+    title: 'Story Points',
     dataIndex: 'storyPoints',
     key: 'storyPoints',
+    align: 'right' as any,
     render: (points: React.ReactNode, other: VoterType) => (
       <ResultCard visible={typeof points === 'number'}>{other.hasVoted ? points : '-'}</ResultCard>
     ),
@@ -66,7 +68,7 @@ export const Results: React.FC<Props> = ({ hasVotes, onReveal, onHide, onDelete 
       }
     >
       <div style={{ display: 'flex', flexDirection: 'column' }}>
-        <Table columns={columns} dataSource={data} pagination={{ hideOnSinglePage: true }} />
+        <StyledTable columns={columns} dataSource={data} pagination={{ hideOnSinglePage: true }} />
         <ButtonsGroup>
           {!room?.computedVotes ? (
             <Button disabled={!hasVotes} onClick={onReveal} type="primary" icon={<EyeOutlined />}>
