@@ -37,7 +37,7 @@ export const IconWrapper = styled.span`
   height: 2rem;
   width: 2rem;
   border-radius: 50%;
-  background-color: #fef8ec;
+  background-color: #ffbb3633;
   > * {
     color: #ffbb36;
   }

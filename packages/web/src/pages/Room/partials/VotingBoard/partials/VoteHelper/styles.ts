@@ -54,7 +54,7 @@ export const IconWrapper = styled.span`
   height: 2rem;
   width: 2rem;
   border-radius: 50%;
-  background-color: #efecfe;
+  background-color: #5636ff33;
   > * {
     color: #5636ff;
   }
