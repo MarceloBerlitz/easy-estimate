@@ -26,6 +26,8 @@ export const CustomHeader = styled(Card)`
 
 export const CustomCard = styled(Card)`
   padding: 2rem;
+  border-radius: 4px;
+
   > .ant-card-head {
     padding: 0;
     border: none;
