@@ -1,8 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
-import { CopyOutlined } from '@ant-design/icons';
-import { Button, Col, Modal, Row, Spin, Typography } from 'antd';
+import { Col, Modal, Row, Spin } from 'antd';
 
 import { ClientEventsEnum, ServerEventsEnum, VoteType } from '@ee/lib';
 
@@ -10,10 +9,11 @@ import { CenteredWrapper } from '../../components/CenteredWrapper';
 import { RoutesEnum } from '../../enums/routes.enum';
 import { useRoom } from '../../hooks/Room/useRoom';
 import { useSocket } from '../../hooks/Socket/useSocket';
-import { VoteDetails } from './partials/VoteDetails/VoteDetails';
 import { DisplayNameInput } from './partials/DisplayNameInput/DisplayNameInput';
 import { Header } from './partials/Header/Header';
 import { Results } from './partials/Results/Results';
+import { SubHeader } from './partials/SubHeader/SubHeader';
+import { VoteDetails } from './partials/VoteDetails/VoteDetails';
 import { VotingBoard } from './partials/VotingBoard/VotingBoard';
 
 type Props = {
@@ -127,19 +127,8 @@ export const Room: React.FC<Props> = ({ isDarkMode, onDarkModeChange }) => {
       <div style={{ maxWidth: 1200, margin: '0 auto', padding: '1rem 0', minHeight: '90vh' }}>
         <Row gutter={[16, 16]}>
           <Col span={24}>
-            <Typography>
-              Room ID: {roomIdParam}{' '}
-              <Button
-                size="small"
-                type="dashed"
-                onClick={() => navigator.clipboard.writeText(window.location.href)}
-              >
-                Copy room link
-                <CopyOutlined />
-              </Button>
-            </Typography>
+            <SubHeader roomId={room.id} onLeave={leaveHandler} />
           </Col>
-
           <Col xs={24} sm={24} md={12}>
             <VotingBoard
               currentVote={currentVote}
