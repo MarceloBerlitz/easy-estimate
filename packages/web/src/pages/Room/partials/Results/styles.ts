@@ -7,6 +7,9 @@ export const StyledTable = styled(Table)<any>`
     color: #7e7e7e !important;
     background: none !important;
     font-weight: normal !important;
+    &::before {
+      background: none !important;
+    }
   }
 
   * > tbody :last-child > * {
