@@ -47,6 +47,6 @@ export default class DeleteVotesUseCase implements UseCase<DeleteVotesPayload, v
 
     delete room.computedVotes;
 
-    this.eventManager.to(room.id).emit(ServerEventsEnum.VOTES_DELETED);
+    this.eventManager.to(room.id).emit(ServerEventsEnum.VOTES_DELETED, { voter });
   }
 }

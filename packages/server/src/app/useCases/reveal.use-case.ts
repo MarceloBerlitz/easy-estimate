@@ -46,6 +46,7 @@ export default class RevealUseCase implements UseCase<RevealPayload, void> {
     }
 
     this.eventManager.to(payload.roomId).emit(ServerEventsEnum.POINTS_REVEALED, {
+      voter,
       computedVotes: room.computedVotes,
     });
   }

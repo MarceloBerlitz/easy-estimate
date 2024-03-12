@@ -1,9 +1,16 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
-import { Col, Modal, Row, Spin } from 'antd';
+import { Col, Modal, Row, Spin, notification } from 'antd';
+import { SmileOutlined } from '@ant-design/icons';
 
-import { ClientEventsEnum, ServerEventsEnum, VoteType } from '@ee/lib';
+import {
+  ClientEventsEnum,
+  PointsRevealedPayload,
+  ServerEventsEnum,
+  VoteType,
+  VotesDeletedPayload,
+} from '@ee/lib';
 
 import { CenteredWrapper } from '../../components/CenteredWrapper';
 import { RoutesEnum } from '../../enums/routes.enum';
@@ -27,6 +34,7 @@ export const Room: React.FC<Props> = ({ isDarkMode, onDarkModeChange }) => {
   const { socket, isConnected, isLoading } = useSocket();
   const { roomId: roomIdParam } = useParams();
   const navigate = useNavigate();
+  const [api, contextHolder] = notification.useNotification();
 
   const hasVoted = useMemo(() => {
     return room?.voters?.find((v) => v.id === voter.id)?.hasVoted ?? false;
@@ -45,8 +53,23 @@ export const Room: React.FC<Props> = ({ isDarkMode, onDarkModeChange }) => {
   const [currentVote, setCurrentVote] = useState<Partial<VoteType>>(emptyVote);
 
   useEffect(() => {
-    const votesDeleteHandler = () => {
+    const votesDeletedHandler = ({ voter: v }: VotesDeletedPayload) => {
       setCurrentVote(emptyVote);
+      api.open({
+        message: 'Votes Deleted',
+        description: `${v.name} has deleted all votes.`,
+        icon: <SmileOutlined style={{ color: '#5636ff' }} />,
+        duration: 10,
+      });
+    };
+
+    const pointsRevealedHandler = ({ voter: v }: PointsRevealedPayload) => {
+      api.open({
+        message: 'Points Revealed',
+        description: `${v.name} has revealed the points.`,
+        icon: <SmileOutlined style={{ color: '#5636ff' }} />,
+        duration: 10,
+      });
     };
 
     const connectHandler = () => {
@@ -61,7 +84,8 @@ export const Room: React.FC<Props> = ({ isDarkMode, onDarkModeChange }) => {
       }
     };
 
-    socket.on(ServerEventsEnum.VOTES_DELETED, votesDeleteHandler);
+    socket.on(ServerEventsEnum.VOTES_DELETED, votesDeletedHandler);
+    socket.on(ServerEventsEnum.POINTS_REVEALED, pointsRevealedHandler);
     socket.on('connect', connectHandler);
 
     if (!isConnected) {
@@ -70,7 +94,8 @@ export const Room: React.FC<Props> = ({ isDarkMode, onDarkModeChange }) => {
 
     return () => {
       socket.off('connect', connectHandler);
-      socket.off(ServerEventsEnum.VOTES_DELETED, votesDeleteHandler);
+      socket.off(ServerEventsEnum.POINTS_REVEALED, pointsRevealedHandler);
+      socket.off(ServerEventsEnum.VOTES_DELETED, votesDeletedHandler);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -135,6 +160,7 @@ export const Room: React.FC<Props> = ({ isDarkMode, onDarkModeChange }) => {
     </CenteredWrapper>
   ) : (
     <Spin spinning={isLoading}>
+      {contextHolder}
       <Header name={voter.name} isDarkMode={isDarkMode} onDarkModeChange={onDarkModeChange} />
       <RoomWrapper>
         <Row gutter={[16, 16]}>
