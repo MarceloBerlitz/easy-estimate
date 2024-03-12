@@ -42,3 +42,11 @@ export const IconWrapper = styled.span`
     color: #ffbb36;
   }
 `;
+
+export const CriteriaBoardLink = styled.span`
+  padding-left: 3px;
+  padding-right: 3px;
+  font-size: 12px;
+  cursor: pointer;
+  text-decoration: underline;
+`;

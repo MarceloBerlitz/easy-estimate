@@ -8,4 +8,5 @@ export const CenteredWrapper = styled.div`
   align-items: center;
   flex-direction: column;
   margin-top: -12rem;
+  padding: 0 1rem;
 `;

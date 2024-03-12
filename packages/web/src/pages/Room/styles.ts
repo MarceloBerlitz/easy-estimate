@@ -37,6 +37,10 @@ export const CustomCard = styled(Card)`
   > .ant-card-body {
     padding: 2rem 0 0 0;
   }
+
+  @media (max-width: 768px) {
+    padding: 1rem;
+  }
 `;
 
 export const RoomWrapper = styled.div`
