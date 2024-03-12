@@ -56,7 +56,7 @@ export const Room: React.FC<Props> = ({ isDarkMode, onDarkModeChange }) => {
     const votesDeletedHandler = ({ voter: v }: VotesDeletedPayload) => {
       setCurrentVote(emptyVote);
       api.open({
-        message: 'Votes Deleted',
+        message: 'Votes Cleared',
         description: `${v.name} has cleared all votes.`,
         icon: <SmileOutlined style={{ color: '#5636ff' }} />,
         duration: 10,
