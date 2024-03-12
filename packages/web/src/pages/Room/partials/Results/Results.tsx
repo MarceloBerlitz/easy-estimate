@@ -80,7 +80,7 @@ export const Results: React.FC<Props> = ({ hasVotes, onReveal, onHide, onDelete 
             </Button>
           )}
           <Button onClick={onDelete} type="link" icon={<DeleteOutlined />}>
-            Clear all votes
+            Clear All Votes
           </Button>
         </ButtonsGroup>
       </div>
