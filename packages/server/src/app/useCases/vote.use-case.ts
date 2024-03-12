@@ -45,9 +45,11 @@ export default class VoteUseCase implements UseCase<VotePayload, void> {
       room.votes.splice(currentVoteIndex, 1);
     }
 
-    room.votes.push({ ...payload.vote, voter });
+    if (payload.vote) {
+      room.votes.push({ ...payload.vote, voter });
+    }
 
-    voter.hasVoted = true;
+    voter.hasVoted = payload.vote ? true : false;
 
     this.service.updateComputedVotes(room);
 

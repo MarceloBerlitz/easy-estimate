@@ -36,7 +36,7 @@ export const VoteHelper: React.FC<Props> = ({
               <ParameterTitleWrapper>
                 <Typography.Title level={5}>
                   <IconWrapper>
-                    <Icon color="primary" />
+                    <Icon />
                   </IconWrapper>
                   {parameter}
                 </Typography.Title>
