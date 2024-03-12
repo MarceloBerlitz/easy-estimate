@@ -21,6 +21,12 @@ export const VotingBoard = ({ currentVote, hasVoted, onVoteChange, onVote }: Pro
     return VOTE_PARAMETERS_OPTIONS.every((param) => !!currentVote[param]);
   }, [currentVote]);
 
+  const disableReset = useMemo(() => {
+    return Object.entries(currentVote)
+      .filter(([key, _]) => key !== 'voter')
+      .every(([_, value]) => !value);
+  }, [currentVote]);
+
   return (
     <CustomCard
       title={
@@ -43,7 +49,7 @@ export const VotingBoard = ({ currentVote, hasVoted, onVoteChange, onVote }: Pro
         >
           {hasVoted ? 'Update Vote' : 'Vote'}
         </Button>
-        <Button disabled={false} type="link" onClick={() => onVoteChange({})}>
+        <Button disabled={disableReset} type="link" onClick={() => onVoteChange({})}>
           Reset
         </Button>
       </ButtonsGroup>

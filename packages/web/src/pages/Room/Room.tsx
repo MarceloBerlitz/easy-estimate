@@ -85,12 +85,19 @@ export const Room: React.FC<Props> = ({ isDarkMode, onDarkModeChange }) => {
   }, []);
 
   const hasVotes = useMemo(() => {
-    return room?.voters?.some((voter) => voter.hasVoted) ?? false;
+    return room?.voters?.some((v) => v.hasVoted) ?? false;
   }, [room?.voters]);
 
-  const voteChangeHandler = useCallback((vote: Partial<VoteType>) => {
-    setCurrentVote(vote);
-  }, []);
+  const voteChangeHandler = useCallback(
+    (vote: Partial<VoteType>) => {
+      setCurrentVote(vote);
+
+      if (Object.keys(vote).length === 0 && hasVoted) {
+        socket.emit(ClientEventsEnum.VOTE, { roomId: room!.id, voterId: voter.id });
+      }
+    },
+    [room, socket, voter, hasVoted]
+  );
 
   const leaveHandler = useCallback(() => {
     if (voter.id) {
