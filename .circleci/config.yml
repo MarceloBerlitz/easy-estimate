@@ -23,7 +23,7 @@ jobs:
       - run:
           name: Current dir
           command: ls -a
-  deploy:
+  deploy-main:
     executor: my-executor
     steps:
       - run:
@@ -34,15 +34,32 @@ jobs:
       - run:
           name: Deploy webhook
           command: curl $DEPLOY_WEBHOOK
+  deploy-test:
+    executor: my-executor
+    steps:
+      - run:
+          command: apt update
+      - run:
+          name: Install curl
+          command: apt install curl -y
+      - run:
+          name: Deploy webhook
+          command: curl $DEPLOY_WEBHOOK_TEST
 
 workflows:
   version: 2.1
   build-and-deploy:
     jobs:
       - build
-      - deploy:
+      - deploy-main:
           requires:
             - build
           filters:
             branches:
               only: main
+      - deploy-test:
+          requires:
+            - build
+          filters:
+            branches:
+              only: test
