@@ -57,7 +57,7 @@ export const Room: React.FC<Props> = ({ isDarkMode, onDarkModeChange }) => {
       setCurrentVote(emptyVote);
       api.open({
         message: 'Votes Cleared',
-        description: `${v.name} has cleared all votes.`,
+        description: `${v.name} cleared all votes.`,
         icon: <SmileOutlined style={{ color: '#5636ff' }} />,
         duration: 10,
       });
@@ -66,7 +66,7 @@ export const Room: React.FC<Props> = ({ isDarkMode, onDarkModeChange }) => {
     const pointsRevealedHandler = ({ voter: v }: PointsRevealedPayload) => {
       api.open({
         message: 'Points Revealed',
-        description: `${v.name} has revealed the results.`,
+        description: `${v.name} revealed the results.`,
         icon: <SmileOutlined style={{ color: '#5636ff' }} />,
         duration: 10,
       });
