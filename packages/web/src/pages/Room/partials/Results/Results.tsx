@@ -75,7 +75,7 @@ export const Results: React.FC<Props> = ({ hasVotes, onReveal, onHide, onDelete 
               Reveal
             </Button>
           ) : (
-            <Button onClick={onHide} icon={<EyeInvisibleOutlined />}>
+            <Button onClick={onHide} type="primary" icon={<EyeInvisibleOutlined />}>
               Hide
             </Button>
           )}
