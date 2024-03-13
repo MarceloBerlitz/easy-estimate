@@ -133,6 +133,15 @@ export const Room: React.FC<Props> = ({ isDarkMode, onDarkModeChange }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [socket, isConnected, room, voter]);
 
+  const linkCopiedHandler = useCallback(() => {
+    api.open({
+      message: 'Room Link Copied',
+      description: `Room link has been copied to the clipboard.`,
+      icon: <SmileOutlined style={{ color: '#5636ff' }} />,
+      duration: 5,
+    });
+  }, [api]);
+
   const voteHandler = useCallback(() => {
     socket.emit(ClientEventsEnum.VOTE, { roomId: room!.id, vote: currentVote, voterId: voter.id });
   }, [currentVote, socket, room, voter]);
@@ -165,7 +174,7 @@ export const Room: React.FC<Props> = ({ isDarkMode, onDarkModeChange }) => {
       <RoomWrapper>
         <Row gutter={[16, 16]}>
           <Col span={24}>
-            <SubHeader roomId={room.id} onLeave={leaveHandler} />
+            <SubHeader roomId={room.id} onLeave={leaveHandler} onLinkCopied={linkCopiedHandler} />
           </Col>
           <Col xs={24} sm={24} md={12} lg={13} xl={14}>
             <Row gutter={[16, 16]}>
