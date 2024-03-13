@@ -7,7 +7,7 @@ executors:
     working_directory: ~/tmp
 
 jobs:
-  build:
+  tests:
     executor: my-executor
     steps:
       - checkout
@@ -17,12 +17,6 @@ jobs:
       - run:
           name: Run tests
           command: yarn test
-      - run:
-          name: Build app
-          command: yarn build
-      - run:
-          name: Current dir
-          command: ls -a
   deploy-main:
     executor: my-executor
     steps:
@@ -48,18 +42,18 @@ jobs:
 
 workflows:
   version: 2.1
-  build-and-deploy:
+  tests-and-deploy:
     jobs:
-      - build
+      - tests
       - deploy-main:
           requires:
-            - build
+            - tests
           filters:
             branches:
               only: main
       - deploy-test:
           requires:
-            - build
+            - tests
           filters:
             branches:
               only: test
