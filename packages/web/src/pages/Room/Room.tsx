@@ -1,30 +1,28 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
-import { Avatar, Button, Card, Col, Modal, Row, Space, Spin, Switch, Typography } from 'antd';
+import { Col, Modal, Row, Spin, notification } from 'antd';
+import { SmileOutlined } from '@ant-design/icons';
+
 import {
-  CopyOutlined,
-  DeleteOutlined,
-  EyeInvisibleOutlined,
-  EyeOutlined,
-  LogoutOutlined,
-  MoonOutlined,
-  SaveOutlined,
-  SunOutlined,
-} from '@ant-design/icons';
+  ClientEventsEnum,
+  PointsRevealedPayload,
+  ServerEventsEnum,
+  VoteType,
+  VotesDeletedPayload,
+} from '@ee/lib';
 
-import { ClientEventsEnum, ServerEventsEnum, VOTE_PARAMETERS_OPTIONS, VoteType } from '@ee/lib';
-
+import { CenteredWrapper } from '../../components/CenteredWrapper';
+import { RoutesEnum } from '../../enums/routes.enum';
 import { useRoom } from '../../hooks/Room/useRoom';
 import { useSocket } from '../../hooks/Socket/useSocket';
-import { VoteHelper } from './partials/VoteHelper/VoteHelper';
-import { Results } from './partials/Results/Results';
 import { DisplayNameInput } from './partials/DisplayNameInput/DisplayNameInput';
-import { CenteredWrapper } from '../../components/CenteredWrapper';
-import { ButtonsGroup } from '../../components/ButtonsGroup';
-import { CustomHeader } from './styles';
-import { ParamsCharts } from './partials/ParamsCharts/ParamsCharts';
-import { RoutesEnum } from '../../enums/routes.enum';
+import { Header } from './partials/Header/Header';
+import { Results } from './partials/Results/Results';
+import { SubHeader } from './partials/SubHeader/SubHeader';
+import { VoteDetails } from './partials/VoteDetails/VoteDetails';
+import { VotingBoard } from './partials/VotingBoard/VotingBoard';
+import { RoomWrapper } from './styles';
 
 type Props = {
   isDarkMode: boolean;
@@ -36,6 +34,11 @@ export const Room: React.FC<Props> = ({ isDarkMode, onDarkModeChange }) => {
   const { socket, isConnected, isLoading } = useSocket();
   const { roomId: roomIdParam } = useParams();
   const navigate = useNavigate();
+  const [api, contextHolder] = notification.useNotification();
+
+  const hasVoted = useMemo(() => {
+    return room?.voters?.find((v) => v.id === voter.id)?.hasVoted ?? false;
+  }, [room, voter]);
 
   const emptyVote: Partial<VoteType> = useMemo(
     () => ({
@@ -50,8 +53,23 @@ export const Room: React.FC<Props> = ({ isDarkMode, onDarkModeChange }) => {
   const [currentVote, setCurrentVote] = useState<Partial<VoteType>>(emptyVote);
 
   useEffect(() => {
-    const votesDeleteHandler = () => {
+    const votesDeletedHandler = ({ voter: v }: VotesDeletedPayload) => {
       setCurrentVote(emptyVote);
+      api.open({
+        message: 'Votes Cleared',
+        description: `${v.name} cleared all votes.`,
+        icon: <SmileOutlined style={{ color: '#5636ff' }} />,
+        duration: 10,
+      });
+    };
+
+    const pointsRevealedHandler = ({ voter: v }: PointsRevealedPayload) => {
+      api.open({
+        message: 'Points Revealed',
+        description: `${v.name} revealed the results.`,
+        icon: <SmileOutlined style={{ color: '#5636ff' }} />,
+        duration: 10,
+      });
     };
 
     const connectHandler = () => {
@@ -66,7 +84,8 @@ export const Room: React.FC<Props> = ({ isDarkMode, onDarkModeChange }) => {
       }
     };
 
-    socket.on(ServerEventsEnum.VOTES_DELETED, votesDeleteHandler);
+    socket.on(ServerEventsEnum.VOTES_DELETED, votesDeletedHandler);
+    socket.on(ServerEventsEnum.POINTS_REVEALED, pointsRevealedHandler);
     socket.on('connect', connectHandler);
 
     if (!isConnected) {
@@ -75,7 +94,8 @@ export const Room: React.FC<Props> = ({ isDarkMode, onDarkModeChange }) => {
 
     return () => {
       socket.off('connect', connectHandler);
-      socket.off(ServerEventsEnum.VOTES_DELETED, votesDeleteHandler);
+      socket.off(ServerEventsEnum.POINTS_REVEALED, pointsRevealedHandler);
+      socket.off(ServerEventsEnum.VOTES_DELETED, votesDeletedHandler);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -89,17 +109,20 @@ export const Room: React.FC<Props> = ({ isDarkMode, onDarkModeChange }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const allParametersSelected = useMemo(() => {
-    return VOTE_PARAMETERS_OPTIONS.every((param) => !!currentVote[param]);
-  }, [currentVote]);
-
   const hasVotes = useMemo(() => {
-    return room?.voters?.some((voter) => voter.hasVoted);
+    return room?.voters?.some((v) => v.hasVoted) ?? false;
   }, [room?.voters]);
 
-  const voteChangeHandler = useCallback((vote: Partial<VoteType>) => {
-    setCurrentVote(vote);
-  }, []);
+  const voteChangeHandler = useCallback(
+    (vote: Partial<VoteType>) => {
+      setCurrentVote(vote);
+
+      if (Object.keys(vote).length === 0 && hasVoted) {
+        socket.emit(ClientEventsEnum.VOTE, { roomId: room!.id, voterId: voter.id });
+      }
+    },
+    [room, socket, voter, hasVoted]
+  );
 
   const leaveHandler = useCallback(() => {
     if (voter.id) {
@@ -109,6 +132,15 @@ export const Room: React.FC<Props> = ({ isDarkMode, onDarkModeChange }) => {
     navigate(RoutesEnum.HOME);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [socket, isConnected, room, voter]);
+
+  const linkCopiedHandler = useCallback(() => {
+    api.open({
+      message: 'Room Link Copied',
+      description: `Room link has been copied to the clipboard.`,
+      icon: <SmileOutlined style={{ color: '#5636ff' }} />,
+      duration: 5,
+    });
+  }, [api]);
 
   const voteHandler = useCallback(() => {
     socket.emit(ClientEventsEnum.VOTE, { roomId: room!.id, vote: currentVote, voterId: voter.id });
@@ -137,120 +169,38 @@ export const Room: React.FC<Props> = ({ isDarkMode, onDarkModeChange }) => {
     </CenteredWrapper>
   ) : (
     <Spin spinning={isLoading}>
-      <Row gutter={[16, 16]}>
-        <Col span={24}>
-          <CustomHeader>
-            <Space>
-              <Avatar style={{ backgroundColor: '#1c6ed2', verticalAlign: 'middle' }} size="large">
-                {voter?.name.substring(0, 1)}{' '}
-              </Avatar>
-              <Typography.Title level={2} style={{ margin: 'auto' }}>
-                {voter?.name}
-              </Typography.Title>
-            </Space>
-            <Space>
-              <Switch
-                defaultValue={isDarkMode}
-                checkedChildren={<MoonOutlined />}
-                unCheckedChildren={<SunOutlined />}
-                onChange={(checked) => onDarkModeChange(String(checked))}
-              />
-              <Button onClick={leaveHandler} danger>
-                Leave
-                <LogoutOutlined />
-              </Button>
-            </Space>
-          </CustomHeader>
-        </Col>
-
-        <Col span={24}>
-          <Typography>
-            Room ID: {roomIdParam}{' '}
-            <Button
-              size="small"
-              type="dashed"
-              onClick={() => navigator.clipboard.writeText(window.location.href)}
-            >
-              Copy room link
-              <CopyOutlined />
-            </Button>
-          </Typography>
-        </Col>
-
-        <Col xs={24} sm={24} md={12}>
-          <Card
-            title={
-              <Typography.Title level={2} style={{ margin: 'auto' }}>
-                Vote
-              </Typography.Title>
-            }
-          >
-            <VoteHelper
-              currentVote={currentVote}
-              onVoteChange={voteChangeHandler}
-              allParametersSelected={allParametersSelected}
+      {contextHolder}
+      <Header name={voter.name} isDarkMode={isDarkMode} onDarkModeChange={onDarkModeChange} />
+      <RoomWrapper>
+        <Row gutter={[16, 16]}>
+          <Col span={24}>
+            <SubHeader roomId={room.id} onLeave={leaveHandler} onLinkCopied={linkCopiedHandler} />
+          </Col>
+          <Col xs={24} sm={24} md={12} lg={13} xl={14}>
+            <Row gutter={[16, 16]}>
+              <Col xs={24}>
+                <VotingBoard
+                  currentVote={currentVote}
+                  hasVoted={hasVoted}
+                  onVoteChange={voteChangeHandler}
+                  onVote={voteHandler}
+                />
+              </Col>
+              <Col xs={24}>
+                <VoteDetails computedVotes={room.computedVotes} />
+              </Col>
+            </Row>
+          </Col>
+          <Col xs={24} sm={24} md={12} lg={11} xl={10}>
+            <Results
+              hasVotes={hasVotes}
+              onReveal={revealHandler}
+              onHide={hideHandler}
+              onDelete={deleteVotesHandler}
             />
-            <ButtonsGroup>
-              <Button
-                disabled={!allParametersSelected}
-                onClick={voteHandler}
-                type="primary"
-                icon={<SaveOutlined />}
-              >
-                Vote
-              </Button>
-            </ButtonsGroup>
-          </Card>
-        </Col>
-        <Col xs={24} sm={24} md={12}>
-          <Card
-            title={
-              <Typography.Title level={2} style={{ margin: 'auto' }}>
-                Results
-              </Typography.Title>
-            }
-          >
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-              <Results />
-              <ButtonsGroup>
-                {!room?.computedVotes ? (
-                  <Button
-                    disabled={!hasVotes}
-                    onClick={revealHandler}
-                    type="primary"
-                    icon={<EyeOutlined />}
-                  >
-                    Reveal
-                  </Button>
-                ) : (
-                  <Button onClick={hideHandler} icon={<EyeInvisibleOutlined />}>
-                    Hide
-                  </Button>
-                )}
-                <Button
-                  onClick={deleteVotesHandler}
-                  danger
-                  type="primary"
-                  icon={<DeleteOutlined />}
-                >
-                  Clear all votes
-                </Button>
-              </ButtonsGroup>
-            </div>
-          </Card>
-        </Col>
-        <Col xs={24} sm={24} md={12}>
-          <Card
-            title={
-              <Typography.Title level={2} style={{ margin: 'auto' }}>
-                Details
-              </Typography.Title>
-            }
-          >
-            <ParamsCharts computedVotes={room.computedVotes} />
-          </Card>
-        </Col>
-      </Row>
+          </Col>
+        </Row>
+      </RoomWrapper>
       {/* <h3>DEBUG</h3>
       <div style={{ maxWidth: 600 }}>{JSON.stringify(room)}</div> */}
     </Spin>

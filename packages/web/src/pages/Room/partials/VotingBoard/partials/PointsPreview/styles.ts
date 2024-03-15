@@ -1,0 +1,52 @@
+import styled from 'styled-components';
+
+export const PointsPreviewWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+export const PointsPreviewLeft = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  /* align-items: baseline; */
+  justify-content: start;
+  padding: 0 0 1rem 0;
+
+  & > h5 {
+    margin: 0;
+    text-transform: capitalize;
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+    align-items: center;
+  }
+
+  & > div > article {
+    color: #8c8c8c;
+    font-size: 12px;
+  }
+`;
+
+export const IconWrapper = styled.span`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 2rem;
+  width: 2rem;
+  border-radius: 50%;
+  background-color: #ffbb3633;
+  > * {
+    color: #ffbb36;
+  }
+`;
+
+export const CriteriaBoardLink = styled.span`
+  padding-left: 3px;
+  padding-right: 3px;
+  font-size: 12px;
+  cursor: pointer;
+  text-decoration: underline;
+`;
