@@ -172,12 +172,12 @@ export const Room: React.FC<Props> = ({ isDarkMode, onDarkModeChange }) => {
       {contextHolder}
       <Header name={voter.name} isDarkMode={isDarkMode} onDarkModeChange={onDarkModeChange} />
       <RoomWrapper>
-        <Row gutter={[16, 16]}>
+        <Row gutter={[24, 24]}>
           <Col span={24}>
             <SubHeader roomId={room.id} onLeave={leaveHandler} onLinkCopied={linkCopiedHandler} />
           </Col>
           <Col xs={24} sm={24} md={12} lg={13} xl={14}>
-            <Row gutter={[16, 16]}>
+            <Row gutter={[24, 24]}>
               <Col xs={24}>
                 <VotingBoard
                   currentVote={currentVote}

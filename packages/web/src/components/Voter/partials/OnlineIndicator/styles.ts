@@ -5,7 +5,7 @@ export const Circle = styled.div<{ $isOnline: boolean }>`
   height: 10px;
   border-radius: 50%;
   background-color: ${({ $isOnline }) => ($isOnline ? '#71bb71' : 'grey')};
-  margin-left: -28px;
+  margin-left: -32px;
   margin-top: 22px;
   z-index: 100;
 `;

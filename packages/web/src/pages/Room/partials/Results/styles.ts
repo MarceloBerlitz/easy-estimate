@@ -15,4 +15,8 @@ export const StyledTable = styled(Table)<any>`
   * > tbody :last-child > * {
     border-bottom: none !important;
   }
+
+  * > .ant-table-cell {
+    padding: 0.5rem 1rem !important;
+  }
 `;
