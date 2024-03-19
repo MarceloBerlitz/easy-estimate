@@ -9,4 +9,8 @@ export const ButtonsGroup = styled.div`
   align-items: center;
   margin-top: 2rem;
   /* background-color: lightgrey; */
+
+  .ant-btn-link {
+    margin-right: -1rem;
+  }
 `;
