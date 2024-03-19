@@ -8,8 +8,12 @@ export const SubHeaderContainer = styled.div`
   gap: 1rem;
 
   > * {
-    margin: 0;
+    margin: 0 !important;
     width: fit-content;
+
+    > span {
+      font-weight: normal;
+    }
   }
 
   @media (max-width: 700px) {
