@@ -1,4 +1,10 @@
-[![CircleCI](https://dl.circleci.com/status-badge/img/gh/MarceloBerlitz/easy-estimate/tree/main.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/MarceloBerlitz/easy-estimate/tree/main)
+### Environment Variables
+
+LOG_HOST = https://\*\*\*.grafana.net
+LOG_USER = 123456
+LOG_PWD = Loki Token
+LOG_LEVEL =
+NODE_ENV =
 
 ### get wsl ip
 

@@ -18,7 +18,7 @@ export const Header = ({ name, isDarkMode, onDarkModeChange }: Props) => {
             Easy Estimate
           </Typography.Title>
         </Space>
-        <Space>
+        <Space size={24}>
           <Switch
             defaultValue={isDarkMode}
             checkedChildren={<MoonOutlined />}

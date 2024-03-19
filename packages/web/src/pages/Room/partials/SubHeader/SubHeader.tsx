@@ -19,7 +19,10 @@ export const SubHeader = ({ roomId, onLeave, onLinkCopied }: Props) => {
 
   return (
     <SubHeaderContainer>
-      <Typography.Title level={5}>Room ID: {roomId}</Typography.Title>
+      <Typography.Title level={5}>
+        Room ID: <span>{roomId}</span>
+      </Typography.Title>
+
       <ButtonsGroup>
         <Button onClick={onLeave}>
           Leave <LogoutOutlined />

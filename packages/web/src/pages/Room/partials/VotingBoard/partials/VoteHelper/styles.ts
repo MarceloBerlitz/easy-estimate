@@ -37,7 +37,7 @@ export const ParameterTitleWrapper = styled.div`
     text-transform: capitalize;
     display: flex;
     flex-direction: row;
-    gap: 0.5rem;
+    gap: 0.75rem;
     align-items: center;
   }
 
