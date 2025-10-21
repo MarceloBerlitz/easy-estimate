@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export const ResultCardWrapper = styled.div`
+export const ResultCardWrapper = styled.div<{ float?: 'left' | 'right' }>`
   width: 38px;
   height: 52px;
   box-shadow: 0px 1px 0px #f4f4f4;
@@ -11,7 +11,7 @@ export const ResultCardWrapper = styled.div`
   align-items: center;
   justify-content: space-between;
   background-color: white;
-  float: right;
+  float: ${({ float }) => (float ? float : 'right')};
 
   > * * {
     color: #2e1a7b !important;

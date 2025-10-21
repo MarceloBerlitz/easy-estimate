@@ -1,8 +1,9 @@
 import { ComputedVotesMapper, RoomType, VoterType } from '@ee/lib';
 
 import { Logger } from '../interfaces/logger';
+import { RoomService } from '../interfaces/room.service';
 
-export class RoomServiceImpl {
+export class RoomServiceImpl implements RoomService {
   private rooms: RoomType[] = [];
   private logger: Logger;
 
