@@ -5,11 +5,12 @@ import Typography from 'antd/es/typography/Typography';
 type Props = {
   children: React.ReactNode;
   visible: boolean;
+  float?: 'left' | 'right';
 };
 
-export const ResultCard: React.FC<Props> = ({ children, visible }) => {
+export const ResultCard: React.FC<Props> = ({ children, visible, float }) => {
   return (
-    <ResultCardWrapper>
+    <ResultCardWrapper float={float}>
       <TopDot $visible={visible} />
       <ResultCardContentWrapper>
         <Typography>{children}</Typography>

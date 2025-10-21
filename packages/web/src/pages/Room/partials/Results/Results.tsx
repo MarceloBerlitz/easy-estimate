@@ -48,15 +48,17 @@ export const Results: React.FC<Props> = ({ hasVotes, onReveal, onHide, onDelete 
   const { room } = useRoom();
 
   const data = useMemo(() => {
-    return (room?.voters ?? []).map((voter) => ({
-      key: voter.id,
-      id: voter.id,
-      name: voter.name,
-      clientId: voter.clientId,
-      hasVoted: voter.hasVoted,
-      storyPoints: room?.computedVotes?.votes.find((vote) => vote.voter.id === voter.id)
-        ?.storyPoints ?? <CheckOutlined />,
-    }));
+    return (room?.voters ?? [])
+      .map((voter) => ({
+        key: voter.id,
+        id: voter.id,
+        name: voter.name,
+        clientId: voter.clientId,
+        hasVoted: voter.hasVoted,
+        storyPoints: room?.computedVotes?.votes.find((vote) => vote.voter.id === voter.id)
+          ?.storyPoints ?? <CheckOutlined />,
+      }))
+      .sort((a, b) => (a.storyPoints > b.storyPoints ? -1 : 1));
   }, [room?.voters, room?.computedVotes]);
 
   return (

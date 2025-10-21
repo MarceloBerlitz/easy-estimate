@@ -19,7 +19,5 @@ export interface RoomService {
 
   updateComputedVotes(room: RoomType): void;
 
-  getRoomsCount(): number;
-
   nobodyIsConnected(room: RoomType): boolean;
 }
