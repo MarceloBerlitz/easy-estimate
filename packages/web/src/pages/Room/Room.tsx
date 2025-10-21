@@ -2,7 +2,8 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import { Col, Modal, Row, Spin, notification } from 'antd';
-import { SmileOutlined } from '@ant-design/icons';
+import { CopyOutlined, DeleteOutlined, EyeOutlined } from '@ant-design/icons';
+import dayjs from 'dayjs';
 
 import {
   ClientEventsEnum,
@@ -56,19 +57,19 @@ export const Room: React.FC<Props> = ({ isDarkMode, onDarkModeChange }) => {
     const votesDeletedHandler = ({ voter: v }: VotesDeletedPayload) => {
       setCurrentVote(emptyVote);
       api.open({
-        message: 'Votes Cleared',
+        message: `Votes Cleared - ${dayjs().format('HH:mm:ss')}`,
         description: `${v.name} cleared all votes.`,
-        icon: <SmileOutlined style={{ color: '#5636ff' }} />,
-        duration: 10,
+        icon: <DeleteOutlined style={{ color: '#5636ff' }} />,
+        duration: null,
       });
     };
 
     const pointsRevealedHandler = ({ voter: v }: PointsRevealedPayload) => {
       api.open({
-        message: 'Points Revealed',
+        message: `Points Revealed - ${dayjs().format('HH:mm:ss')}`,
         description: `${v.name} revealed the results.`,
-        icon: <SmileOutlined style={{ color: '#5636ff' }} />,
-        duration: 10,
+        icon: <EyeOutlined style={{ color: '#5636ff' }} />,
+        duration: null,
       });
     };
 
@@ -137,7 +138,7 @@ export const Room: React.FC<Props> = ({ isDarkMode, onDarkModeChange }) => {
     api.open({
       message: 'Room Link Copied',
       description: `Room link has been copied to the clipboard.`,
-      icon: <SmileOutlined style={{ color: '#5636ff' }} />,
+      icon: <CopyOutlined style={{ color: '#5636ff' }} />,
       duration: 5,
     });
   }, [api]);
