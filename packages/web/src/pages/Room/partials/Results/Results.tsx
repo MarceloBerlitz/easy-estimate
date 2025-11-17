@@ -58,7 +58,20 @@ export const Results: React.FC<Props> = ({ hasVotes, onReveal, onHide, onDelete 
         storyPoints: room?.computedVotes?.votes.find((vote) => vote.voter.id === voter.id)
           ?.storyPoints ?? <CheckOutlined />,
       }))
-      .sort((a, b) => (a.storyPoints > b.storyPoints ? -1 : 1));
+      .sort((a, b) => {
+        if (a.hasVoted) {
+          // quem votou fica em cima
+          if (!b.hasVoted) return -1;
+          // se nao foi revelado, mantem
+          if (isNaN(Number(a.storyPoints))) return -1
+          // se foi revelado, ordena pelos pontos
+          return a.storyPoints > b.storyPoints ? -1 : 1
+        }
+        // se o b votou, inverte
+        if (b.hasVoted) return 1
+        // se ninguem votou, mantem
+        return -1;
+      });
   }, [room?.voters, room?.computedVotes]);
 
   return (
