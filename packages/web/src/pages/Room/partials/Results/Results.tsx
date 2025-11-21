@@ -71,8 +71,10 @@ export const Results: React.FC<Props> = ({ hasVotes, onReveal, onHide, onDelete 
         }
 
         // Ordena alfabeticamente
-        if (a.name > b.name) return 1
-        if (b.name > a.name) return -1
+        const aName = a.name.toLowerCase()
+        const bName = b.name.toLowerCase()
+        if (aName > bName) return 1
+        if (bName > aName) return -1
 
         // Iguais, nao deve acontecer
         return 0
