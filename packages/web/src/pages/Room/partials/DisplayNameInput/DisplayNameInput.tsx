@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 
 import { Button, Input, Space, Typography } from 'antd';
 import { ArrowRightOutlined } from '@ant-design/icons';
@@ -15,6 +15,10 @@ export const DisplayNameInput: React.FC<Props> = ({ onJoin }) => {
   const { isLoading } = useSocket();
   const [nameState, setNameState] = useState(voter.name);
 
+  const disabled = useMemo(() => {
+    return isLoading || !nameState || !nameState.trim();
+  }, [isLoading, nameState])
+
   return (
     <>
       <Typography.Title level={1}>Easy Estimate</Typography.Title>
@@ -26,14 +30,14 @@ export const DisplayNameInput: React.FC<Props> = ({ onJoin }) => {
             onChange={(e) => setNameState(e.currentTarget.value)}
             autoFocus
             onKeyDown={(e) => {
-              if (e.key === 'Enter' && !isLoading) onJoin(nameState);
+              if (e.key === 'Enter' && !disabled) onJoin(nameState.trim());
             }}
             size="large"
           />
           <Button
             type="primary"
-            disabled={!nameState}
-            onClick={() => onJoin(nameState)}
+            disabled={disabled}
+            onClick={() => onJoin(nameState.trim())}
             size="large"
             loading={isLoading}
           >

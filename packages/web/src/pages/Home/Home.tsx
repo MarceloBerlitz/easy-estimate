@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { Button, Input, Space, Typography } from 'antd';
 import { ArrowRightOutlined } from '@ant-design/icons';
@@ -14,6 +14,10 @@ export const Home = () => {
   const [nameState, setNameState] = useState(voter.name);
   const { socket, isConnected, isLoading } = useSocket();
 
+  const disabled = useMemo(() => {
+    return isLoading || !nameState || !nameState.trim();
+  }, [isLoading, nameState])
+
   useEffect(() => {
     localStorage.setItem('created', '');
     if (!isConnected) {
@@ -25,12 +29,9 @@ export const Home = () => {
     if (!isConnected) {
       socket.connect();
     }
-    if (!nameState) {
-      return;
-    }
 
     localStorage.setItem('created', 'true');
-    socket.emit(ClientEventsEnum.CREATE_ROOM, { name: nameState });
+    socket.emit(ClientEventsEnum.CREATE_ROOM, { name: nameState.trim() });
   }, [socket, nameState, isConnected]);
 
   return (
@@ -44,13 +45,13 @@ export const Home = () => {
             onChange={(e) => setNameState(e.currentTarget.value)}
             autoFocus
             onKeyDown={(e) => {
-              if (e.key === 'Enter' && !isLoading) createRoomHandler();
+              if (e.key === 'Enter' && !disabled) createRoomHandler();
             }}
             size="large"
           />
           <Button
             type="primary"
-            disabled={!nameState}
+            disabled={disabled}
             onClick={createRoomHandler}
             size="large"
             loading={isLoading}
