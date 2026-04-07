@@ -90,7 +90,7 @@ export const Results: React.FC<Props> = ({ hasVotes, onReveal, onHide, onDelete 
       }
     >
       <div style={{ display: 'flex', flexDirection: 'column' }}>
-        <StyledTable columns={columns} dataSource={data} pagination={{ hideOnSinglePage: true }} />
+        <StyledTable columns={columns} dataSource={data} pagination={false} />
         <ButtonsGroup>
           {!room?.computedVotes ? (
             <Button disabled={!hasVotes} onClick={onReveal} type="primary" icon={<EyeOutlined />}>
