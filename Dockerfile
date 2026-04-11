@@ -1,4 +1,4 @@
-FROM node:lts-slim as base
+FROM node:lts-alpine
 
 WORKDIR /home/node/app
 
